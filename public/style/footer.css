@@ -1,0 +1,25 @@
+.footer {
+    background: linear-gradient(
+        90deg,
+        rgb(253, 122, 42, 0.98),
+        rgba(241, 100, 12, 0.98)
+    );
+    /* background: linear-gradient(120deg, #fc7b2b, #f4ad3b); */
+    padding-top: 2.5rem;
+    padding-bottom: 2rem;
+    border-top: 1px solid rgba(55, 65, 81, 0.8);
+    z-index: 2;
+}
+
+.lgo-footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+}
+.lgo-footer img {
+    max-height: 100px !important;
+    max-width: 200px !important;
+    filter: brightness(0) invert(1);
+}

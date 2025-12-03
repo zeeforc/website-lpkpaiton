@@ -1,0 +1,11 @@
+<?php
+
+namespace App\Filament\Resources\Kurikulums\Pages;
+
+use App\Filament\Resources\Kurikulums\KurikulumResource;
+use Filament\Resources\Pages\CreateRecord;
+
+class CreateKurikulum extends CreateRecord
+{
+    protected static string $resource = KurikulumResource::class;
+}

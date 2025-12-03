@@ -1,0 +1,65 @@
+.navbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 20;
+    background: transparent;
+    box-shadow: none;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+.navbar .nav-title {
+    font-weight: 700;
+}
+.navbar .navbar-brand span,
+.navbar .navbar-brand small {
+    color: #111827;
+}
+
+.navbar .navbar-nav .nav-link {
+    color: #111827;
+    font-weight: 500;
+}
+
+.navbar .navbar-nav .nav-link:hover {
+    color: #f49f1c;
+}
+
+.navbar-toggler {
+    border: none;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(17,24,39,0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.offcanvas-glass {
+    background: radial-gradient(
+        circle at top left,
+        rgba(255, 255, 255, 0.25),
+        rgba(15, 23, 42, 0.96)
+    );
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    color: #f9fafb;
+    box-shadow: -24px 0 60px rgba(0, 0, 0, 0.6);
+}
+
+.offcanvas-glass .offcanvas-header h6 {
+    font-weight: 600;
+}
+
+.offcanvas-nav-link {
+    color: #e5e7eb;
+    padding-left: 0;
+}
+
+.offcanvas-nav-link:hover {
+    color: #fbbf24;
+}
+
+.hero-section {
+    padding-top: 7rem;
+}
