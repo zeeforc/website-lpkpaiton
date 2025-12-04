@@ -10,7 +10,7 @@
     <div class="container mt-5 p-5">
         <a href="{{ route('kurikulum.index') }}" class="back-link">
             <span>&lt;</span>
-            <span>Kembali ke Kurikulum</span>
+            <span>Kembali</span>
         </a>
 
         <div class="row news-hero-row">
@@ -32,16 +32,27 @@
                         {{ $kurikulum->kurikulum_title }}
                     </h1>
                     <p class="mt-3 text-muted">
-                        {{ $kurikulum->desk_singkat }}
+                        {!! nl2br(e($kurikulum->desk_kurikulum)) !!}
                     </p>
                 </div>
             </div>
         </div>
 
-        <div class="news-body">
-            {{-- desk_kurikulum bisa panjang, pakai nl2br kalau mau jaga line break --}}
-            {!! nl2br(e($kurikulum->desk_kurikulum)) !!}
+        <div class="news-media-card-2 mt-5">
+            <h4 class="text-muted pt-2">
+                Matrik Kurikulum {{ $kurikulum->kurikulum_title }}
+            </h4>
+            <div class="news-body">
+                @if(trim($kurikulum->matrix_html ?? '') !== '')
+                <div class="matrix-scroll-wrapper mt-4 text-sm table table-striped">
+                    {!! $kurikulum->matrix_html !!}
+                </div>
+                @else
+                {!! nl2br(e($kurikulum->desk_kurikulum)) !!}
+                @endif
+            </div>
         </div>
+
 
         {{-- navigasi kurikulum sebelumnya / berikutnya --}}
         <div class="news-pagination">

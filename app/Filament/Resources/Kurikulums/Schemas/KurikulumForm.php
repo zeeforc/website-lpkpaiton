@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Kurikulums\Schemas;
 
+use App\Services\ExcelToHtml;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
@@ -33,6 +33,16 @@ class KurikulumForm
                         Textarea::make('desk_singkat')
                             ->label('Deskripsi Singkat Fokus Pembelajaran')
                             ->required(),
+                        FileUpload::make('matrix_excel_path')
+                            ->label('Upload Matrix Excel')
+                            ->disk('public')
+                            ->directory('matrix-kurikulum')
+                            ->acceptedFileTypes([
+                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                'application/vnd.ms-excel',
+                            ])
+                            ->columnSpanFull(),
+
                     ]),
             ]);
     }

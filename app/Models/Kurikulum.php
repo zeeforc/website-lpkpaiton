@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Services\ExcelToHtml;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class Kurikulum extends Model
@@ -13,6 +15,7 @@ class Kurikulum extends Model
         'image_kurikulum',
         'desk_singkat',
         'slug',
+        'matrix_excel_path',
     ];
 
     public function getRouteKeyName()
@@ -29,16 +32,35 @@ class Kurikulum extends Model
         return asset('storage/' . $this->image_kurikulum);
     }
 
+    // matrix_html dihasilkan dari file excel dan di-cache
+    public function getMatrixHtmlAttribute(): ?string
+    {
+        if (! $this->matrix_excel_path) {
+            return null;
+        }
+
+        $path = storage_path('app/public/' . $this->matrix_excel_path);
+
+        if (! file_exists($path)) {
+            return null;
+        }
+
+        // key cache unik per kurikulum + path file
+        $cacheKey = 'kurikulum_matrix_html_' . $this->id . '_' . md5($this->matrix_excel_path);
+
+        return Cache::rememberForever($cacheKey, function () use ($path) {
+            return ExcelToHtml::convert($path);
+        });
+    }
+
     protected static function booted(): void
     {
         static::saving(function (Kurikulum $kurikulum) {
-            // generate slug otomatis dari kurikulum_title jika slug kosong
             if (empty($kurikulum->slug) && ! empty($kurikulum->kurikulum_title)) {
                 $base = Str::slug($kurikulum->kurikulum_title);
                 $slug = $base;
                 $i = 1;
 
-                // pastikan slug unik
                 while (
                     static::where('slug', $slug)
                     ->where('id', '!=', $kurikulum->id ?? 0)
@@ -51,7 +73,6 @@ class Kurikulum extends Model
             }
         });
 
-        // ini hanya jalan kalau kamu memang pakai cache key 'kurikulums_all'
         static::saved(fn() => cache()->forget('kurikulums_all'));
         static::deleted(fn() => cache()->forget('kurikulums_all'));
     }
