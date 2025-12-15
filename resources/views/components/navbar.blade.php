@@ -26,10 +26,10 @@
         <div class="collapse navbar-collapse justify-content-end d-none d-lg-flex" id="mainNavbar">
             <ul class="navbar-nav gap-lg-3">
                 <li class="nav-item">
-                    <a class="nav-link" href="/index">Beranda</a>
+                    <a class="nav-link" href="{{route('home')}}">Beranda</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/kurikulum">Kurikulum</a>
+                    <a class="nav-link" href="{{rooute('kurikulum')}}">Kurikulum</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/pelatihan">Pelatihan</a>
