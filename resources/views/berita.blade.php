@@ -104,7 +104,7 @@
                         <div class="news-list-scroll" id="newsListScroll">
                             <div class="row g-3 mb-3">
                                 @forelse($others as $berita)
-                                @continue(empty($berita->slug)) {{-- jaga kalau ada yang belum punya slug --}}
+                                @continue(empty($berita->slug))
 
                                 <div class="col-sm-6">
                                     <a href="{{ route('berita.show', ['beritaUtama' => $berita->slug]) }}"

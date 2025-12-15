@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kurikulum;
+use Illuminate\Support\Facades\Cache;
 
 class KurikulumController extends Controller
 {
     public function index()
     {
-        $kurikulums = Kurikulum::orderBy('id')->get();
+        $kurikulums = Cache::rememberForever('kurikulums_all', function () {
+            return Kurikulum::orderBy('id')->get();
+        });
+
         return view('kurikulum', compact('kurikulums'));
     }
 
@@ -22,5 +26,13 @@ class KurikulumController extends Controller
             'prevKurikulum' => $prev,
             'nextKurikulum' => $next,
         ]);
+    }
+
+    public function matrixHtml(Kurikulum $kurikulum)
+    {
+        $html = $kurikulum->matrix_html ?? '';
+
+        return response($html, 200)
+            ->header('Content-Type', 'text/html; charset=utf-8');
     }
 }

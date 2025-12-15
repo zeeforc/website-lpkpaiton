@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container py-2">
         @php
-        $isDarkBrand = request()->is('/') || request()->is('berita/*') ||request()->is('kurikulum/*') ;
+        $isDarkBrand = request()->is('/') || request()->is('berita/*');
         @endphp
 
         <a class="navbar-brand d-flex align-items-center" href="/index">

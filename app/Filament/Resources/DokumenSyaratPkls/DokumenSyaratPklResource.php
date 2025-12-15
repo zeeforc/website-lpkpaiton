@@ -13,12 +13,15 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class DokumenSyaratPklResource extends Resource
 {
     protected static ?string $model = DokumenSyaratPkl::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocument;
+
+    protected static string | UnitEnum | null $navigationGroup = 'Acara dan Bantuan';
 
     protected static ?string $recordTitleAttribute = 'DokumenSyaratPkl';
 

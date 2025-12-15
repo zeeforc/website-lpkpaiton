@@ -13,12 +13,15 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class SaranaSatuResource extends Resource
 {
     protected static ?string $model = SaranaSatu::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
+
+    protected static string | UnitEnum | null $navigationGroup = 'Pelatihan dan Sarana Prasarana';
 
     protected static ?string $navigationLabel = 'Sarana';
 

@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 class ExcelToHtml
 {
@@ -12,73 +11,62 @@ class ExcelToHtml
         $spreadsheet = IOFactory::load($path);
         $sheet       = $spreadsheet->getActiveSheet();
 
-        // Ambil batas data mentah
-        $highestRow    = $sheet->getHighestDataRow();
-        $highestColumn = Coordinate::columnIndexFromString(
-            $sheet->getHighestDataColumn()
-        );
+        $highestRow = $sheet->getHighestDataRow();
 
-        // Simpan semua nilai dulu, sambil tandai kolom mana yang benar-benar punya isi
-        $rowsData       = [];
-        $columnHasData  = [];
-        $rowHasData     = [];
+        // kolom yg ditampilin
+        $columns = [
+            'A' => 'NO',
+            'B' => 'KODE UNIT',
+            'C' => 'KUK KURIKULUM',
+            'F' => 'BOBOT (JAM)',
+        ];
+
+        // header
+        $html  = '<table class="matrix-table"><thead><tr>';
+        foreach ($columns as $label) {
+            $html .= '<th>' . htmlspecialchars($label, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</th>';
+        }
+        $html .= '</tr></thead><tbody>';
+
+        $totalHours = 0;
 
         for ($row = 1; $row <= $highestRow; $row++) {
-            for ($col = 1; $col <= $highestColumn; $col++) {
-                $columnLetter = Coordinate::stringFromColumnIndex($col);
-                $cellAddress  = $columnLetter . $row;
+            $noRaw   = $sheet->getCell('A' . $row)->getCalculatedValue();
+            $kodeRaw = trim((string) $sheet->getCell('B' . $row)->getFormattedValue());
 
-                $cell  = $sheet->getCell($cellAddress);
-                $value = trim((string) $cell->getFormattedValue());
-
-                $rowsData[$row][$col] = $value;
-
-                if ($value !== '') {
-                    $columnHasData[$col] = true;
-                    $rowHasData[$row]    = true;
-                }
-            }
-        }
-
-        // Kalau tidak ada data sama sekali
-        if (empty($columnHasData)) {
-            return '';
-        }
-
-        // Cari kolom pertama dan terakhir yang punya data
-        $firstCol = min(array_keys($columnHasData));
-        $lastCol  = max(array_keys($columnHasData));
-
-        $htmlRows = '';
-        $isHeader = true; // baris pertama yang berisi data jadi header
-
-        for ($row = 1; $row <= $highestRow; $row++) {
-            // skip baris kosong total
-            if (empty($rowHasData[$row])) {
+            if (! is_numeric($noRaw) || $kodeRaw === '') {
                 continue;
             }
 
-            $htmlRows .= '<tr>';
+            $html .= '<tr>';
 
-            for ($col = $firstCol; $col <= $lastCol; $col++) {
-                $cellValue = $rowsData[$row][$col] ?? '';
-                $escaped   = htmlspecialchars($cellValue, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            foreach (array_keys($columns) as $colLetter) {
+                $value   = trim((string) $sheet->getCell($colLetter . $row)->getFormattedValue());
+                $escaped = htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                $html   .= '<td>' . $escaped . '</td>';
 
-                if ($isHeader) {
-                    $htmlRows .= '<th>' . $escaped . '</th>';
-                } else {
-                    $htmlRows .= '<td>' . $escaped . '</td>';
+                // kalo ini kolom F (BOBOT JAM) dan berupa angka, tambahin ke total
+                if ($colLetter === 'F') {
+                    $hours = $sheet->getCell($colLetter . $row)->getCalculatedValue();
+                    if (is_numeric($hours)) {
+                        $totalHours += (float) $hours;
+                    }
                 }
             }
 
-            $htmlRows .= '</tr>';
-            $isHeader = false;
+            $html .= '</tr>';
         }
 
-        if ($htmlRows === '') {
-            return '';
-        }
+        // Tambahin baris total di bawah data terakhir
+        $html .= '<tr class="matrix-total-row">';
+        $html .= '<td></td>';
+        $html .= '<td></td>';
+        $html .= '<td><strong>Jumlah Jam Pelajaran</strong></td>';
+        $html .= '<td><strong>' . (int) $totalHours . '</strong></td>';
+        $html .= '</tr>';
 
-        return '<table class="matrix-table">' . $htmlRows . '</table>';
+        $html .= '</tbody></table>';
+
+        return $html;
     }
 }

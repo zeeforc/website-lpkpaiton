@@ -21,7 +21,7 @@
                 <p class="fs-6 text-dark mb-4">
                     Kami hadir untuk menyiapkan tenaga kerja yang terampil dan siap
                     pakai melalui program pelatihan terstruktur di bidang mekanik dan
-                listrik, sesuai kebutuhan industri di wilayah Paiton dan
+                    listrik, sesuai kebutuhan industri di wilayah Paiton dan
                     sekitarnya.
                 </p>
 
@@ -225,16 +225,45 @@
                 </p>
 
                 <div class="contact-card mb-4">
-                    <form>
+
+                    @if ($errors->any())
+                    <div class="alert alert-danger small">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+
+                    @if (session('success'))
+                    <div class="alert alert-success small">
+                        {{ session('success') }}
+                    </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('contact.store') }}">
+                        @csrf
+
+                        <div class="mb-3">
+                            <label class="form-label small">Nama</label>
+                            <input type="text" name="name" class="form-control form-control-sm"
+                                value="{{ old('name') }}" required />
+                        </div>
+
                         <div class="mb-3">
                             <label class="form-label small">Email</label>
-                            <input type="email" class="form-control form-control-sm" placeholder="nama@email.com" />
+                            <input type="email" name="email" class="form-control form-control-sm"
+                                placeholder="nama@email.com" value="{{ old('email') }}" required />
                         </div>
+
                         <div class="mb-3">
                             <label class="form-label small">Pesan</label>
-                            <textarea class="form-control form-control-sm" rows="4"
-                                placeholder="Tuliskan pertanyaan atau kebutuhan pelatihan Anda"></textarea>
+                            <textarea name="message" class="form-control form-control-sm" rows="4"
+                                placeholder="Tuliskan pertanyaan atau kebutuhan pelatihan Anda"
+                                required>{{ old('message') }}</textarea>
                         </div>
+
                         <button type="submit" class="btn btn-gradient btn-sm">
                             Kirim
                         </button>

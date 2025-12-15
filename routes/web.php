@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BeritaUtamaController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\KurikulumController;
 use App\Http\Controllers\PelatihanController;
 use App\Http\Controllers\SaranaController;
@@ -37,12 +38,12 @@ Route::get('/index', function () {
     return redirect()->route('home');
 });
 
-Route::get('/index', function () {
-    return redirect()->route('home');
-});
+Route::post('/kontak', [ContactController::class, 'store'])
+    ->name('contact.store');
 
 Route::get('/kurikulum', [KurikulumController::class, 'index'])->name('kurikulum.index');
 Route::get('/kurikulum/{kurikulum}', [KurikulumController::class, 'show'])->name('kurikulum.show');
+Route::get('/kurikulum/{kurikulum}/matrix-html', [KurikulumController::class, 'matrixHtml'])->name('kurikulum.matrix-html');
 
 Route::get('/pelatihan', [PelatihanController::class, 'index'])->name('pelatihan.index');
 

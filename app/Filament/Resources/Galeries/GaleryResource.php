@@ -13,12 +13,15 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class GaleryResource extends Resource
 {
     protected static ?string $model = Galery::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
+
+    protected static string | UnitEnum | null $navigationGroup = 'Acara dan Bantuan';
 
     protected static ?string $recordTitleAttribute = 'Galery';
 

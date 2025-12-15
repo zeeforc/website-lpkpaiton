@@ -1,9 +1,12 @@
 :root {
     --orange-main: #fd7a2a;
     --dark-text: #111827;
-    --muted-text: #4b5563;
+    --muted-text: #6b7280;
     --bg-light: #ffffff;
+    --bg-page: #f3f4f6;
 }
+
+/* base */
 
 * {
     box-sizing: border-box;
@@ -12,170 +15,249 @@
 
 body {
     margin: 0;
-    background-color: #fafafa;
+    background: radial-gradient(
+        circle at top left,
+        #fd7a2a 0,
+        #f3f4f6 60%,
+        #e5e7eb 100%
+    );
     color: var(--dark-text);
 }
 
-.news-wrapper {
-    padding-top: 8rem;
+/* wrapper halaman detail */
+
+.curriculum-detail-wrapper {
+    padding-top: 6rem;
     padding-bottom: 4rem;
 }
 
-
 @media (min-width: 992px) {
-    .news-wrapper {
-        padding-top: 4rem;
+    .curriculum-detail-wrapper {
+        padding-top: 5rem;
         padding-bottom: 5rem;
     }
 }
 
+.curriculum-detail-wrapper .container {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 32px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 26px 60px rgba(15, 23, 42, 0.12);
+}
+
+/* link kembali */
+
 .back-link {
     font-size: 0.9rem;
-    color: #111827;
+    color: var(--muted-text);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 0.2rem;
-    margin-bottom: 1.5rem;
+    gap: 0.25rem;
+    margin-bottom: 1.75rem;
+    font-weight: 500;
+    transition: color 160ms ease, transform 160ms ease;
+}
+
+.back-link span:first-child {
+    font-size: 1rem;
 }
 
 .back-link:hover {
-    color: #f97316;
+    color: var(--orange-main);
+    transform: translateX(-2px);
 }
 
-.news-tagline {
-    font-size: 0.95rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #6b7280;
-    margin-bottom: 0.6rem;
-}
-
-.news-title-main {
-    font-size: clamp(2.4rem, 3vw + 1.2rem, 3rem);
-    font-weight: 600;
-    margin-bottom: 1rem;
-    font-size: 1.3rem;
-}
-
-.news-subtitle {
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 0.4rem;
-}
-
-.news-subtitle span {
-    display: block;
-}
+/* hero */
 
 .news-hero-row {
     row-gap: 2.5rem;
+    align-items: center;
+}
+
+.news-tagline {
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted-text);
+    margin-bottom: 0.5rem;
+}
+
+.news-title-main {
+    font-size: clamp(2.1rem, 3vw + 1.2rem, 2.8rem);
+    font-weight: 700;
+    color: var(--dark-text);
+    margin-bottom: 0.75rem;
 }
 
 .news-hero-text p {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--muted-text);
-    max-width: 480px;
+    max-width: 520px;
+    line-height: 1.6;
 }
+
+/* kartu gambar */
 
 .news-media-wrap {
     position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.news-media-wrap::before {
+    content: "";
+    position: absolute;
+    inset: 12%;
+    border-radius: 32px;
+    background: radial-gradient(
+        circle at top left,
+        rgba(253, 186, 116, 0.5),
+        transparent 60%
+    );
+    filter: blur(6px);
+    z-index: 0;
 }
 
 .news-media-bg {
-    background-color: var(--orange-main);
-    border-radius: 24px;
-    padding: 1rem;
+    position: relative;
+    background: linear-gradient(135deg, #f97316, #fb923c);
+    border-radius: 32px;
+    padding: 1.4rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.9);
+    box-shadow: 0 20px 40px rgba(248, 113, 113, 0.32);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+    z-index: 1;
+}
+
+.news-media-bg:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 28px 60px rgba(15, 23, 42, 0.3);
 }
 
 @media (min-width: 992px) {
     .news-media-bg {
-        border-radius: 24px;
-        padding: 2.4rem 2.4rem 2.4rem 3rem;
+        padding: 2.4rem 2.6rem 2.4rem 2.6rem;
     }
 }
 
 .news-media-card {
     background-color: #ffffff;
     border-radius: 24px;
-    box-shadow: 0 14px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22);
     overflow: hidden;
-    max-width: 500px;
+    max-width: 480px;
     width: 100%;
-}
-.news-media-card-2 {
-    background-color: #ffffff;
-    border-radius: 24px;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
-    overflow: hidden;
-    max-width: 1200px;
-    width: 100%;
-    padding: 1rem;
 }
 
 .news-media-card img {
     width: 100%;
     display: block;
     object-fit: cover;
+    transform: scale(1.02);
 }
 
-.news-body {
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+/* section matriks */
+
+.news-media-card-2 {
+    background-color: #ffffff;
+    border-radius: 24px;
     margin-top: 3rem;
-    max-width: 1080px;
-    font-size: 0.8rem;
-    line-height: 1.7;
+    padding: 1.75rem 1.75rem 2rem 1.75rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+}
+
+.news-media-card-2 h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-text);
+    margin-bottom: 0.75rem;
+}
+
+/* body matriks */
+
+.news-body {
+    margin-top: 0.75rem;
+    max-width: 100%;
+    font-size: 0.9rem;
+    line-height: 1.6;
     color: #111827;
+    box-shadow: none;
 }
 
 .news-body p {
-    margin-bottom: 1.25rem;
+    margin-bottom: 1rem;
 }
 
-.news-pagination {
-    margin-top: 3rem;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 1.5rem;
-}
+/* wrapper tabel di dalam news-body */
+/* .news-body > .matrix-scroll-wrapper {
+    max-width: 100%;
+    overflow-y: auto;
+    overflow-x: visible;
+    margin-top: 1.25rem;
+    border-radius: 18px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+} */
 
 .news-body > .matrix-scroll-wrapper {
     max-width: 100%;
-    max-height: 25rem;
-    overflow-x: auto;
-    font-size: 15px;
+    max-height: 70vh; /* batasi tinggi area matriks di semua layar */
+    overflow-y: auto; /* scroll vertikal di dalam area ini */
+    overflow-x: hidden; /* hilangkan scroll horizontal */
+    margin-top: 1.25rem;
+    border-radius: 18px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
 }
 
+/* tabel matriks */
 .matrix-table {
     border-collapse: collapse;
-    min-width: 1400px;
-    font-size: 0.5rem;
-    border-radius: 26px;
+    width: 100%; /* ikut penuh lebar container */
+    min-width: unset; /* buang batas lebar minimum */
+    table-layout: fixed; /* lebar kolom dibagi rata */
+    font-size: 0.8rem;
 }
 
 .matrix-table th,
 .matrix-table td {
-    border: 1px solid #ddd;
-    padding: 4px 6px;
-    white-space: nowrap;
+    border: 1px solid #e5e7eb;
+    padding: 6px 10px;
+    white-space: normal; /* teks boleh turun baris */
+    word-break: break-word; /* pecah kata panjang */
 }
 
 .matrix-table th {
-    background-color: #f5f5f5;
+    background: #f5f5f5;
     font-weight: 600;
     text-align: center;
 }
 
+.matrix-table tr:nth-child(even) td {
+    background-color: #ffffff;
+}
+
+.matrix-table tr:nth-child(odd) td {
+    background-color: #f9fafb;
+}
+
+/* pagination kurikulum lain */
+
+.news-pagination {
+    margin-top: 2.75rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1.25rem;
+}
+
 .news-pagination-label {
     font-size: 0.9rem;
-    color: #111827;
+    color: var(--muted-text);
 }
 
 .pagination-dots {
@@ -184,11 +266,15 @@ body {
     align-items: center;
 }
 
+.page-dot-link {
+    text-decoration: none;
+}
+
 .page-dot {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    font-size: 0.8rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    font-size: 0.9rem;
     border: none;
     display: inline-flex;
     align-items: center;
@@ -196,23 +282,187 @@ body {
     cursor: pointer;
     background-color: #e5e7eb;
     color: #111827;
+    transition: background-color 160ms ease, transform 160ms ease,
+        box-shadow 160ms ease;
 }
 
 .page-dot.active {
-    background-color: var(--orange-main);
+    background: linear-gradient(135deg, #fb923c, #f97316);
     color: #ffffff;
+    box-shadow: 0 10px 20px rgba(248, 113, 113, 0.35);
 }
 
 .page-dot:hover {
     background-color: #d1d5db;
+    transform: translateY(-1px);
 }
 
 .page-dot.active:hover {
-    background-color: #f97316;
+    transform: translateY(-2px);
 }
 
+.page-dot.disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+/* responsif kecil */
+
 @media (max-width: 575.98px) {
+    .curriculum-detail-wrapper .container {
+        padding: 1.75rem 1.25rem 2.25rem 1.25rem;
+        border-radius: 24px;
+    }
+
+    .news-hero-row {
+        flex-direction: column;
+    }
+
+    .news-media-wrap {
+        order: 2;
+    }
+
+    .news-hero-text {
+        order: 1;
+    }
+
     .news-pagination {
         justify-content: center;
+    }
+}
+
+@media (min-width: 992px) {
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    .news-body > .matrix-scroll-wrapper {
+        position: relative; /* konteks untuk sticky */
+    }
+
+    .matrix-table {
+        font-size: 0.78rem;
+        table-layout: auto;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    /* HEADER TETAP DI ATAS SAAT SCROLL */
+    .matrix-table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #f5f5f5; /* jangan transparan */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    /* kalau generator Excel tidak memakai <thead>,
+       backup: baris pertama di <tbody> dijadikan header sticky */
+    .matrix-table thead tr:first-child th,
+    .matrix-table tbody tr:first-child th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #f5f5f5;
+    }
+
+    .matrix-table th:nth-child(1),
+    .matrix-table td:nth-child(1) {
+        width: 5%;
+        text-align: center;
+    }
+
+    .matrix-table th:nth-child(2),
+    .matrix-table td:nth-child(2) {
+        width: 18%;
+    }
+
+    .matrix-table th:nth-child(4),
+    .matrix-table td:nth-child(4) {
+        width: 8%;
+        text-align: center;
+        white-space: nowrap;
+    }
+}
+
+/* MOBILE LAYOUT UNTUK TABEL MATRIX */
+@media (max-width: 768px) {
+    .news-body > .matrix-scroll-wrapper {
+        /* max-height: 70vh; tinggi maksimum area tabel */
+        overflow-y: auto; /* scroll vertikal di dalam wrapper */
+        overflow-x: hidden;
+        border-radius: 16px;
+        padding: 0.5rem 0.25rem;
+        background: transparent;
+        border: none;
+    }
+
+    /* sisanya tetap sama */
+    .matrix-table,
+    .matrix-table thead,
+    .matrix-table tbody,
+    .matrix-table th,
+    .matrix-table td,
+    .matrix-table tr {
+        display: block;
+        width: 100%;
+    }
+
+    .matrix-table tr:first-child {
+        display: none;
+    }
+
+    .matrix-table tr {
+        margin-bottom: 0.85rem;
+        border-radius: 14px;
+        background: #ffffff;
+        box-shadow: 0 10px 20px rgba(15, 23, 42, 0.06);
+        overflow: hidden;
+    }
+
+    .matrix-table td {
+        padding: 1.25rem 1rem 0.55rem 1rem;
+        border: none;
+        border-bottom: 1px solid #e5e7eb;
+        position: relative;
+        white-space: normal;
+        word-break: break-word;
+        font-size: 0.8rem;
+    }
+
+    .matrix-table td:last-child {
+        border-bottom: none;
+    }
+
+    .matrix-table td::before {
+        content: "";
+        position: absolute;
+        left: 1rem;
+        top: 0.4rem;
+        font-weight: 600;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #9ca3af;
+        line-height: 1.1;
+    }
+
+    .matrix-table td:nth-child(1)::before {
+        content: "No";
+    }
+    .matrix-table td:nth-child(2)::before {
+        content: "Kode Unit";
+    }
+    .matrix-table td:nth-child(3)::before {
+        content: "Judul Unit Kompetensi";
+    }
+    .matrix-table td:nth-child(4)::before {
+        content: "Bobot (Pelajaran)";
+    }
+
+    .news-media-card-2 {
+        box-shadow: none;
+        border-radius: 20px;
+        padding-inline: 0.75rem;
     }
 }

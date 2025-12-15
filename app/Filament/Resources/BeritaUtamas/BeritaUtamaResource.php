@@ -13,12 +13,15 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class BeritaUtamaResource extends Resource
 {
     protected static ?string $model = BeritaUtama::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
+
+    protected static string | UnitEnum | null $navigationGroup = 'Acara dan Bantuan';
 
     protected static ?string $recordTitleAttribute = 'BeritaUtama';
 

@@ -16,8 +16,10 @@
 
     <link rel="stylesheet" href="{{ asset('style/navbar.css') }}" />
     <link rel="stylesheet" href="{{ asset('style/footer.css') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
 
     @stack('styles')
+    @stack('script')
 
     <title>LPK Paiton Selaras - @yield('title')</title>
 </head>
