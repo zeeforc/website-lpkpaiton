@@ -16,9 +16,7 @@
                     di LPK Paiton Selaras
                 </h1>
                 <p class="hero-desc text-light">
-                    Berikut adalah tahapan tahapan pendaftaran magang di Kementerian
-                    Keuangan. Berikut adalah tahapan tahapan pendaftaran magang di
-                    Kementerian Keuangan.
+                    Berikut adalah tahapan tahapan pendaftaran magang di Lembaga Pelatihan Kerja Paiton Selaras.
                 </p>
                 <a href="#steps">
                     <button class="btn-orange">Selengkapnya</button>
@@ -36,8 +34,7 @@
                 <p class="steps-subtitle">Tahapan</p>
                 <h2 class="steps-title">Pendaftaran</h2>
                 <p class="steps-intro">
-                    Berikut adalah tahapan tahapan pendaftaran magang di Kementerian
-                    Keuangan.
+                    Berikut adalah tahapan tahapan pendaftaran magang di Lembaga Pelatihan Kerja Paiton Selaras.
                 </p>
 
                 <div class="step-list">
@@ -46,27 +43,26 @@
                         <div>
                             <p class="step-text-title">Registrasi</p>
                             <p class="step-text-body">
-                                Registrasi untuk mengetahui kuota pendaftar apakah masih
-                                ada.
+                                Registrasi untuk mengajukan permohonan magang PKL ke pihak pengurus LPK Paiton Selaras.
                             </p>
                         </div>
                     </div>
 
                     <div class="step-item">
-                        <div class="step-badge">3</div>
+                        <div class="step-badge">2</div>
                         <div>
                             <p class="step-text-title">Melengkapi Data</p>
                             <p class="step-text-body">
-                                Isi dan lengkapi data profil mahasiswa dan periode magang.
+                                Isi dan lengkapi data profil siswa/mahasiswa, asal instansi, dan periode magang.
                             </p>
                         </div>
                     </div>
                     <div class="step-item">
-                        <div class="step-badge">2</div>
+                        <div class="step-badge">3</div>
                         <div>
                             <p class="step-text-title">Mengirimkan Berkas</p>
                             <p class="step-text-body">
-                                Kirimkan berkas yang sudah di lenkapi ke pihak pengurus LPK Paiton Selaras
+                                Kirimkan berkas pengantar dan proposal sesuai ketentuan LPK Paiton Selaras.
                             </p>
                         </div>
                     </div>
@@ -78,30 +74,28 @@
                 <div class="steps-illustration-wrap d-flex flex-column align-items-center">
                     <img src="{{ asset('assets/icon/folder.webp') }}" alt="Folder ilustrasi" class="steps-folder-img" />
 
-                    <div class="row-steps">
+                    <div class="row-steps d-flex flex-column align-items-center mt-4">
                         @if($dokumen)
-                        <p class="steps-note">
+                        <p class="steps-note mb-2 text-center">
                             Tekan tombol view untuk melihat panduan lengkap.
                         </p>
-                        <a href="{{ $dokumen->file_url }}" class="steps-view-btn"
+                        <a href="{{ $dokumen->file_url }}" class="steps-view-btn mb-3"
                             download="{{ $dokumen->dokumen_syarat_pkl_title }}.pdf">
                             View / Download Dokumen
                         </a>
                         @else
-                        <p class="steps-note">
+                        <p class="steps-note mb-2 text-center">
                             Dokumen syarat PKL belum tersedia.
                         </p>
-                        <!-- <button class="steps-view-btn" disabled>
-                            View / Download Dokumen
-                        </button> -->
-                        <a href="{{ route('application.create') }}" class="steps-view-btn">
+                        @endif
+                        
+                        <a href="{{ route('application.create') }}" class="steps-view-btn" style="background-color: #0b5ed7;">
                             Daftar Sekarang
                         </a>
-                        @endif
-
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </section>
 @endsection
