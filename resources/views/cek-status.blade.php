@@ -104,9 +104,9 @@
                     <div class="alert alert-success mt-3">
                         <strong>Langkah Selanjutnya:</strong><br>
                         @if($application->tingkat_pendidikan === 'Mahasiswa')
-                            Selamat! Anda dinyatakan Lolos Sepenuhnya. Silakan hubungi Admin atau pihak terkait melalui WhatsApp untuk arahan proses Interview.
+                            Selamat! Anda dinyatakan Lolos Sepenuhnya. Silakan segera menghubungi Admin kami melalui pesan WhatsApp di nomor <strong>+62 811-3059-8801</strong> untuk koordinasi jadwal dan arahan proses interview selanjutnya.
                         @else
-                            Selamat! Anda dinyatakan Lolos Sepenuhnya. Silakan tunggu email konfirmasi dari Admin mengenai jadwal/kapan Anda bisa mulai masuk.
+                            Selamat! Anda dinyatakan Lolos Sepenuhnya. Silakan segera menghubungi Admin kami melalui pesan WhatsApp di nomor <strong>+62 811-3059-8801</strong> untuk melakukan konfirmasi jadwal mulai masuk dan mendapatkan arahan selanjutnya.
                         @endif
                     </div>
                 @endif

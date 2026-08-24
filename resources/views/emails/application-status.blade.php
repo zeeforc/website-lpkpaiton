@@ -19,9 +19,9 @@ Dokumen yang Anda unggah sedang dalam proses peninjauan oleh tim kami. Harap men
 Selamat! Pendaftaran Anda dinyatakan **Lolos**.
 
 @if($application->tingkat_pendidikan === 'Mahasiswa')
-Sebagai mahasiswa, tahap selanjutnya adalah proses wawancara. Silakan hubungi Admin atau pihak penanggung jawab melalui WhatsApp untuk arahan proses Interview selanjutnya.
+Sebagai mahasiswa, tahap selanjutnya adalah proses wawancara. Silakan segera menghubungi Admin kami melalui pesan WhatsApp di nomor **+62 811-3059-8801** untuk koordinasi jadwal dan arahan proses interview selanjutnya.
 @else
-Permohonan praktik kerja Anda telah disetujui. Silakan menunggu email konfirmasi lanjutan dari tim kami mengenai jadwal dan kapan Anda bisa mulai masuk.
+Permohonan praktik kerja (PKL) Anda telah disetujui. Silakan segera menghubungi Admin kami melalui pesan WhatsApp di nomor **+62 811-3059-8801** untuk melakukan konfirmasi jadwal mulai masuk dan mendapatkan arahan selanjutnya.
 @endif
 @elseif($application->status === 'rejected')
 Mohon maaf, pendaftaran Anda **Ditolak / Membutuhkan Revisi**.
