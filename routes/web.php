@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BeritaUtamaController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\GaleryController;
 use App\Http\Controllers\KurikulumController;
 use App\Http\Controllers\PelatihanController;
 use App\Http\Controllers\SaranaController;
@@ -56,13 +57,7 @@ Route::get('/berita', [BeritaUtamaController::class, 'index'])
 Route::get('/berita/{beritaUtama:slug}', [BeritaUtamaController::class, 'show'])
     ->name('berita.show');
 
-Route::get('/galeri', function () {
-    $galeries = cache()->remember('galeries-image', now()->addMinutes(5), function () {
-        return Galery::orderBy('id')->get();
-    });
-
-    return view('galeri', compact('galeries'));
-});
+Route::get('/galeri', [GaleryController::class, 'galeri'])->name('galeri.index');
 
 Route::get('/syarat', function () {
     $dokumen = cache()->remember('syarat_pkl_doc', now()->addHours(6), function () {
@@ -72,6 +67,11 @@ Route::get('/syarat', function () {
     return view('syarat', compact('dokumen'));
 })->name('syarat');
 
-// Route::get('/detail', function () {
-//     return view('detail');
-// });
+Route::get('/pendaftaran', [\App\Http\Controllers\ApplicationController::class, 'create'])->name('application.create');
+Route::post('/pendaftaran', [\App\Http\Controllers\ApplicationController::class, 'store'])->name('application.store');
+
+Route::get('/cek-status', [\App\Http\Controllers\ApplicationController::class, 'cekStatus'])->name('application.cekStatus');
+Route::post('/cek-status', [\App\Http\Controllers\ApplicationController::class, 'checkStatus'])->name('application.check');
+
+Route::get('/pendaftaran/{application}/upload', [\App\Http\Controllers\ApplicationController::class, 'showUploadForm'])->name('application.upload')->middleware('signed');
+Route::post('/pendaftaran/{application}/upload', [\App\Http\Controllers\ApplicationController::class, 'uploadDocuments'])->name('application.upload.store')->middleware('signed');

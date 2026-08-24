@@ -195,18 +195,23 @@
                 </div>
             </div>
 
-            <div class="col-lg-7 align-self-center text-center">
-                <p></p>
-                <div class="map-illustration">
-                    <div class="map-pin">
+            <div class="col-lg-7 align-self-center">
+                <div class="proper-map-container">
+                    <!-- Google Maps Iframe -->
+                    <iframe
+                        src="https://maps.google.com/maps?q=LPK%20Paiton%20Selaras,%20Probolinggo&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+
+                    <!-- Overlay Button (Floating) -->
+                    <div class="map-overlay-action">
                         <a href="https://www.google.com/maps/search/?api=1&query=LPK+Paiton+Selaras" target="_blank"
-                            rel="noopener noreferrer" class="d-block w-100 h-100" style="border-radius: 50%">
-                            <div class="map-pin-inner"></div>
+                            rel="noopener noreferrer" class="btn btn-gradient d-inline-flex align-items-center gap-2">
+                            Buka di Google Maps ➜
                         </a>
                     </div>
                 </div>
-                <p class="text-dark text-secondary">*Tekan lingkaran di atas untuk melihat titik lokasi di Google Maps
-                </p>
             </div>
         </div>
     </div>

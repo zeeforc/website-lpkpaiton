@@ -20,6 +20,13 @@ class BeritaUtamasTable
                     ->disk('public')
                     ->rounded()
                     ->size(50),
+                ImageColumn::make('image_tambahan')
+                    ->label('Foto Tambahan')
+                    ->disk('public')
+                    ->rounded()
+                    ->size(50)
+                    ->defaultImageUrl(url('assets/placeholder.jpg'))
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('berita_utama_title')
                     ->label('Judul Berita / Kegiatan')
                     ->searchable()

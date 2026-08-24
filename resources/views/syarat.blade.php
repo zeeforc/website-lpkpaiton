@@ -91,10 +91,14 @@
                         <p class="steps-note">
                             Dokumen syarat PKL belum tersedia.
                         </p>
-                        <button class="steps-view-btn" disabled>
+                        <!-- <button class="steps-view-btn" disabled>
                             View / Download Dokumen
-                        </button>
+                        </button> -->
+                        <a href="{{ route('application.create') }}" class="steps-view-btn">
+                            Daftar Sekarang
+                        </a>
                         @endif
+
                     </div>
                 </div>
             </div>

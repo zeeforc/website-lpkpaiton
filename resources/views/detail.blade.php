@@ -7,14 +7,16 @@
 
 <main class="news-wrapper">
     <div class="container mt-5">
+        {{-- Tombol Kembali --}}
         <a href="{{ route('berita.index') }}" class="back-link">
-            <span>&lt;</span>
-            <span>Kembali</span>
+            <i data-feather="arrow-left" class="back-icon"></i>
+            <span>Kembali ke Berita</span>
         </a>
 
-        <div class="row news-hero-row">
-            <div class="col-lg-6">
-                <div class="news-media-wrap align-items-center rounded">
+        {{-- Hero Section --}}
+        <div class="row news-hero-row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="news-media-wrap">
                     <div class="news-media-bg">
                         <div class="news-media-card">
                             <img src="{{ $berita->image_url }}" alt="{{ $berita->berita_utama_title }}">
@@ -24,59 +26,62 @@
             </div>
             <div class="col-lg-6">
                 <div class="news-hero-text">
-                    <div class="news-tagline">LPKPS News</div>
+                    <div class="news-meta d-flex align-items-center gap-3 mb-3">
+                        <span class="news-tagline">LPKPS News</span>
+                        <span class="meta-dot">•</span>
+                        <span class="news-date">
+                            <i data-feather="calendar" class="meta-icon"></i>
+                            {{ \Carbon\Carbon::parse($berita->tgl_berita)->format('d F Y') }}
+                        </span>
+                    </div>
                     <h1 class="news-title-main">{{ $berita->berita_utama_title }}</h1>
-                    <p class="mt-3">
-                        {{ \Carbon\Carbon::parse($berita->tgl_berita)->format('d/m/Y') }}
-                    </p>
+                    <div class="title-divider"></div>
                 </div>
             </div>
         </div>
 
-        <div class="news-body">
-            {!! nl2br(e($berita->berita_utama_desk)) !!}
-        </div>
+        {{-- Konten Berita (Dibatasi lebarnya agar enak dibaca) --}}
+        <div class="news-content-container">
 
-        {{-- paginate berita --}}
-        <div class="news-pagination">
-            <div class="news-pagination-label">Halaman</div>
-            <div class="pagination-dots">
+            <div class="news-body">
+                {!! $berita->berita_utama_desk !!}
+            </div>
 
-                {{-- to berita sebelumnya --}}
-                @if($prevBerita)
-                <a href="{{ route('berita.show', ['beritaUtama' => $prevBerita->slug]) }}" class="page-dot-link">
-                    <button class="page-dot" type="button" aria-label="Berita sebelumnya">
-                        1
+            {{-- Navigasi Berita (Pagination) --}}
+            <div class="news-pagination mt-5 pt-4 border-top">
+                <div class="news-pagination-label">Navigasi Berita</div>
+                <div class="pagination-dots">
+
+                    {{-- Sebelumnya --}}
+                    @if($prevBerita)
+                    <a href="{{ route('berita.show', ['beritaUtama' => $prevBerita->slug]) }}" class="page-nav-btn"
+                        title="Berita Sebelumnya">
+                        <i data-feather="chevron-left"></i>
+                    </a>
+                    @else
+                    <button class="page-nav-btn disabled" type="button" aria-disabled="true">
+                        <i data-feather="chevron-left"></i>
                     </button>
-                </a>
-                @else
-                {{-- tidak ada sebelumnya, disabled --}}
-                <button class="page-dot disabled" type="button" aria-disabled="true">
-                    <i data-feather="arrow-left"></i>
-                </button>
-                @endif
+                    @endif
 
-                {{-- Dot 2: kembali ke daftar berita --}}
-                <a href="{{ route('berita.index') }}" class="page-dot-link">
-                    <button class="page-dot active" type="button" aria-label="Daftar berita">
-                        <i data-feather="arrow-up-circle"></i>
+                    {{-- Daftar Berita --}}
+                    <a href="{{ route('berita.index') }}" class="page-nav-btn active" title="Daftar Berita">
+                        <i data-feather="grid"></i>
+                    </a>
+
+                    {{-- Berikutnya --}}
+                    @if($nextBerita)
+                    <a href="{{ route('berita.show', ['beritaUtama' => $nextBerita->slug]) }}" class="page-nav-btn"
+                        title="Berita Selanjutnya">
+                        <i data-feather="chevron-right"></i>
+                    </a>
+                    @else
+                    <button class="page-nav-btn disabled" type="button" aria-disabled="true">
+                        <i data-feather="chevron-right"></i>
                     </button>
-                </a>
+                    @endif
 
-                {{-- Dot 3: berita berikutnya --}}
-                @if($nextBerita)
-                <a href="{{ route('berita.show', ['beritaUtama' => $nextBerita->slug]) }}" class="page-dot-link">
-                    <button class="page-dot" type="button" aria-label="Berita berikutnya">
-                        <i data-feather="arrow-right"></i>
-                    </button>
-                </a>
-                @else
-                {{-- tidak ada berikutnya, disabled --}}
-                <button class="page-dot disabled" type="button" aria-disabled="true">
-                    3
-                </button>
-                @endif
-
+                </div>
             </div>
         </div>
     </div>

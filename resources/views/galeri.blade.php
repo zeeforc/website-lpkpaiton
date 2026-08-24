@@ -22,7 +22,8 @@
                 <div class="col-lg-6">
                     <div class="hero-illustration-wrap">
                         <div class="hero-illustration-card">
-                            <img src="assets/icon/icon-galeri.webp" alt="Ikon Galeri" class="hero-illustration-img" />
+                            <img src="{{ asset('assets/icon/icon-galeri.webp') }}" alt="Ikon Galeri"
+                                class="hero-illustration-img" />
                         </div>
                     </div>
                 </div>
@@ -43,25 +44,25 @@
                     </p>
                 </div>
 
-                @php
-                $images = collect($galeries)
-                ->flatMap(function ($galery) {
-                return $galery->galery_image ?? []; // sudah array of string
-                })
-                ->values();
-                @endphp
-
                 <div class="col-lg-7">
                     <div class="glass-card">
                         <div class="gallery-stack" id="galleryStack">
+                            {{-- View menjadi sangat bersih, tidak ada lagi proses ekstraksi (flatMap) PHP di sini --}}
                             @forelse ($images as $index => $path)
-                            <img src="{{ asset('storage/' . $path) }}" alt="Kegiatan"
-                                class="gallery-item" data-index="{{ $index }}" />
+                            {{-- Memastikan variable $path bukan null/string kosong sebelum merender img --}}
+                            @if(!empty($path))
+                            <img src="{{ asset('storage/' . $path) }}" alt="Kegiatan LPK Paiton" class="gallery-item"
+                                data-index="{{ $index }}" loading="lazy" />
+                            @endif
                             @empty
-                            <p class="text-center">Belum ada data galeri.</p>
+                            <div class="text-center w-100 py-5">
+                                <p class="text-muted">Belum ada dokumentasi galeri yang diunggah.</p>
+                            </div>
                             @endforelse
                         </div>
 
+                        {{-- Tampilkan tombol navigasi hanya jika gambar lebih dari 1 --}}
+                        @if(count($images) > 1)
                         <button type="button" class="gallery-nav gallery-prev" id="galleryPrev" aria-label="Sebelumnya">
                             ‹
                         </button>
@@ -69,10 +70,12 @@
                         <button type="button" class="gallery-nav gallery-next" id="galleryNext" aria-label="Berikutnya">
                             ›
                         </button>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="gallery-preview-overlay" id="previewOverlay">
             <img id="previewImage" alt="Preview kegiatan" />
         </div>

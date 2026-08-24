@@ -24,7 +24,7 @@
                 loader.style.display = 'none';
             }
             container.innerHTML = html;
-        })
+    })
         .catch(error => {
             console.error(error);
             if (loader) {

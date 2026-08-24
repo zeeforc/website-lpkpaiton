@@ -1,7 +1,10 @@
 <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container py-2">
         @php
-        $isDarkBrand = request()->is('/') || request()->is('berita/*');
+        // Halaman-halaman ini memiliki hero dengan background gelap, 
+        // sehingga logo harus berwarna putih. Selain halaman ini, logo akan berwarna gelap.
+        $hasDarkHero = request()->is('sarana', 'pelatihan', 'kurikulum', 'galeri', 'berita', 'syarat');
+        $isDarkBrand = !$hasDarkHero;
         @endphp
 
         <a class="navbar-brand d-flex align-items-center" href="/index">
@@ -26,10 +29,10 @@
         <div class="collapse navbar-collapse justify-content-end d-none d-lg-flex" id="mainNavbar">
             <ul class="navbar-nav gap-lg-3">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{route('home')}}">Beranda</a>
+                    <a class="nav-link" href="/index">Beranda</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{rooute('kurikulum')}}">Kurikulum</a>
+                    <a class="nav-link" href="/kurikulum">Kurikulum</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/pelatihan">Pelatihan</a>
@@ -45,6 +48,7 @@
                         <li><a class="dropdown-item" href="/berita">Berita</a></li>
                         <li><a class="dropdown-item" href="/galeri">Galeri</a></li>
                         <li><a class="dropdown-item" href="/syarat">Panduan Mendaftar</a></li>
+                        <li><a class="dropdown-item" href="/cek-status">Cek Status Pendaftaran</a></li>
                     </ul>
                 </li>
             </ul>
@@ -76,6 +80,7 @@
                         <a class="nav-link offcanvas-nav-link ps-3" href="/berita">Berita</a>
                         <a class="nav-link offcanvas-nav-link ps-3" href="/galeri">Galeri</a>
                         <a class="nav-link offcanvas-nav-link ps-3" href="/syarat">Panduan Mendaftar</a>
+                        <a class="nav-link offcanvas-nav-link ps-3" href="/cek-status">Cek Status Pendaftaran</a>
                     </li>
                 </ul>
             </div>

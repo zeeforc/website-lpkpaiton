@@ -12,6 +12,7 @@ class BeritaUtama extends Model
     protected $fillable = [
         'berita_utama_title',
         'berita_utama_image',
+        'image_tambahan',
         'berita_utama_desk',
         'tgl_berita',
         'slug',

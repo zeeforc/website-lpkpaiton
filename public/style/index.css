@@ -23,7 +23,8 @@ body {
 
 .hero-section {
     min-height: 100vh;
-    background: radial-gradient(
+    background:
+        radial-gradient(
             circle at 20% 10%,
             rgba(76, 124, 203, 0.45),
             transparent 45%
@@ -206,6 +207,51 @@ body {
     padding: 2.5rem;
     margin-bottom: 1.5rem;
 }
+
+/* =========================================
+   PROPER GOOGLE MAPS STYLE
+   ========================================= */
+.proper-map-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    border-radius: var(--radius-xl);
+    background: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 24px 48px rgba(0, 52, 128, 0.12);
+    padding: 8px; /* Memberikan efek bingkai putih ala polaroid/frame modern */
+    transition: transform 0.3s ease;
+}
+
+.proper-map-container:hover {
+    transform: translateY(-4px);
+}
+
+.proper-map-container iframe {
+    border-radius: 24px; /* Sudut disesuaikan dengan frame luar */
+    background-color: #e2e8f0; /* Warna loading skeleton sebelum map termuat */
+}
+
+.map-overlay-action {
+    position: absolute;
+    bottom: 24px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    pointer-events: none; /* Penting: Agar area transparan di luar tombol tetap bisa di-drag petanya */
+    z-index: 10;
+}
+
+.map-overlay-action .btn {
+    pointer-events: auto; /* Mengaktifkan klik hanya untuk tombol ini */
+    padding: 10px 24px;
+    font-size: 0.95rem;
+    box-shadow: 0 10px 25px rgba(253, 122, 42, 0.45);
+    border: 2px solid #ffffff; /* Garis putih tegas agar kontras dengan map */
+}
+
+/* PIN GOOGLE MAP STYLE */
 
 /* PIN GOOGLE MAP STYLE */
 

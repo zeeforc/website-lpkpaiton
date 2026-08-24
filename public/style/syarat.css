@@ -194,7 +194,7 @@ body {
 .steps-view-btn {
     border: none;
     border-radius: 60px;
-    padding: 0.7rem 1.3rem;
+    padding: 0.7rem 1.8rem;
     font-size: 0.9rem;
     font-weight: 500;
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.25);
@@ -209,6 +209,7 @@ body {
     color: #ffffff;
     font-weight: 600;
     text-decoration: none;
+    text-wrap: nowrap;
 }
 .steps-view-btn:hover {
     background-color: #f3f4f6;
