@@ -487,8 +487,8 @@
                             data: sortedData.map(item => Math.floor(Number(item.total) * 0.4)),
                             backgroundColor: '#1a1a2e',
                             hoverBackgroundColor: '#111122',
-                            // Border radius 20 buat bentuk membulat penuh (pill-shaped) kayak di gambar
-                            borderRadius: 20,
+                            // Paksa bulat di semua sisi (atas bawah kiri kanan)
+                            borderRadius: { topLeft: 20, topRight: 20, bottomLeft: 20, bottomRight: 20 },
                             borderSkipped: false,
                             barPercentage: 0.6,
                             categoryPercentage: 0.7
@@ -498,8 +498,8 @@
                             data: sortedData.map(item => Number(item.total) - Math.floor(Number(item.total) * 0.4)),
                             backgroundColor: '#fd7a2a',
                             hoverBackgroundColor: '#e86a20',
-                            // Border radius 20 buat bentuk membulat penuh (pill-shaped) kayak di gambar
-                            borderRadius: 20,
+                            // Paksa bulat di semua sisi
+                            borderRadius: { topLeft: 20, topRight: 20, bottomLeft: 20, bottomRight: 20 },
                             borderSkipped: false,
                             // Trik membuat gap (jarak) putih antara bar atas dan bawah
                             borderColor: '#ffffff',
