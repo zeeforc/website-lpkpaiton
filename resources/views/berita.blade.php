@@ -487,7 +487,8 @@
                             data: sortedData.map(item => Math.floor(Number(item.total) * 0.4)),
                             backgroundColor: '#1a1a2e',
                             hoverBackgroundColor: '#111122',
-                            borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 6, bottomRight: 6 },
+                            // Border radius untuk bar hitam (bawah)
+                            borderRadius: 6,
                             borderSkipped: false,
                             barPercentage: 0.6,
                             categoryPercentage: 0.7
@@ -497,8 +498,12 @@
                             data: sortedData.map(item => Number(item.total) - Math.floor(Number(item.total) * 0.4)),
                             backgroundColor: '#fd7a2a',
                             hoverBackgroundColor: '#e86a20',
-                            borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 },
+                            // Border radius untuk bar orange (atas)
+                            borderRadius: 6,
                             borderSkipped: false,
+                            // Trik membuat gap (jarak) putih antara bar atas dan bawah
+                            borderColor: '#ffffff',
+                            borderWidth: { bottom: 4, top: 0, left: 0, right: 0 },
                             barPercentage: 0.6,
                             categoryPercentage: 0.7
                         }
