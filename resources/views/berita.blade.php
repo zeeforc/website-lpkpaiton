@@ -454,15 +454,22 @@
         const ctx = document.getElementById('pklYearlyChart');
         if (ctx && sortedData.length > 0) {
             let pklChart = new Chart(ctx, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: sortedData.map(item => item.year),
                     datasets: [{
                         label: 'Total Peserta',
                         data: sortedData.map(item => item.total),
-                        backgroundColor: '#FF7F3F',
-                        borderRadius: 6,
-                        hoverBackgroundColor: '#e86a2a'
+                        borderColor: '#FF7F3F',
+                        backgroundColor: 'rgba(255, 127, 63, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#FFFFFF',
+                        pointBorderColor: '#FF7F3F',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        tension: 0.4 // curve
                     }]
                 },
                 options: {
