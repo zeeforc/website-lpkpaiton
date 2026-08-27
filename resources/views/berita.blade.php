@@ -125,7 +125,7 @@
                                     </div>
                                     <div class="pkl-stat-info">
                                         <span class="pkl-stat-label">Total Peserta PKL</span>
-                                        <span class="pkl-stat-number">{{ number_format($pklStat?->total_peserta ?? 0) }}</span>
+                                        <span class="pkl-stat-number counter" data-target="{{ $pklStat?->total_peserta ?? 0 }}">0</span>
                                         <span class="pkl-stat-sublabel">Peserta pernah PKL</span>
                                     </div>
                                 </div>
@@ -137,7 +137,7 @@
                                     </div>
                                     <div class="pkl-stat-info">
                                         <span class="pkl-stat-label">Peserta PKL Saat Ini</span>
-                                        <span class="pkl-stat-number">{{ number_format($pklStat?->peserta_aktif ?? 0) }}</span>
+                                        <span class="pkl-stat-number counter" data-target="{{ $pklStat?->peserta_aktif ?? 0 }}">0</span>
                                         <span class="pkl-stat-sublabel">Peserta sedang PKL</span>
                                     </div>
                                 </div>
@@ -153,7 +153,7 @@
                                     </div>
                                     <div class="pkl-stat-info">
                                         <span class="pkl-stat-label">Jurusan</span>
-                                        <span class="pkl-stat-number pkl-stat-number-sm">{{ number_format($pklStat?->jumlah_jurusan ?? 0) }}</span>
+                                        <span class="pkl-stat-number pkl-stat-number-sm counter" data-target="{{ $pklStat?->jumlah_jurusan ?? 0 }}">0</span>
                                         <span class="pkl-stat-sublabel">Jurusan peserta PKL</span>
                                     </div>
                                 </div>
@@ -165,7 +165,7 @@
                                     </div>
                                     <div class="pkl-stat-info">
                                         <span class="pkl-stat-label">Sekolah / Kampus</span>
-                                        <span class="pkl-stat-number pkl-stat-number-sm">{{ number_format($pklStat?->jumlah_sekolah ?? 0) }}</span>
+                                        <span class="pkl-stat-number pkl-stat-number-sm counter" data-target="{{ $pklStat?->jumlah_sekolah ?? 0 }}">0</span>
                                         <span class="pkl-stat-sublabel">Asal sekolah / kampus</span>
                                     </div>
                                 </div>
@@ -177,7 +177,7 @@
                                     </div>
                                     <div class="pkl-stat-info">
                                         <span class="pkl-stat-label">Program</span>
-                                        <span class="pkl-stat-number pkl-stat-number-sm">{{ number_format($pklStat?->jumlah_program ?? 0) }}</span>
+                                        <span class="pkl-stat-number pkl-stat-number-sm counter" data-target="{{ $pklStat?->jumlah_program ?? 0 }}">0</span>
                                         <span class="pkl-stat-sublabel">Program PKL tersedia</span>
                                     </div>
                                 </div>
@@ -369,11 +369,53 @@
         const dateElements = document.querySelectorAll('.runningDate');
         if (dateElements.length > 0) {
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            // Format example: "Senin, 27 Agustus 2026"
             const today = new Date().toLocaleDateString('id-ID', options);
             dateElements.forEach(el => {
                 el.textContent = today;
             });
+        }
+
+        // --- Stats Counter Animation ---
+        const counters = document.querySelectorAll('.counter');
+        const speed = 100; // Semakin kecil semakin cepat
+
+        const animateCounters = () => {
+            counters.forEach(counter => {
+                const animate = () => {
+                    const target = +counter.getAttribute('data-target');
+                    // Buang koma untuk kalkulasi jika ada (saat ini data murni dari attr, misal "1894")
+                    const count = +counter.innerText.replace(/,/g, '');
+                    const inc = target / speed;
+
+                    if (count < target) {
+                        // Math.ceil agar nambahnya proporsional
+                        counter.innerText = Math.ceil(count + inc).toLocaleString('id-ID');
+                        setTimeout(animate, 20);
+                    } else {
+                        counter.innerText = target.toLocaleString('id-ID');
+                    }
+                }
+                animate();
+            });
+        };
+
+        // Buat observer biar animasinya jalan pas di-scroll ke view
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    // Stop observing once animated
+                    observer.disconnect();
+                }
+            });
+        }, {
+            threshold: 0.5 // Jalan pas setengah card kelihatan
+        });
+
+        // Trigger observer untuk container stats
+        const statsSection = document.querySelector('.section-pkl-stats');
+        if (statsSection) {
+            observer.observe(statsSection);
         }
     });
 </script>
