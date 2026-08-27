@@ -198,6 +198,21 @@
             </div>
 
             {{-- CHART SECTION --}}
+            <style>
+                .pkl-chart-outer { background: #f0f4ff; border-radius: 20px; padding: 0; }
+                .pkl-chart-outer-header { padding: 0 4px 16px 4px; }
+                .pkl-chart-outer-title { font-family: "Outfit", sans-serif; font-weight: 800; font-size: 1.4rem; color: #111827; margin: 0 0 4px 0; }
+                .pkl-chart-outer-subtitle { font-family: "Outfit", sans-serif; font-size: 0.85rem; color: #6b7280; margin: 0; }
+                .pkl-chart-card { background: #ffffff; border-radius: 16px; border: 1px solid #e5e7eb; padding: 20px 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+                .pkl-chart-title { font-family: "Outfit", sans-serif; font-weight: 700; color: #111827 !important; font-size: 0.95rem; }
+                .pkl-chart-legend { display: flex; align-items: center; gap: 6px; }
+                .pkl-legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+                .pkl-legend-orange { background-color: #fd7a2a; }
+                .pkl-legend-dark { background-color: #1a1a2e; }
+                .pkl-legend-text { font-family: "Outfit", sans-serif; font-size: 0.78rem; color: #6b7280; font-weight: 500; }
+                .pkl-chart-select { font-family: "Outfit", sans-serif; font-size: 0.78rem; color: #374151; font-weight: 500; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 999px; padding: 4px 12px; cursor: pointer; outline: none; appearance: auto; }
+                .pkl-chart-select:focus { border-color: #fd7a2a; box-shadow: 0 0 0 2px rgba(253,122,42,0.15); }
+            </style>
             <div class="row mt-4">
                 <div class="col-12">
                     <div class="pkl-chart-outer">
@@ -468,26 +483,24 @@
                     labels: sortedData.map(item => item.year),
                     datasets: [
                         {
-                            label: 'Total Peserta',
-                            data: sortedData.map(item => Number(item.total)),
-                            backgroundColor: '#fd7a2a',
-                            hoverBackgroundColor: '#e86a20',
-                            borderRadius: 6,
-                            borderSkipped: false,
-                            barPercentage: 0.6,
-                            categoryPercentage: 0.7,
-                            order: 2
-                        },
-                        {
-                            label: '',
-                            data: sortedData.map(item => Math.round(Number(item.total) * 0.6)),
+                            label: 'Dasar',
+                            data: sortedData.map(item => Math.floor(Number(item.total) * 0.4)),
                             backgroundColor: '#1a1a2e',
                             hoverBackgroundColor: '#111122',
-                            borderRadius: 6,
+                            borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 6, bottomRight: 6 },
                             borderSkipped: false,
                             barPercentage: 0.6,
-                            categoryPercentage: 0.7,
-                            order: 1
+                            categoryPercentage: 0.7
+                        },
+                        {
+                            label: 'Total Peserta',
+                            data: sortedData.map(item => Number(item.total) - Math.floor(Number(item.total) * 0.4)),
+                            backgroundColor: '#fd7a2a',
+                            hoverBackgroundColor: '#e86a20',
+                            borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 },
+                            borderSkipped: false,
+                            barPercentage: 0.6,
+                            categoryPercentage: 0.7
                         }
                     ]
                 },
@@ -507,17 +520,20 @@
                             bodyFont: { size: 14, family: "'Outfit', sans-serif", weight: 'bold' },
                             padding: 12,
                             displayColors: false,
-                            filter: function(item) { return item.datasetIndex === 0; },
+                            filter: function(item) { return item.datasetIndex === 1; },
                             callbacks: {
                                 title: function(context) { return 'Tahun ' + context[0].label; },
                                 label: function(context) {
-                                    return context.parsed.y.toLocaleString('id-ID') + ' Peserta';
+                                    const idx = context.dataIndex;
+                                    const total = pklChart.data.datasets[0].data[idx] + pklChart.data.datasets[1].data[idx];
+                                    return total.toLocaleString('id-ID') + ' Peserta';
                                 }
                             }
                         }
                     },
                     scales: {
                         y: {
+                            stacked: true,
                             beginAtZero: true,
                             grid: { color: 'rgba(0,0,0,0.06)', drawBorder: false },
                             border: { display: false },
@@ -528,6 +544,7 @@
                             }
                         },
                         x: {
+                            stacked: true,
                             grid: { display: false },
                             border: { display: false },
                             ticks: {
@@ -550,8 +567,8 @@
                 }
                 
                 pklChart.data.labels = filteredData.map(item => item.year);
-                pklChart.data.datasets[0].data = filteredData.map(item => Number(item.total));
-                pklChart.data.datasets[1].data = filteredData.map(item => Math.round(Number(item.total) * 0.6));
+                pklChart.data.datasets[0].data = filteredData.map(item => Math.floor(Number(item.total) * 0.4));
+                pklChart.data.datasets[1].data = filteredData.map(item => Number(item.total) - Math.floor(Number(item.total) * 0.4));
                 pklChart.update();
             };
 
