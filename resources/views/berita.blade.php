@@ -457,47 +457,80 @@
                 type: 'bar',
                 data: {
                     labels: sortedData.map(item => item.year),
-                    datasets: [{
-                        label: 'Total Peserta',
-                        data: sortedData.map(item => item.total),
-                        backgroundColor: function(context) {
-                            const chart = context.chart;
-                            const {ctx, chartArea} = chart;
-                            if (!chartArea) return null;
-                            let gradientLight = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                            gradientLight.addColorStop(0, 'rgba(34, 197, 94, 0.65)'); // Light green top
-                            gradientLight.addColorStop(1, 'rgba(34, 197, 94, 0.15)'); // Fade to transparent
-                            return gradientLight;
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: 'Total Peserta',
+                            data: sortedData.map(item => item.total),
+                            backgroundColor: function(context) {
+                                const chart = context.chart;
+                                const {ctx, chartArea} = chart;
+                                if (!chartArea) return null;
+                                let gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                                gradient.addColorStop(0, 'rgba(253, 122, 42, 0.60)');
+                                gradient.addColorStop(1, 'rgba(253, 122, 42, 0.05)');
+                                return gradient;
+                            },
+                            hoverBackgroundColor: function(context) {
+                                const chart = context.chart;
+                                const {ctx, chartArea} = chart;
+                                if (!chartArea) return null;
+                                let gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                                gradient.addColorStop(0, 'rgba(253, 122, 42, 0.90)');
+                                gradient.addColorStop(1, 'rgba(253, 122, 42, 0.20)');
+                                return gradient;
+                            },
+                            borderRadius: 10,
+                            borderSkipped: 'bottom',
+                            barPercentage: 0.55,
+                            categoryPercentage: 0.75,
+                            order: 2
                         },
-                        hoverBackgroundColor: function(context) {
-                            const chart = context.chart;
-                            const {ctx, chartArea} = chart;
-                            if (!chartArea) return null;
-                            let gradientDark = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                            gradientDark.addColorStop(0, 'rgba(21, 128, 61, 0.9)'); // Dark green top
-                            gradientDark.addColorStop(1, 'rgba(21, 128, 61, 0.1)'); // Dark green bottom
-                            return gradientDark;
-                        },
-                        borderRadius: 12,
-                        borderSkipped: 'bottom',
-                        barPercentage: 0.6,
-                        categoryPercentage: 0.8
-                    }]
+                        {
+                            type: 'line',
+                            label: 'Tren',
+                            data: sortedData.map(item => item.total),
+                            borderColor: 'rgba(253, 122, 42, 0.9)',
+                            borderWidth: 2,
+                            borderDash: [6, 4],
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#fd7a2a',
+                            pointBorderWidth: 2,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            pointHoverBackgroundColor: '#fd7a2a',
+                            fill: false,
+                            tension: 0,
+                            order: 1
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
                     plugins: {
                         legend: {
                             display: false
                         },
                         tooltip: {
-                            backgroundColor: '#1E293B',
-                            titleFont: { size: 13, family: "'Outfit', sans-serif" },
+                            backgroundColor: '#fff',
+                            titleColor: '#111827',
+                            bodyColor: '#fd7a2a',
+                            borderColor: 'rgba(0,0,0,0.08)',
+                            borderWidth: 1,
+                            titleFont: { size: 12, family: "'Outfit', sans-serif", weight: '600' },
                             bodyFont: { size: 14, family: "'Outfit', sans-serif", weight: 'bold' },
                             padding: 12,
                             displayColors: false,
+                            filter: function(item) { return item.datasetIndex === 0; },
                             callbacks: {
+                                title: function(context) {
+                                    return 'Tahun ' + context[0].label;
+                                },
                                 label: function(context) {
                                     return context.parsed.y.toLocaleString('id-ID') + ' Peserta';
                                 }
@@ -508,23 +541,24 @@
                         y: {
                             beginAtZero: true,
                             grid: {
-                                color: 'rgba(0,0,0,0.05)',
+                                color: 'rgba(0,0,0,0.04)',
                                 drawBorder: false,
                             },
+                            border: { dash: [4, 4], display: false },
                             ticks: {
-                                font: { family: "'Outfit', sans-serif" },
+                                font: { family: "'Outfit', sans-serif", size: 11 },
+                                color: '#9ca3af',
                                 callback: function(value) {
                                     return value.toLocaleString('id-ID');
                                 }
                             }
                         },
                         x: {
-                            grid: {
-                                display: false,
-                                drawBorder: false,
-                            },
+                            grid: { display: false },
+                            border: { display: false },
                             ticks: {
-                                font: { family: "'Outfit', sans-serif" }
+                                font: { family: "'Outfit', sans-serif", size: 11 },
+                                color: '#9ca3af'
                             }
                         }
                     }
@@ -543,6 +577,7 @@
                 
                 pklChart.data.labels = filteredData.map(item => item.year);
                 pklChart.data.datasets[0].data = filteredData.map(item => item.total);
+                pklChart.data.datasets[1].data = filteredData.map(item => item.total);
                 pklChart.update();
             };
 
