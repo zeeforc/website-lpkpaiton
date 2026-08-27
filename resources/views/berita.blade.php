@@ -477,6 +477,9 @@
         
         const ctx = document.getElementById('pklYearlyChart');
         if (ctx && sortedData.length > 0) {
+            const maxTotal = Math.max(...sortedData.map(item => Number(item.total)));
+            const gap = maxTotal * 0.05; // Gap adalah 5% dari nilai tertinggi
+
             let pklChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -484,26 +487,28 @@
                     datasets: [
                         {
                             label: 'Dasar',
-                            data: sortedData.map(item => Math.floor(Number(item.total) * 0.4)),
+                            // Bar hitam dari 0 sampai 45%
+                            data: sortedData.map(item => [0, Math.floor(Number(item.total) * 0.45)]),
                             backgroundColor: '#1a1a2e',
                             hoverBackgroundColor: '#111122',
-                            // Paksa bulat di semua sisi (atas bawah kiri kanan)
-                            borderRadius: { topLeft: 20, topRight: 20, bottomLeft: 20, bottomRight: 20 },
+                            borderRadius: 20,
                             borderSkipped: false,
                             barPercentage: 0.6,
                             categoryPercentage: 0.7
                         },
                         {
                             label: 'Total Peserta',
-                            data: sortedData.map(item => Number(item.total) - Math.floor(Number(item.total) * 0.4)),
+                            // Bar orange dari (45% + gap) sampai total asli
+                            data: sortedData.map(item => {
+                                let total = Number(item.total);
+                                let base = Math.floor(total * 0.45);
+                                let start = Math.min(base + gap, total - (total * 0.05)); // Pastikan gak bablas
+                                return [start, total];
+                            }),
                             backgroundColor: '#fd7a2a',
                             hoverBackgroundColor: '#e86a20',
-                            // Paksa bulat di semua sisi
-                            borderRadius: { topLeft: 20, topRight: 20, bottomLeft: 20, bottomRight: 20 },
+                            borderRadius: 20,
                             borderSkipped: false,
-                            // Trik membuat gap (jarak) putih antara bar atas dan bawah
-                            borderColor: '#ffffff',
-                            borderWidth: { bottom: 6, top: 0, left: 0, right: 0 },
                             barPercentage: 0.6,
                             categoryPercentage: 0.7
                         }
@@ -529,8 +534,8 @@
                             callbacks: {
                                 title: function(context) { return 'Tahun ' + context[0].label; },
                                 label: function(context) {
-                                    const idx = context.dataIndex;
-                                    const total = pklChart.data.datasets[0].data[idx] + pklChart.data.datasets[1].data[idx];
+                                    // Total asli adalah nilai maksimal dari bar orange
+                                    const total = context.raw[1];
                                     return total.toLocaleString('id-ID') + ' Peserta';
                                 }
                             }
@@ -538,7 +543,7 @@
                     },
                     scales: {
                         y: {
-                            stacked: true,
+                            stacked: false, // Tidak pakai stacked y, karena kita pakai floating bars [min, max]
                             beginAtZero: true,
                             grid: { color: 'rgba(0,0,0,0.06)', drawBorder: false },
                             border: { display: false },
@@ -549,7 +554,7 @@
                             }
                         },
                         x: {
-                            stacked: true,
+                            stacked: true, // Stacked x supaya mereka sejajar di satu kolom
                             grid: { display: false },
                             border: { display: false },
                             ticks: {
@@ -571,9 +576,17 @@
                     filteredData = filteredData.slice(Math.max(filteredData.length - limit, 0));
                 }
                 
+                const currentMax = Math.max(...filteredData.map(item => Number(item.total)));
+                const currentGap = currentMax * 0.05;
+
                 pklChart.data.labels = filteredData.map(item => item.year);
-                pklChart.data.datasets[0].data = filteredData.map(item => Math.floor(Number(item.total) * 0.4));
-                pklChart.data.datasets[1].data = filteredData.map(item => Number(item.total) - Math.floor(Number(item.total) * 0.4));
+                pklChart.data.datasets[0].data = filteredData.map(item => [0, Math.floor(Number(item.total) * 0.45)]);
+                pklChart.data.datasets[1].data = filteredData.map(item => {
+                    let total = Number(item.total);
+                    let base = Math.floor(total * 0.45);
+                    let start = Math.min(base + currentGap, total - (total * 0.05));
+                    return [start, total];
+                });
                 pklChart.update();
             };
 
