@@ -491,7 +491,7 @@
                             data: sortedData.map(item => [0, Math.floor(Number(item.total) * 0.45)]),
                             backgroundColor: '#1a1a2e',
                             hoverBackgroundColor: '#111122',
-                            borderRadius: 20,
+                            borderRadius: 10,
                             borderSkipped: false,
                             barPercentage: 0.6,
                             categoryPercentage: 0.7
@@ -507,7 +507,7 @@
                             }),
                             backgroundColor: '#fd7a2a',
                             hoverBackgroundColor: '#e86a20',
-                            borderRadius: 20,
+                            borderRadius: 10,
                             borderSkipped: false,
                             barPercentage: 0.6,
                             categoryPercentage: 0.7
