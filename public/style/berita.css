@@ -871,8 +871,8 @@ body {
 .pkl-chart-title {
     font-family: "Outfit", sans-serif;
     font-weight: 700;
-    color: #1e293b;
+    color: #111827 !important;
 }
 .pkl-chart-subtitle {
-    color: #64748b;
+    color: #4b5563 !important;
 }

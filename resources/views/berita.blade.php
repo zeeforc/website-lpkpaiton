@@ -465,8 +465,8 @@
                             const {ctx, chartArea} = chart;
                             if (!chartArea) return null;
                             let gradientLight = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                            gradientLight.addColorStop(0, 'rgba(34, 197, 94, 0.25)'); // Light green top
-                            gradientLight.addColorStop(1, 'rgba(255, 255, 255, 0)'); // Fade to transparent
+                            gradientLight.addColorStop(0, 'rgba(34, 197, 94, 0.65)'); // Light green top
+                            gradientLight.addColorStop(1, 'rgba(34, 197, 94, 0.15)'); // Fade to transparent
                             return gradientLight;
                         },
                         hoverBackgroundColor: function(context) {
