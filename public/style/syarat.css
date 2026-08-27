@@ -1,7 +1,9 @@
 :root {
     --orange-main: #fd7a2a;
+    --orange-light: #fff3ec;
     --text-dark: #111111;
     --text-muted: #6b7280;
+    --border-light: #e5e7eb;
 }
 
 * {
@@ -13,7 +15,9 @@ body {
     color: var(--text-dark);
 }
 
-/* HERO */
+/* =====================
+   HERO
+   ===================== */
 
 .hero-gallery {
     width: 100%;
@@ -51,6 +55,8 @@ body {
     padding: 0.6rem 1.8rem;
     border: none;
     box-shadow: 0 8px 18px rgba(253, 122, 42, 0.35);
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
 .btn-orange:hover {
@@ -58,187 +64,361 @@ body {
     color: #ffffff;
 }
 
-/* STEPS SECTION */
+.hero-illustration-wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.hero-illustration-card {
+    width: min(560px, 100%);
+    border-radius: 40px;
+    padding: 1.5rem 2rem 2rem;
+    backdrop-filter: blur(14px);
+    /* box-shadow: var(--shadow-strong); */
+    overflow: hidden;
+    /* backdrop-filter: blur(8px); */
+    /* background: radial-gradient(
+      circle at 0% 100%,
+      #e4edff 0%,
+      #e4edff 20%,
+      transparent 55%
+    ),
+    radial-gradient(circle at 100% 0%, #ffffff 0%, #073ccc 55%, #a1baff 80%),
+    linear-gradient(135deg, #f7f3ea 0%, #000001 45%, #e4edff 100%); */
+}
+
+.hero-illustration-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* =====================
+   STEPS SECTION
+   ===================== */
 
 .steps-section {
     padding-top: 4rem;
     padding-bottom: 4rem;
+    background-color: #f9fafb;
 }
 
-.steps-subtitle {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-bottom: 0.25rem;
+/* Card wrapper */
+.steps-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    padding: 3rem 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Orange accent bars top-left */
+.accent-bars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 18px 0 0 0;
+}
+
+.accent-bar {
+    display: block;
+    height: 10px;
+    border-radius: 0 6px 6px 0;
+    background-color: var(--orange-main);
+}
+
+.accent-bar-1 {
+    width: 56px;
+}
+
+.accent-bar-2 {
+    width: 36px;
+}
+
+/* LEFT COLUMN */
+.steps-left {
+    padding-right: 2rem;
+    padding-top: 1rem;
+}
+
+/* Subtitle pill */
+.steps-pill {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--orange-main);
+    border: 1.5px solid var(--orange-main);
+    border-radius: 999px;
+    padding: 2px 14px;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.02em;
 }
 
 .steps-title {
-    font-size: 2rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
+    font-size: 2.6rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    color: var(--text-dark);
+    line-height: 1.1;
 }
 
 .steps-intro {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--text-muted);
-    max-width: 360px;
+    margin-bottom: 2rem;
+    line-height: 1.6;
 }
 
-/* vertical timeline */
+/* =====================
+   STEP LIST
+   ===================== */
 
 .step-list {
-    margin-top: 2.5rem;
-    position: relative;
-}
-
-.step-list::before {
-    content: "";
-    position: absolute;
-    left: 13px;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background-color: #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 1.5rem;
 }
 
 .step-item {
     display: flex;
+    align-items: flex-start;
     gap: 1rem;
-    margin-bottom: 2.1rem;
     position: relative;
 }
 
+/* Left col: badge + connector */
+.step-left-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Badge */
 .step-badge {
-    flex: 0 0 28px;
-    height: 28px;
-    border-radius: 999px;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.8rem;
-    font-weight: 500;
-    background-color: #e5e7eb;
-    color: #4b5563;
+    font-weight: 700;
+    background-color: #f3f4f6;
+    color: #9ca3af;
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
     z-index: 1;
 }
 
-.step-item:nth-child(1) .step-badge {
+/* Active step (first) */
+.step-active .step-badge {
     background-color: var(--orange-main);
     color: #ffffff;
+    box-shadow: 0 4px 14px rgba(253, 122, 42, 0.4);
+}
+
+/* Dotted vertical connector between steps */
+.step-connector {
+    width: 2px;
+    flex: 1;
+    min-height: 36px;
+    background-image: repeating-linear-gradient(
+        to bottom,
+        #d1d5db 0px,
+        #d1d5db 5px,
+        transparent 5px,
+        transparent 10px
+    );
+    margin: 4px 0;
+}
+
+/* Icon wrapper */
+.step-icon-wrap {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border-light);
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #6b7280;
+    margin-top: 1px;
+}
+
+.step-active .step-icon-wrap {
+    border-color: var(--orange-main);
+    color: var(--orange-main);
+    background: var(--orange-light);
+}
+
+/* Step text */
+.step-content {
+    padding-bottom: 1.8rem;
+    padding-top: 2px;
 }
 
 .step-text-title {
-    font-size: 0.95rem;
-    font-weight: 500;
-    margin-bottom: 0.15rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    color: var(--text-dark);
 }
 
 .step-text-body {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
     margin-bottom: 0;
+    line-height: 1.6;
 }
 
-/* RIGHT ILLUSTRATION */
+/* =====================
+   INFO BOX
+   ===================== */
+
+.step-info-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: #fff8f4;
+    border: 1.5px solid #fde8d8;
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    margin-top: 0.5rem;
+}
+
+.step-info-icon {
+    flex-shrink: 0;
+    color: var(--orange-main);
+    display: flex;
+    align-items: center;
+}
+
+.step-info-text {
+    font-size: 0.8rem;
+    color: #6b4c38;
+    margin-bottom: 0;
+    line-height: 1.55;
+}
+
+/* =====================
+   RIGHT ILLUSTRATION
+   ===================== */
+
+.steps-right {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Dot pattern decoration */
+.dot-pattern {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-60%, -55%);
+    width: 180px;
+    height: 180px;
+    background-image: radial-gradient(circle, #d1d5db 1.5px, transparent 1.5px);
+    background-size: 16px 16px;
+    opacity: 0.6;
+    z-index: 0;
+    pointer-events: none;
+}
 
 .steps-illustration-wrap {
     position: relative;
-    min-height: 320px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-}
-
-.steps-circle {
-    position: absolute;
-    width: 520px;
-    height: 520px;
-    border-radius: 50%;
-    background-color: var(--orange-main);
-    right: -200px;
-    bottom: -120px;
     z-index: 1;
-    display: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 1.5rem;
 }
 
 .steps-folder-img {
-    position: relative;
-    z-index: 2;
-    max-width: 320px;
     width: 100%;
+    max-width: 340px;
     display: block;
-    margin-left: auto;
-    /* bottom: -85; */
-    right: 0;
+    margin: 0 auto;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.12));
 }
 
-.row-steps {
-    width: 100%;
-    /* background: #000; */
+.btn-daftar {
     display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    padding: 2px;
     align-items: center;
-    text-decoration: none;
+    justify-content: center ;
+    width: 100%;
 }
-
-.steps-note {
-    /* position: relative; */
-    right: 140px;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    max-width: 180px;
-}
-
-.steps-view-btn {
-    border: none;
-    border-radius: 60px;
-    padding: 0.7rem 1.8rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.25);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-
-    background: linear-gradient(
-        90deg,
-        rgb(253, 122, 42, 0.98),
-        rgba(241, 100, 12, 0.98)
-    );
-    border: none;
+/* CTA Button */
+.steps-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: linear-gradient(90deg, #fd7a2a, #f5600a);
     color: #ffffff;
+    font-size: 0.92rem;
     font-weight: 600;
+    padding: 0.75rem 1.8rem;
+    border-radius: 10px;
     text-decoration: none;
-    text-wrap: nowrap;
-}
-.steps-view-btn:hover {
-    background-color: #f3f4f6;
+    box-shadow: 0 6px 20px rgba(253, 122, 42, 0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    align-self: flex-end;
+    margin-right: 8px;
 }
 
-.steps-view-btn:hover {
-    background-color: #f3f4f6;
+.steps-cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(253, 122, 42, 0.5);
+    color: #ffffff;
+    text-decoration: none;
 }
+
+.steps-cta-btn svg {
+    transition: transform 0.2s ease;
+}
+
+.steps-cta-btn:hover svg {
+    transform: translateX(4px);
+}
+
+/* =====================
+   RESPONSIVE
+   ===================== */
 
 @media (max-width: 991.98px) {
-    .steps-illustration-wrap {
-        margin-top: 3rem;
+    .steps-card {
+        padding: 2.5rem 1.75rem;
     }
 
-    .steps-circle {
-        right: -40px;
-        bottom: -160px;
-        width: 360px;
-        height: 360px;
+    .steps-left {
+        padding-right: 0;
     }
 
-    .steps-note {
-        right: 110px;
-        bottom: 80px;
+    .steps-right {
+        padding-top: 2rem;
     }
 
-    .steps-view-btn {
-        right: 40px;
-        bottom: 40px;
+    .steps-cta-btn {
+        align-self: center;
+        margin-right: 0;
+    }
+
+    .dot-pattern {
+        left: 50%;
+        transform: translate(-50%, -55%);
     }
 }
 
@@ -247,20 +427,15 @@ body {
         padding-top: 3rem;
     }
 
-    .steps-circle {
-        right: -60px;
-        bottom: -140px;
-        width: 320px;
-        height: 320px;
+    .steps-card {
+        padding: 2rem 1.25rem;
     }
 
-    .steps-note {
-        right: 90px;
-        bottom: 70px;
+    .steps-title {
+        font-size: 2rem;
     }
 
-    .steps-view-btn {
-        right: 30px;
-        bottom: 36px;
+    .steps-folder-img {
+        max-width: 240px;
     }
 }

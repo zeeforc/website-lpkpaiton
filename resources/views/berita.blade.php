@@ -26,19 +26,37 @@
                             <div class="hero-slide active">
                                 <img src="{{ asset('assets/slider/slide1.webp') }}" alt="">
                             </div>
-                            <div class="hero-slide">
+                            <!-- <div class="hero-slide">
                                 <img src="{{ asset('assets/slider/slide2.webp') }}" alt="">
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="marquee">
+            <div class="marquee-wrapper">
                 <div class="marquee-content">
-                    <span id="runningDate"></span> •
-                    Berita LPK Paiton Selaras •
-                    Pendaftaran Gelombang Baru Dibuka •
-                    Program Pelatihan Terbaru •
+                    {{-- Set 1 --}}
+                    <div class="marquee-text">
+                        <span class="runningDate"></span>
+                        <span class="marquee-dot">•</span>
+                        <span>Berita LPK Paiton Selaras</span>
+                        <span class="marquee-dot">•</span>
+                        <span>Pendaftaran Gelombang Baru Dibuka</span>
+                        <span class="marquee-dot">•</span>
+                        <span>Program Pelatihan Terbaru</span>
+                        <span class="marquee-dot">•</span>
+                    </div>
+                    {{-- Set 2 (for seamless loop) --}}
+                    <div class="marquee-text">
+                        <span class="runningDate"></span>
+                        <span class="marquee-dot">•</span>
+                        <span>Berita LPK Paiton Selaras</span>
+                        <span class="marquee-dot">•</span>
+                        <span>Pendaftaran Gelombang Baru Dibuka</span>
+                        <span class="marquee-dot">•</span>
+                        <span>Program Pelatihan Terbaru</span>
+                        <span class="marquee-dot">•</span>
+                    </div>
                 </div>
             </div>
 
@@ -75,7 +93,115 @@
         </div>
     </section>
 
+    {{-- RINGKASAN DATA PESERTA PKL --}}
+    <section class="section-pkl-stats">
+        <div class="container">
+            <div class="row align-items-center gy-5">
+
+                {{-- LEFT: Text --}}
+                <div class="col-lg-5">
+                    <p class="pkl-stats-label">DATA PESERTA</p>
+                    <h2 class="pkl-stats-title">Peserta PKL</h2>
+                    <p class="pkl-stats-desc">
+                        Berikut adalah ringkasan data peserta Praktik Kerja Lapangan yang telah tercatat di LPK Paiton Selaras.
+                    </p>
+                    <a href="{{ route('berita.index') }}#news" class="pkl-stats-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+                        Lihat Selengkapnya
+                    </a>
+                </div>
+
+                {{-- RIGHT: Stats Card --}}
+                <div class="col-lg-7">
+                    <div class="pkl-stats-card">
+                        <h6 class="pkl-stats-card-title">Ringkasan Data Peserta PKL</h6>
+
+                        {{-- Row 1: 2 big cards --}}
+                        <div class="row g-3 mb-3">
+                            <div class="col-sm-6">
+                                <div class="pkl-stat-item pkl-stat-orange">
+                                    <div class="pkl-stat-icon-wrap pkl-icon-orange">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" /></svg>
+                                    </div>
+                                    <div class="pkl-stat-info">
+                                        <span class="pkl-stat-label">Total Peserta PKL</span>
+                                        <span class="pkl-stat-number">{{ number_format($pklStat?->total_peserta ?? 0) }}</span>
+                                        <span class="pkl-stat-sublabel">Peserta pernah PKL</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="pkl-stat-item pkl-stat-blue">
+                                    <div class="pkl-stat-icon-wrap pkl-icon-blue">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+                                    </div>
+                                    <div class="pkl-stat-info">
+                                        <span class="pkl-stat-label">Peserta PKL Saat Ini</span>
+                                        <span class="pkl-stat-number">{{ number_format($pklStat?->peserta_aktif ?? 0) }}</span>
+                                        <span class="pkl-stat-sublabel">Peserta sedang PKL</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Row 2: 3 small cards --}}
+                        <div class="row g-3 mb-3">
+                            <div class="col-sm-4">
+                                <div class="pkl-stat-item pkl-stat-sm pkl-stat-green">
+                                    <div class="pkl-stat-icon-wrap pkl-icon-green pkl-icon-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" /></svg>
+                                    </div>
+                                    <div class="pkl-stat-info">
+                                        <span class="pkl-stat-label">Jurusan</span>
+                                        <span class="pkl-stat-number pkl-stat-number-sm">{{ number_format($pklStat?->jumlah_jurusan ?? 0) }}</span>
+                                        <span class="pkl-stat-sublabel">Jurusan peserta PKL</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="pkl-stat-item pkl-stat-sm pkl-stat-purple">
+                                    <div class="pkl-stat-icon-wrap pkl-icon-purple pkl-icon-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" /></svg>
+                                    </div>
+                                    <div class="pkl-stat-info">
+                                        <span class="pkl-stat-label">Sekolah / Kampus</span>
+                                        <span class="pkl-stat-number pkl-stat-number-sm">{{ number_format($pklStat?->jumlah_sekolah ?? 0) }}</span>
+                                        <span class="pkl-stat-sublabel">Asal sekolah / kampus</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="pkl-stat-item pkl-stat-sm pkl-stat-teal">
+                                    <div class="pkl-stat-icon-wrap pkl-icon-teal pkl-icon-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z" /></svg>
+                                    </div>
+                                    <div class="pkl-stat-info">
+                                        <span class="pkl-stat-label">Program</span>
+                                        <span class="pkl-stat-number pkl-stat-number-sm">{{ number_format($pklStat?->jumlah_program ?? 0) }}</span>
+                                        <span class="pkl-stat-sublabel">Program PKL tersedia</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Info Box --}}
+                        <div class="pkl-stats-info-box">
+                            <div class="pkl-stats-info-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            </div>
+                            <p class="pkl-stats-info-text">
+                                Data peserta PKL selalu diperbarui secara berkala untuk memastikan informasi yang akurat.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
     {{-- BERITA TERBARU --}}
+
     <section class="section-news-latest" id="news">
         <div class="container">
             <div class="row align-items-center gy-4">
@@ -236,6 +362,17 @@
                 popup.classList.remove('show');
                 clearInterval(popupInterval);
                 clearTimeout(hideTimeout);
+            });
+        }
+
+        // --- Marquee Date Logic ---
+        const dateElements = document.querySelectorAll('.runningDate');
+        if (dateElements.length > 0) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            // Format example: "Senin, 27 Agustus 2026"
+            const today = new Date().toLocaleDateString('id-ID', options);
+            dateElements.forEach(el => {
+                el.textContent = today;
             });
         }
     });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BeritaUtama;
+use App\Models\PklStat;
 // use Illuminate\Support\Facades\Cache;
 
 class BeritaUtamaController extends Controller
@@ -19,7 +20,11 @@ class BeritaUtamaController extends Controller
             ->latest('tgl_berita')
             ->paginate(6);
 
-        return view('berita', compact('latest', 'others'));
+        $pklStat = cache()->remember('pkl_stat', now()->addHours(1), function () {
+            return PklStat::first();
+        });
+
+        return view('berita', compact('latest', 'others', 'pklStat'));
     }
 
     public function show(BeritaUtama $beritaUtama)

@@ -134,23 +134,46 @@ body {
     object-fit: contain;
 } */
 
-.marquee {
-    width: 140%;
-    overflow: hidden;
-    white-space: nowrap;
-    /* background: #111827; */
-    padding: 10px 0;
+.marquee-wrapper {
     position: absolute;
-    margin-top: 3%;
-    left: -20%;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 0;
+    display: flex;
+    overflow: hidden;
+    z-index: 10;
 }
 
 .marquee-content {
-    display: inline-block;
-    padding-left: 100%;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 2rem;
     animation: marqueeScroll 20s linear infinite;
+    padding-right: 2rem;
+}
+
+.marquee-text {
+    font-size: 0.95rem;
     font-weight: 500;
-    color: #fff;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    white-space: nowrap;
+}
+
+.marquee-dot {
+    color: var(--orange-main, #f49f1c);
+    font-size: 1.2rem;
 }
 
 @keyframes marqueeScroll {
@@ -642,18 +665,197 @@ body {
     }
 }
 
- / *   P a g i n a t i o n   S t y l i n g   * / 
- . d - s m - f l e x . a l i g n - i t e m s - s m - c e n t e r . j u s t i f y - c o n t e n t - s m - b e t w e e n   { 
-         f l e x - d i r e c t i o n :   c o l u m n ; 
-         g a p :   1 5 p x ; 
-         j u s t i f y - c o n t e n t :   c e n t e r   ! i m p o r t a n t ; 
- } 
- . d - s m - f l e x   >   d i v : f i r s t - c h i l d   { 
-         d i s p l a y :   f l e x ; 
-         j u s t i f y - c o n t e n t :   c e n t e r ; 
- } 
- . d - s m - f l e x   >   d i v : f i r s t - c h i l d   p   { 
-         m a r g i n - b o t t o m :   0 ; 
- } 
-  
- 
+/* =============================================
+   SECTION: RINGKASAN DATA PESERTA PKL
+   ============================================= */
+
+.section-pkl-stats {
+    padding: 5rem 0;
+    background-color: #f0f4ff;
+}
+
+/* LEFT SIDE */
+.pkl-stats-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.pkl-stats-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+}
+
+.pkl-stats-desc {
+    font-size: 0.9rem;
+    color: #6b7280;
+    line-height: 1.7;
+    margin-bottom: 1.8rem;
+}
+
+.pkl-stats-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #fd7a2a;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.7rem 1.5rem;
+    border-radius: 999px;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(253, 122, 42, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pkl-stats-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(253, 122, 42, 0.45);
+    color: #ffffff;
+}
+
+/* RIGHT SIDE: Main card */
+.pkl-stats-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 1.8rem;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.07);
+}
+
+.pkl-stats-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1.2rem;
+}
+
+/* Stat items */
+.pkl-stat-item {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 1.1rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid #f3f4f6;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    height: 100%;
+}
+
+/* Color-coded bottom border */
+.pkl-stat-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3.5px;
+    border-radius: 0 0 14px 14px;
+}
+
+.pkl-stat-orange::after { background-color: #fd7a2a; }
+.pkl-stat-blue::after   { background-color: #0a3e93; }
+.pkl-stat-green::after  { background-color: #fd7a2a; }
+.pkl-stat-purple::after { background-color: #fd7a2a; }
+.pkl-stat-teal::after   { background-color: #0a3e93; }
+
+/* Icon wraps */
+.pkl-stat-icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.pkl-icon-orange { background-color: #fff3ec; color: #fd7a2a; }
+.pkl-icon-blue   { background-color: #eff6ff; color: #0a3e93; }
+.pkl-icon-green  { background-color: #f0fdf4; color: #fd7a2a; }
+.pkl-icon-purple { background-color: #faf5ff; color: #0a3e93; }
+.pkl-icon-teal   { background-color: #f0fdfa; color: #fd7a2a; }
+
+.pkl-icon-sm {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+}
+
+/* Stat info text */
+.pkl-stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.pkl-stat-label {
+    font-size: 0.78rem;
+    color: #9ca3af;
+    font-weight: 500;
+    margin-bottom: 0.1rem;
+}
+
+.pkl-stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #111827;
+    line-height: 1.1;
+}
+
+.pkl-stat-number-sm {
+    font-size: 1.5rem;
+}
+
+.pkl-stat-sublabel {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-top: 0.1rem;
+}
+
+/* Small stat items */
+.pkl-stat-sm {
+    padding: 0.9rem 1rem;
+}
+
+/* Info box */
+.pkl-stats-info-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: #eff6ff;
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+}
+
+.pkl-stats-info-icon {
+    flex-shrink: 0;
+    color: #000000;
+    display: flex;
+    align-items: center;
+}
+
+.pkl-stats-info-text {
+    font-size: 0.82rem;
+    color: #000000;
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 575.98px) {
+    .pkl-stats-title {
+        font-size: 2rem;
+    }
+
+    .pkl-stat-number {
+        font-size: 1.6rem;
+    }
+}
