@@ -208,8 +208,8 @@
                             </div>
                             <div class="pkl-chart-filter">
                                 <select id="yearRangeFilter" class="form-select form-select-sm" style="width: auto; cursor: pointer; font-size: 0.85rem; border-radius: 8px;">
-                                    <option value="all">Semua Tahun</option>
-                                    <option value="5" selected>5 Tahun Terakhir</option>
+                                    <option value="all" selected>Semua Tahun</option>
+                                    <option value="5">5 Tahun Terakhir</option>
                                     <option value="3">3 Tahun Terakhir</option>
                                 </select>
                             </div>
