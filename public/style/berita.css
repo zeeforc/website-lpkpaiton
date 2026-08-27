@@ -859,5 +859,20 @@ body {
         font-size: 1.6rem;
     }
 }
-. p k l - c h a r t - c a r d   {   b a c k g r o u n d :   r g b a ( 2 5 5 ,   2 5 5 ,   2 5 5 ,   0 . 7 ) ;   b a c k d r o p - f i l t e r :   b l u r ( 1 2 p x ) ;   b o r d e r - r a d i u s :   1 6 p x ;   b o r d e r :   1 p x   s o l i d   r g b a ( 2 5 5 , 2 5 5 , 2 5 5 , 0 . 4 ) ;   p a d d i n g :   2 4 p x ;   b o x - s h a d o w :   0   4 p x   2 0 p x   r g b a ( 0 , 0 , 0 , 0 . 0 3 ) ;   }   . p k l - c h a r t - t i t l e   {   f o n t - f a m i l y :   " O u t f i t " ,   s a n s - s e r i f ;   f o n t - w e i g h t :   7 0 0 ;   c o l o r :   # 1 e 2 9 3 b ;   }  
- 
+
+.pkl-chart-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.4);
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+.pkl-chart-title {
+    font-family: "Outfit", sans-serif;
+    font-weight: 700;
+    color: #1e293b;
+}
+.pkl-chart-subtitle {
+    color: #64748b;
+}
