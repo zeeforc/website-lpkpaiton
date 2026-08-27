@@ -195,8 +195,32 @@
                         </div>
                     </div>
                 </div>
-
             </div>
+
+            {{-- CHART SECTION --}}
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="pkl-chart-card">
+                        <div class="pkl-chart-header d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h5 class="pkl-chart-title m-0">Pertumbuhan Peserta PKL</h5>
+                                <p class="pkl-chart-subtitle text-muted m-0" style="font-size: 0.85rem;">Statistik tahunan peserta magang</p>
+                            </div>
+                            <div class="pkl-chart-filter">
+                                <select id="yearRangeFilter" class="form-select form-select-sm" style="width: auto; cursor: pointer; font-size: 0.85rem; border-radius: 8px;">
+                                    <option value="all">Semua Tahun</option>
+                                    <option value="5" selected>5 Tahun Terakhir</option>
+                                    <option value="3">3 Tahun Terakhir</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="pkl-chart-body" style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="pklYearlyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -306,6 +330,8 @@
     </section>
 </main>
 
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const popup = document.getElementById('newsPopupHighlight');
@@ -416,6 +442,107 @@
         const statsSection = document.querySelector('.section-pkl-stats');
         if (statsSection) {
             observer.observe(statsSection);
+        }
+
+        // --- Chart.js Implementation ---
+        const rawYearlyData = @json($pklStat?->yearly_data ?? []);
+        // rawYearlyData is an array of objects: { year: "2019", total: "150" }
+        
+        // Sort data by year ascending just in case it's not sorted in DB
+        const sortedData = [...rawYearlyData].sort((a, b) => parseInt(a.year) - parseInt(b.year));
+        
+        const ctx = document.getElementById('pklYearlyChart');
+        if (ctx && sortedData.length > 0) {
+            let pklChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: sortedData.map(item => item.year),
+                    datasets: [{
+                        label: 'Total Peserta',
+                        data: sortedData.map(item => item.total),
+                        borderColor: '#FF7F3F',
+                        backgroundColor: 'rgba(255, 127, 63, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#FFFFFF',
+                        pointBorderColor: '#FF7F3F',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        tension: 0.4 // curve
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1E293B',
+                            titleFont: { size: 13, family: "'Outfit', sans-serif" },
+                            bodyFont: { size: 14, family: "'Outfit', sans-serif", weight: 'bold' },
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y.toLocaleString('id-ID') + ' Peserta';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)',
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                font: { family: "'Outfit', sans-serif" },
+                                callback: function(value) {
+                                    return value.toLocaleString('id-ID');
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                font: { family: "'Outfit', sans-serif" }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Filter logic
+            const yearFilter = document.getElementById('yearRangeFilter');
+            
+            const updateChartData = (range) => {
+                let filteredData = [...sortedData];
+                if (range !== 'all') {
+                    const limit = parseInt(range);
+                    filteredData = filteredData.slice(Math.max(filteredData.length - limit, 0));
+                }
+                
+                pklChart.data.labels = filteredData.map(item => item.year);
+                pklChart.data.datasets[0].data = filteredData.map(item => item.total);
+                pklChart.update();
+            };
+
+            yearFilter.addEventListener('change', (e) => {
+                updateChartData(e.target.value);
+            });
+
+            // Trigger initial filter based on default selected option
+            updateChartData(yearFilter.value);
+        } else if (ctx) {
+            // No data placeholder
+            ctx.parentNode.innerHTML = '<div class="d-flex justify-content-center align-items-center h-100 text-muted" style="font-family: Outfit, sans-serif;">Data tahunan belum tersedia</div>';
         }
     });
 </script>

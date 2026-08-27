@@ -69,6 +69,26 @@ class PklStatResource extends Resource
                         ->required(),
                 ])
                 ->columns(2),
+
+            Section::make('Data Tahunan Peserta PKL (Grafik)')
+                ->description('Data ini digunakan untuk menampilkan grafik interaktif di halaman Berita.')
+                ->schema([
+                    \Filament\Forms\Components\Repeater::make('yearly_data')
+                        ->label('Pertumbuhan Peserta Tahunan')
+                        ->schema([
+                            TextInput::make('year')
+                                ->label('Tahun')
+                                ->numeric()
+                                ->required(),
+                            TextInput::make('total')
+                                ->label('Jumlah Peserta')
+                                ->numeric()
+                                ->required(),
+                        ])
+                        ->columns(2)
+                        ->defaultItems(0)
+                        ->addActionLabel('Tambah Tahun'),
+                ]),
         ]);
     }
 

@@ -12,6 +12,7 @@ class PklStat extends Model
         'jumlah_jurusan',
         'jumlah_sekolah',
         'jumlah_program',
+        'yearly_data',
     ];
 
     protected $casts = [
@@ -20,6 +21,7 @@ class PklStat extends Model
         'jumlah_jurusan' => 'integer',
         'jumlah_sekolah' => 'integer',
         'jumlah_program' => 'integer',
+        'yearly_data'    => 'array',
     ];
 
     protected static function booted()
