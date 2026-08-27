@@ -454,22 +454,34 @@
         const ctx = document.getElementById('pklYearlyChart');
         if (ctx && sortedData.length > 0) {
             let pklChart = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
                     labels: sortedData.map(item => item.year),
                     datasets: [{
                         label: 'Total Peserta',
                         data: sortedData.map(item => item.total),
-                        borderColor: '#FF7F3F',
-                        backgroundColor: 'rgba(255, 127, 63, 0.1)',
-                        borderWidth: 3,
-                        pointBackgroundColor: '#FFFFFF',
-                        pointBorderColor: '#FF7F3F',
-                        pointBorderWidth: 2,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        fill: true,
-                        tension: 0.4 // curve
+                        backgroundColor: function(context) {
+                            const chart = context.chart;
+                            const {ctx, chartArea} = chart;
+                            if (!chartArea) return null;
+                            let gradientLight = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                            gradientLight.addColorStop(0, 'rgba(34, 197, 94, 0.25)'); // Light green top
+                            gradientLight.addColorStop(1, 'rgba(255, 255, 255, 0)'); // Fade to transparent
+                            return gradientLight;
+                        },
+                        hoverBackgroundColor: function(context) {
+                            const chart = context.chart;
+                            const {ctx, chartArea} = chart;
+                            if (!chartArea) return null;
+                            let gradientDark = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                            gradientDark.addColorStop(0, 'rgba(21, 128, 61, 0.9)'); // Dark green top
+                            gradientDark.addColorStop(1, 'rgba(21, 128, 61, 0.1)'); // Dark green bottom
+                            return gradientDark;
+                        },
+                        borderRadius: 12,
+                        borderSkipped: 'bottom',
+                        barPercentage: 0.6,
+                        categoryPercentage: 0.8
                     }]
                 },
                 options: {
