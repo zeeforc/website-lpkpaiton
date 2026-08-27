@@ -21,4 +21,15 @@ class PklStat extends Model
         'jumlah_sekolah' => 'integer',
         'jumlah_program' => 'integer',
     ];
+
+    protected static function booted()
+    {
+        static::saved(function ($pklStat) {
+            \Illuminate\Support\Facades\Cache::forget('pkl_stat');
+        });
+
+        static::deleted(function ($pklStat) {
+            \Illuminate\Support\Facades\Cache::forget('pkl_stat');
+        });
+    }
 }
