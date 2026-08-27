@@ -1,7 +1,7 @@
 @extends('layout')
 @section('title', 'Berita')
 @push('styles')
-<link rel="stylesheet" href="{{ asset('style/berita.css') }}" />
+<link rel="stylesheet" href="{{ asset('style/berita.css') }}?v={{ time() }}" />
 @endpush
 @section('content')
 

@@ -1,7 +1,7 @@
 @extends('layout')
 @section('title', 'Panduan Pendaftaran PKL')
 @push('styles')
-<link rel="stylesheet" href="{{ asset('style/syarat.css') }}" />
+<link rel="stylesheet" href="{{ asset('style/syarat.css') }}?v={{ time() }}" />
 @endpush
 @section('content')
 
@@ -25,7 +25,7 @@
             <div class="col-lg-6">
                 <div class="hero-illustration-wrap">
                     <div class="hero-illustration-card">
-                        <img src="assets/icon/alur.webp" alt="Ilustrasi mekanik" />
+                        <img src="{{ asset('assets/icon/alur.webp') }}" alt="Ilustrasi mekanik" />
                     </div>
                 </div>
             </div>
