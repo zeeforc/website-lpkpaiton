@@ -383,8 +383,8 @@
             counters.forEach(counter => {
                 const animate = () => {
                     const target = +counter.getAttribute('data-target');
-                    // Buang koma untuk kalkulasi jika ada (saat ini data murni dari attr, misal "1894")
-                    const count = +counter.innerText.replace(/,/g, '');
+                    // Hapus semua karakter non-digit (titik, koma) biar nggak error pas di-parse
+                    const count = +counter.innerText.replace(/\D/g, '');
                     const inc = target / speed;
 
                     if (count < target) {
