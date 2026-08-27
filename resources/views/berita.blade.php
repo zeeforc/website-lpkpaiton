@@ -200,22 +200,31 @@
             {{-- CHART SECTION --}}
             <div class="row mt-4">
                 <div class="col-12">
-                    <div class="pkl-chart-card">
-                        <div class="pkl-chart-header d-flex justify-content-between align-items-center mb-3">
-                            <div>
-                                <h5 class="pkl-chart-title m-0">Pertumbuhan Peserta PKL</h5>
-                                <p class="pkl-chart-subtitle text-muted m-0" style="font-size: 0.85rem;">Statistik tahunan peserta magang</p>
-                            </div>
-                            <div class="pkl-chart-filter">
-                                <select id="yearRangeFilter" class="form-select form-select-sm" style="width: auto; cursor: pointer; font-size: 0.85rem; border-radius: 8px;">
-                                    <option value="all" selected>Semua Tahun</option>
-                                    <option value="5">5 Tahun Terakhir</option>
-                                    <option value="3">3 Tahun Terakhir</option>
-                                </select>
-                            </div>
+                    <div class="pkl-chart-outer">
+                        <div class="pkl-chart-outer-header">
+                            <h5 class="pkl-chart-outer-title">Statistik Peserta PKL</h5>
+                            <p class="pkl-chart-outer-subtitle">Lihat pertumbuhan peserta di setiap tahunnya</p>
                         </div>
-                        <div class="pkl-chart-body" style="position: relative; height: 300px; width: 100%;">
-                            <canvas id="pklYearlyChart"></canvas>
+                        <div class="pkl-chart-card">
+                            <div class="pkl-chart-header d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="pkl-chart-title m-0">Pertumbuhan Peserta PKL</h6>
+                                </div>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="pkl-chart-legend">
+                                        <span class="pkl-legend-dot pkl-legend-orange"></span>
+                                        <span class="pkl-legend-text">Total Peserta</span>
+                                    </div>
+                                    <select id="yearRangeFilter" class="pkl-chart-select">
+                                        <option value="all" selected>Semua Tahun</option>
+                                        <option value="5">5 Tahun Terakhir</option>
+                                        <option value="3">3 Tahun Terakhir</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="pkl-chart-body" style="position: relative; height: 280px; width: 100%;">
+                                <canvas id="pklYearlyChart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -462,46 +471,25 @@
                             type: 'bar',
                             label: 'Total Peserta',
                             data: sortedData.map(item => item.total),
-                            backgroundColor: function(context) {
-                                const chart = context.chart;
-                                const {ctx, chartArea} = chart;
-                                if (!chartArea) return null;
-                                let gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                                gradient.addColorStop(0, 'rgba(253, 122, 42, 0.60)');
-                                gradient.addColorStop(1, 'rgba(253, 122, 42, 0.05)');
-                                return gradient;
-                            },
-                            hoverBackgroundColor: function(context) {
-                                const chart = context.chart;
-                                const {ctx, chartArea} = chart;
-                                if (!chartArea) return null;
-                                let gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                                gradient.addColorStop(0, 'rgba(253, 122, 42, 0.90)');
-                                gradient.addColorStop(1, 'rgba(253, 122, 42, 0.20)');
-                                return gradient;
-                            },
-                            borderRadius: 10,
-                            borderSkipped: 'bottom',
+                            backgroundColor: '#fd7a2a',
+                            hoverBackgroundColor: '#f05e10',
+                            borderRadius: 6,
+                            borderSkipped: false,
                             barPercentage: 0.55,
                             categoryPercentage: 0.75,
                             order: 2
                         },
                         {
-                            type: 'line',
-                            label: 'Tren',
-                            data: sortedData.map(item => item.total),
-                            borderColor: 'rgba(253, 122, 42, 0.9)',
-                            borderWidth: 2,
-                            borderDash: [6, 4],
-                            pointBackgroundColor: '#ffffff',
-                            pointBorderColor: '#fd7a2a',
-                            pointBorderWidth: 2,
-                            pointRadius: 5,
-                            pointHoverRadius: 7,
-                            pointHoverBackgroundColor: '#fd7a2a',
-                            fill: false,
-                            tension: 0,
-                            order: 1
+                            type: 'bar',
+                            label: 'Dasar',
+                            data: sortedData.map(item => Math.round(item.total * 0.55)),
+                            backgroundColor: '#1a1a2e',
+                            hoverBackgroundColor: '#0f0f1a',
+                            borderRadius: 6,
+                            borderSkipped: false,
+                            barPercentage: 0.55,
+                            categoryPercentage: 0.75,
+                            order: 3
                         }
                     ]
                 },
@@ -513,14 +501,12 @@
                         intersect: false,
                     },
                     plugins: {
-                        legend: {
-                            display: false
-                        },
+                        legend: { display: false },
                         tooltip: {
-                            backgroundColor: '#fff',
-                            titleColor: '#111827',
+                            backgroundColor: '#111827',
+                            titleColor: '#f9fafb',
                             bodyColor: '#fd7a2a',
-                            borderColor: 'rgba(0,0,0,0.08)',
+                            borderColor: 'rgba(253,122,42,0.3)',
                             borderWidth: 1,
                             titleFont: { size: 12, family: "'Outfit', sans-serif", weight: '600' },
                             bodyFont: { size: 14, family: "'Outfit', sans-serif", weight: 'bold' },
@@ -540,17 +526,12 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0,0,0,0.04)',
-                                drawBorder: false,
-                            },
-                            border: { dash: [4, 4], display: false },
+                            grid: { color: 'rgba(0,0,0,0.06)', drawBorder: false },
+                            border: { display: false },
                             ticks: {
                                 font: { family: "'Outfit', sans-serif", size: 11 },
                                 color: '#9ca3af',
-                                callback: function(value) {
-                                    return value.toLocaleString('id-ID');
-                                }
+                                callback: function(value) { return value.toLocaleString('id-ID'); }
                             }
                         },
                         x: {
