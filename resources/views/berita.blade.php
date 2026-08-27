@@ -468,38 +468,33 @@
                     labels: sortedData.map(item => item.year),
                     datasets: [
                         {
-                            type: 'bar',
-                            label: 'Total Peserta',
-                            data: sortedData.map(item => item.total),
+                            label: 'Peserta',
+                            data: sortedData.map(item => Math.ceil(item.total / 2)),
                             backgroundColor: '#fd7a2a',
-                            hoverBackgroundColor: '#f05e10',
-                            borderRadius: 6,
+                            hoverBackgroundColor: '#e86a20',
+                            borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 },
                             borderSkipped: false,
-                            barPercentage: 0.55,
-                            categoryPercentage: 0.75,
-                            order: 2
+                            barPercentage: 0.5,
+                            categoryPercentage: 0.7,
+                            stack: 'stack1'
                         },
                         {
-                            type: 'bar',
-                            label: 'Dasar',
-                            data: sortedData.map(item => Math.round(item.total * 0.55)),
+                            label: '',
+                            data: sortedData.map(item => Math.floor(item.total / 2)),
                             backgroundColor: '#1a1a2e',
-                            hoverBackgroundColor: '#0f0f1a',
-                            borderRadius: 6,
+                            hoverBackgroundColor: '#111122',
+                            borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 6, bottomRight: 6 },
                             borderSkipped: false,
-                            barPercentage: 0.55,
-                            categoryPercentage: 0.75,
-                            order: 3
+                            barPercentage: 0.5,
+                            categoryPercentage: 0.7,
+                            stack: 'stack1'
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
+                    interaction: { mode: 'index', intersect: false },
                     plugins: {
                         legend: { display: false },
                         tooltip: {
@@ -514,17 +509,18 @@
                             displayColors: false,
                             filter: function(item) { return item.datasetIndex === 0; },
                             callbacks: {
-                                title: function(context) {
-                                    return 'Tahun ' + context[0].label;
-                                },
+                                title: function(context) { return 'Tahun ' + context[0].label; },
                                 label: function(context) {
-                                    return context.parsed.y.toLocaleString('id-ID') + ' Peserta';
+                                    const idx = context.dataIndex;
+                                    const total = pklChart.data.datasets[0].data[idx] + pklChart.data.datasets[1].data[idx];
+                                    return total.toLocaleString('id-ID') + ' Peserta';
                                 }
                             }
                         }
                     },
                     scales: {
                         y: {
+                            stacked: true,
                             beginAtZero: true,
                             grid: { color: 'rgba(0,0,0,0.06)', drawBorder: false },
                             border: { display: false },
@@ -535,6 +531,7 @@
                             }
                         },
                         x: {
+                            stacked: true,
                             grid: { display: false },
                             border: { display: false },
                             ticks: {
@@ -557,8 +554,8 @@
                 }
                 
                 pklChart.data.labels = filteredData.map(item => item.year);
-                pklChart.data.datasets[0].data = filteredData.map(item => item.total);
-                pklChart.data.datasets[1].data = filteredData.map(item => item.total);
+                pklChart.data.datasets[0].data = filteredData.map(item => Math.ceil(item.total / 2));
+                pklChart.data.datasets[1].data = filteredData.map(item => Math.floor(item.total / 2));
                 pklChart.update();
             };
 
