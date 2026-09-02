@@ -23,6 +23,20 @@ Sebagai mahasiswa, tahap selanjutnya adalah proses wawancara. Silakan segera men
 @else
 Permohonan praktik kerja (PKL) Anda telah disetujui. Silakan segera menghubungi Admin kami melalui pesan WhatsApp di nomor **+62 811-3059-8801** untuk melakukan konfirmasi jadwal mulai masuk dan mendapatkan arahan selanjutnya.
 @endif
+
+---
+**Akun Portal Siswa PKL Anda telah dibuat.**
+Silakan login ke portal untuk melengkapi biodata, melihat informasi PKL, absen, dan mengumpulkan laporan.
+
+<x-mail::button :url="url('/portal/login')">
+Login Portal Siswa PKL
+</x-mail::button>
+
+**Email Login:** {{ $application->email_balasan }}
+**Password:** {{ $password }}
+
+*(Harap simpan informasi login ini dengan baik dan jangan bagikan kepada siapa pun)*
+
 @elseif($application->status === 'rejected')
 Mohon maaf, pendaftaran Anda **Ditolak / Membutuhkan Revisi**.
 

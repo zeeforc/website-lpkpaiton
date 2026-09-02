@@ -75,3 +75,21 @@ Route::post('/cek-status', [\App\Http\Controllers\ApplicationController::class, 
 
 Route::get('/pendaftaran/{application}/upload', [\App\Http\Controllers\ApplicationController::class, 'showUploadForm'])->name('application.upload')->middleware('signed');
 Route::post('/pendaftaran/{application}/upload', [\App\Http\Controllers\ApplicationController::class, 'uploadDocuments'])->name('application.upload.store')->middleware('signed');
+
+// Portal Siswa PKL Routes
+Route::prefix('portal')->name('portal.')->group(function () {
+    Route::get('/login', [\App\Http\Controllers\PortalController::class, 'showLogin'])->name('login');
+    Route::post('/login', [\App\Http\Controllers\PortalController::class, 'login'])->name('login.post');
+    Route::post('/logout', [\App\Http\Controllers\PortalController::class, 'logout'])->name('logout');
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/biodata', [\App\Http\Controllers\PortalController::class, 'biodata'])->name('biodata');
+        Route::post('/biodata', [\App\Http\Controllers\PortalController::class, 'updateBiodata'])->name('biodata.update');
+        
+        Route::get('/informasi', [\App\Http\Controllers\PortalController::class, 'informasi'])->name('informasi');
+        Route::get('/absensi', [\App\Http\Controllers\PortalController::class, 'absensi'])->name('absensi');
+        
+        Route::get('/laporan', [\App\Http\Controllers\PortalController::class, 'laporan'])->name('laporan');
+        Route::post('/laporan', [\App\Http\Controllers\PortalController::class, 'storeLaporan'])->name('laporan.store');
+    });
+});

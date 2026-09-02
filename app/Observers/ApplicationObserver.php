@@ -20,9 +20,19 @@ class ApplicationObserver
                 $note = $application->notes()->latest()->first()?->note;
             }
 
+            $password = null;
+            if ($application->status === 'accepted') {
+                $password = \Illuminate\Support\Str::random(8);
+                if ($application->user) {
+                    $application->user->update([
+                        'password' => \Illuminate\Support\Facades\Hash::make($password)
+                    ]);
+                }
+            }
+
             try {
                 Mail::to($application->email_balasan)
-                    ->send(new ApplicationStatusUpdated($application, $note));
+                    ->send(new ApplicationStatusUpdated($application, $note, $password));
                 \Illuminate\Support\Facades\Log::info("Email successfully sent via SMTP to {$application->email_balasan}");
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::error("Failed to send email: " . $e->getMessage());

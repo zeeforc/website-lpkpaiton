@@ -16,7 +16,8 @@ class ApplicationStatusUpdated extends Mailable
 
     public function __construct(
         public Application $application,
-        public ?string $note = null
+        public ?string $note = null,
+        public ?string $password = null
     ) {}
 
     public function envelope(): Envelope
@@ -33,6 +34,7 @@ class ApplicationStatusUpdated extends Mailable
             with: [
                 'application' => $this->application,
                 'note' => $this->note,
+                'password' => $this->password,
             ],
         );
     }
