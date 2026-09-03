@@ -82,15 +82,25 @@
     .status-badge.hadir { background: #f0fdf4; color: #16a34a; }
     .status-badge.hadir::before { background: #16a34a; }
     
+    .status-badge.telat { background: #fef9c3; color: #eab308; }
+    .status-badge.telat::before { background: #eab308; }
+    
     .status-badge.tidak-hadir { background: #fef2f2; color: #dc2626; }
     .status-badge.tidak-hadir::before { background: #dc2626; }
 </style>
 @endpush
 
 @section('content')
-<div class="page-header">
-    <h1 class="page-title">Absensi PKL</h1>
-    <p class="page-subtitle">Pantau dan lihat riwayat kehadiran Anda selama pelaksanaan PKL.</p>
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+    <div>
+        <h1 class="page-title">Absensi PKL</h1>
+        <p class="page-subtitle">Pantau dan lihat riwayat kehadiran Anda selama pelaksanaan PKL.</p>
+    </div>
+    <div>
+        <a href="{{ route('portal.absensi.check-in') }}" class="btn btn-primary px-4 py-2" style="border-radius: 30px;">
+            <i class="fa-solid fa-camera me-2"></i> {{ empty(Auth::user()->face_descriptor) ? 'Pindai Wajah' : 'Absen' }}
+        </a>
+    </div>
 </div>
 
 <!-- Stats Row -->
@@ -138,7 +148,7 @@
 </div>
 
 <!-- Filter & Toolbar -->
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3">
     <form class="d-flex align-items-center gap-2" method="GET" action="{{ route('portal.absensi') }}">
         <span class="text-secondary fw-medium" style="font-size: 0.9rem">Periode</span>
         <select name="month" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
@@ -164,8 +174,7 @@
     <div class="p-3 d-flex justify-content-between align-items-center border-bottom">
         <h6 class="fw-bold text-dark m-0">Riwayat Absensi</h6>
         <div class="d-flex gap-2">
-            <button class="btn btn-outline-custom"><i class="fa-solid fa-filter me-1"></i> Filter</button>
-            <button class="btn btn-outline-primary-custom"><i class="fa-solid fa-download me-1"></i> Unduh Excel</button>
+            <a href="{{ route('portal.absensi.export', ['month' => request('month', date('m')), 'year' => request('year', date('Y'))]) }}" class="btn btn-outline-primary-custom"><i class="fa-solid fa-download me-1"></i> Unduh Excel</a>
         </div>
     </div>
     <div class="table-responsive">
@@ -190,6 +199,8 @@
                     <td>
                         @if($att->status == 'Hadir')
                             <span class="status-badge hadir">Hadir</span>
+                        @elseif($att->status == 'Telat')
+                            <span class="status-badge telat">Telat</span>
                         @else
                             <span class="status-badge tidak-hadir">{{ $att->status }}</span>
                         @endif
@@ -214,7 +225,7 @@
     </div>
 </div>
 
-<div class="d-flex gap-3">
+<div class="d-flex flex-column flex-md-row gap-3">
     <div class="flex-grow-1 p-3 bg-white border rounded-3 d-flex align-items-center gap-3">
         <i class="fa-solid fa-circle-info text-primary fs-4"></i>
         <div>

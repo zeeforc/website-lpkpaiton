@@ -28,10 +28,13 @@ class ApplicationController extends Controller
             'no_hp' => 'required|string|max:50',
             'pengajuan' => 'required|string',
             'periode_gelombang' => 'required|string',
-            'jumlah_peserta' => 'required|string',
             'lama_durasi_bulan' => 'required|integer|min:1',
             'fokus_studi' => 'required|string',
-            'email_balasan' => 'required|email|max:255',
+            'email_balasan' => 'required|email|max:255|unique:users,email',
+            'documents' => 'required|array',
+            'documents.*' => 'required|file|mimes:pdf|max:10240',
+        ], [
+            'email_balasan.unique' => 'Email ini sudah pernah digunakan untuk mendaftar. Silakan gunakan email lain.',
         ]);
 
         try {
@@ -54,12 +57,23 @@ class ApplicationController extends Controller
                 'no_hp' => $request->no_hp,
                 'pengajuan' => $request->pengajuan,
                 'periode_gelombang' => $request->periode_gelombang,
-                'jumlah_peserta' => $request->jumlah_peserta,
+                'jumlah_peserta' => '1 ORANG',
                 'lama_durasi_bulan' => $request->lama_durasi_bulan,
                 'fokus_studi' => $request->fokus_studi,
                 'email_balasan' => $request->email_balasan,
                 'status' => 'pending',
             ]);
+
+            if ($request->hasFile('documents')) {
+                foreach ($request->file('documents') as $file) {
+                    $path = $file->store('applications/documents', 'public');
+                    ApplicationDocument::create([
+                        'application_id' => $application->id,
+                        'file_path' => $path,
+                        'original_name' => $file->getClientOriginalName(),
+                    ]);
+                }
+            }
 
             DB::commit();
 
@@ -98,6 +112,7 @@ class ApplicationController extends Controller
             'dokumen_foto' => 'required|file|mimes:jpg,jpeg,png|max:5120',
             'dokumen_skck' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
             'dokumen_sehat' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'dokumen_portofolio' => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
 
         try {
@@ -108,6 +123,7 @@ class ApplicationController extends Controller
                 'dokumen_foto' => 'Pas Foto 4x6',
                 'dokumen_skck' => 'SKCK',
                 'dokumen_sehat' => 'Surat Sehat',
+                'dokumen_portofolio' => 'Portofolio',
             ];
 
             foreach ($filesToUpload as $inputName => $documentType) {

@@ -95,7 +95,7 @@
             </div>
 
             <div class="mb-4">
-                <label for="no_hp" class="form-label">NO HANDPHONE <span class="text-danger">*</span></label>
+                <label for="no_hp" class="form-label">NO HANDPHONE ( Whatsapp ) <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="no_hp" name="no_hp" required value="{{ old('no_hp') }}">
             </div>
 
@@ -145,13 +145,27 @@
             </div>
 
             <div class="mb-4">
-                <label for="jumlah_peserta" class="form-label">JUMLAH PESERTA <span class="text-danger">*</span></label>
-                <select class="form-select" id="jumlah_peserta" name="jumlah_peserta" required>
-                    <option value="">Pilih Jumlah Peserta</option>
-                    @for($i=1; $i<=10; $i++)
-                        <option value="{{ $i }} ORANG" {{ old('jumlah_peserta') == $i.' ORANG' ? 'selected' : '' }}>{{ $i }} ORANG</option>
-                    @endfor
-                </select>
+                <label class="form-label">APAKAH ANDA SUDAH MEMILIKI SEPATU SAFETY? <span class="text-danger">*</span></label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sepatu_safety_a" id="sepatu_a_ya" value="Ya" required>
+                    <label class="form-check-label" for="sepatu_a_ya">Ya, saya sudah memiliki</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sepatu_safety_a" id="sepatu_a_tidak" value="Tidak">
+                    <label class="form-check-label" for="sepatu_a_tidak">Tidak memiliki</label>
+                </div>
+            </div>
+
+            <div class="mb-4" id="sepatu_safety_b_container" style="display: none;">
+                <label class="form-label">Jika tidak, apakah anda siap membeli sepatu safety demi keamanan diri anda dan mengikuti ketentuan keamanan LPK Paiton Selaras? <span class="text-danger">*</span></label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sepatu_safety_b" id="sepatu_b_ya" value="Ya">
+                    <label class="form-check-label" for="sepatu_b_ya">Ya, saya siap</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sepatu_safety_b" id="sepatu_b_tidak" value="Tidak">
+                    <label class="form-check-label" for="sepatu_b_tidak">Tidak siap</label>
+                </div>
             </div>
 
             <div class="mb-4">
@@ -184,4 +198,36 @@
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const radioA = document.querySelectorAll('input[name="sepatu_safety_a"]');
+    const radioB = document.querySelectorAll('input[name="sepatu_safety_b"]');
+    const containerB = document.getElementById('sepatu_safety_b_container');
+    const form = document.querySelector('form');
+
+    radioA.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'Tidak') {
+                containerB.style.display = 'block';
+                document.getElementById('sepatu_b_ya').required = true;
+            } else {
+                containerB.style.display = 'none';
+                document.getElementById('sepatu_b_ya').required = false;
+                radioB.forEach(r => r.checked = false);
+            }
+        });
+    });
+
+    form.addEventListener('submit', function(e) {
+        const valA = document.querySelector('input[name="sepatu_safety_a"]:checked')?.value;
+        const valB = document.querySelector('input[name="sepatu_safety_b"]:checked')?.value;
+
+        if (valA === 'Tidak' && valB === 'Tidak') {
+            e.preventDefault();
+            alert('Maaf, untuk mengikuti Praktik Kerja Lapangan di LPK Paiton Selaras, Anda diwajibkan untuk memiliki atau bersedia membeli sepatu safety demi keamanan kerja Anda.');
+        }
+    });
+});
+</script>
 @endsection

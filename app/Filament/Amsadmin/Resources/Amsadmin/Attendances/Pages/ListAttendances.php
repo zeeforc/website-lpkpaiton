@@ -13,6 +13,11 @@ class ListAttendances extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            \Filament\Actions\Action::make('export_csv')
+                ->label('Download Laporan (CSV)')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->url(fn () => route('admin.attendances.export'))
+                ->openUrlInNewTab(),
             CreateAction::make(),
         ];
     }

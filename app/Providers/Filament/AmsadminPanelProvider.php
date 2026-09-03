@@ -27,6 +27,7 @@ class AmsadminPanelProvider extends PanelProvider
             ->id('amsadmin')
             ->path('amsadmin')
             ->login()
+            ->authGuard('admin')
             ->colors([
                 'primary' => Color::Amber,
             ])

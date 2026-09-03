@@ -9,7 +9,7 @@ use App\Filament\Amsadmin\Resources\Amsadmin\ReportSubmissions\Pages\ViewReportS
 use App\Filament\Amsadmin\Resources\Amsadmin\ReportSubmissions\Schemas\ReportSubmissionForm;
 use App\Filament\Amsadmin\Resources\Amsadmin\ReportSubmissions\Schemas\ReportSubmissionInfolist;
 use App\Filament\Amsadmin\Resources\Amsadmin\ReportSubmissions\Tables\ReportSubmissionsTable;
-use App\Models\Amsadmin\ReportSubmission;
+use App\Models\ReportSubmission;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -20,9 +20,20 @@ class ReportSubmissionResource extends Resource
 {
     protected static ?string $model = ReportSubmission::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
+
+    protected static ?string $navigationLabel = 'Laporan Siswa';
+    
+    protected static ?string $modelLabel = 'Laporan Siswa';
+    
+    protected static ?string $pluralModelLabel = 'Laporan Siswa';
 
     protected static ?string $recordTitleAttribute = 'title';
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -50,7 +61,6 @@ class ReportSubmissionResource extends Resource
     {
         return [
             'index' => ListReportSubmissions::route('/'),
-            'create' => CreateReportSubmission::route('/create'),
             'view' => ViewReportSubmission::route('/{record}'),
             'edit' => EditReportSubmission::route('/{record}/edit'),
         ];

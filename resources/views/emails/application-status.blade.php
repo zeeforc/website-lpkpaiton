@@ -16,12 +16,13 @@ Upload Dokumen
 Status pendaftaran Anda saat ini: **Review Dokumen**. 
 Dokumen yang Anda unggah sedang dalam proses peninjauan oleh tim kami. Harap menunggu informasi selanjutnya.
 @elseif($application->status === 'accepted')
-Selamat! Pendaftaran Anda dinyatakan **Lolos**.
+Selamat! Pendaftaran Anda **terdaftar sebagai peserta INTERNSHIP PROGRAM**
+Lembaga Pelatihan Kerja Paiton Selaras.
 
 @if($application->tingkat_pendidikan === 'Mahasiswa')
 Sebagai mahasiswa, tahap selanjutnya adalah proses wawancara. Silakan segera menghubungi Admin kami melalui pesan WhatsApp di nomor **+62 811-3059-8801** untuk koordinasi jadwal dan arahan proses interview selanjutnya.
 @else
-Permohonan praktik kerja (PKL) Anda telah disetujui. Silakan segera menghubungi Admin kami melalui pesan WhatsApp di nomor **+62 811-3059-8801** untuk melakukan konfirmasi jadwal mulai masuk dan mendapatkan arahan selanjutnya.
+Jadwal mulai masuk otomatis mengikuti gelombang yang dipilih oleh pendaftar.
 @endif
 
 ---

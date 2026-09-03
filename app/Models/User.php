@@ -16,6 +16,7 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'role',
     ];
 
     protected $hidden = [
@@ -39,5 +40,20 @@ class User extends Authenticatable implements FilamentUser
     public function applications()
     {
         return $this->hasMany(Application::class);
+    }
+
+    public function studentProfile()
+    {
+        return $this->hasOne(StudentProfile::class);
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    public function reportSubmissions()
+    {
+        return $this->hasMany(ReportSubmission::class);
     }
 }

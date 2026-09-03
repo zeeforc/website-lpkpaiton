@@ -55,6 +55,11 @@
             </div>
         @endif
 
+        @php
+            $contohPortofolioSetting = \App\Models\Setting::where('key', 'contoh_portofolio')->first();
+            $contohUrl = $contohPortofolioSetting && $contohPortofolioSetting->value ? Storage::disk('public')->url($contohPortofolioSetting->value) : asset('contoh_portofolio.pdf');
+        @endphp
+
         <form action="{{ URL::signedRoute('application.upload.store', ['application' => $application->id]) }}" method="POST" enctype="multipart/form-data">
             @csrf
             
@@ -83,6 +88,17 @@
                     <label for="dokumen_sehat" class="form-label fw-bold">4. Surat Keterangan Sehat <span class="text-danger">*</span></label>
                     <div class="form-text text-muted mb-2">Upload surat keterangan sehat dari dokter/puskesmas/klinik (PDF/JPG/PNG, Maks 5 MB).</div>
                     <input class="form-control" type="file" id="dokumen_sehat" name="dokumen_sehat" accept=".pdf,.jpg,.jpeg,.png" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="dokumen_portofolio" class="form-label fw-bold">5. Portofolio <span class="text-danger">*</span></label>
+                    <div class="form-text text-muted mb-2">Upload portofolio atau hasil karya/project yang pernah Anda buat (PDF/JPG/PNG, Maks 10 MB).
+                        <br>
+                        <a href="{{ $contohUrl }}" target="_blank" class="text-decoration-none" style="color: #2563eb; font-weight: 500;">
+                            Download Contoh Format Portofolio
+                        </a>
+                    </div>
+                    <input class="form-control" type="file" id="dokumen_portofolio" name="dokumen_portofolio" accept=".pdf,.jpg,.jpeg,.png" required>
                 </div>
             </div>
 

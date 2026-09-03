@@ -20,11 +20,7 @@
         .portal-navbar {
             background-color: #ffffff;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            padding: 0 20px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            min-height: 70px;
         }
         .portal-brand {
             font-weight: 700;
@@ -41,8 +37,7 @@
         }
         .portal-nav-links {
             display: flex;
-            gap: 30px;
-            height: 100%;
+            gap: 20px;
         }
         .portal-nav-link {
             text-decoration: none;
@@ -50,9 +45,8 @@
             font-weight: 500;
             display: flex;
             align-items: center;
-            height: 100%;
+            padding: 23px 5px;
             position: relative;
-            padding: 0 5px;
             transition: all 0.2s;
         }
         .portal-nav-link:hover {
@@ -179,10 +173,31 @@
         
         @media (max-width: 768px) {
             .portal-nav-links {
+                flex-direction: column;
+                gap: 5px;
+                padding-bottom: 10px;
+                padding-top: 10px;
+                border-top: 1px solid #f1f5f9;
+                margin-top: 10px;
+            }
+            .portal-nav-link {
+                padding: 10px 15px;
+                width: 100%;
+                border-radius: 6px;
+            }
+            .portal-nav-link.active {
+                background-color: #eff6ff;
+            }
+            .portal-nav-link.active::after {
                 display: none;
             }
+            .portal-user-menu {
+                padding: 10px 15px;
+                margin-bottom: 10px;
+                border-top: 1px solid #f1f5f9;
+            }
             .portal-content {
-                padding: 20px;
+                padding: 20px 15px;
             }
         }
     </style>
@@ -191,34 +206,52 @@
 <body>
 
     @if(Auth::check())
-    <nav class="portal-navbar">
-        <a href="{{ route('portal.biodata') }}" class="portal-brand">
-            <i class="fa-solid fa-users"></i>
-            Portal Siswa PKL
-        </a>
-        
-        <div class="portal-nav-links">
-            <a href="{{ route('portal.biodata') }}" class="portal-nav-link {{ request()->routeIs('portal.biodata') ? 'active' : '' }}">Biodata</a>
-            <a href="{{ route('portal.informasi') }}" class="portal-nav-link {{ request()->routeIs('portal.informasi') ? 'active' : '' }}">Informasi PKL</a>
-            <a href="{{ route('portal.absensi') }}" class="portal-nav-link {{ request()->routeIs('portal.absensi') ? 'active' : '' }}">Absensi</a>
-            <a href="{{ route('portal.laporan') }}" class="portal-nav-link {{ request()->routeIs('portal.laporan') ? 'active' : '' }}">Pengajuan Laporan</a>
-        </div>
-        
-        <div class="dropdown">
-            <div class="portal-user-menu" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa-regular fa-user-circle" style="font-size: 1.5rem; color: #64748b;"></i>
-                <span style="font-weight: 500; font-size: 0.95rem; color: #475569;">
-                    {{ Auth::user()->name }} <i class="fa-solid fa-chevron-down ms-1" style="font-size: 0.7rem;"></i>
-                </span>
+    <nav class="navbar navbar-expand-md portal-navbar py-0">
+        <div class="container-fluid px-3 px-md-4">
+            <a href="{{ Auth::user()->role === 'guru_pondok' ? route('portal.guru.absensi-rombongan') : route('portal.biodata') }}" class="portal-brand">
+                <i class="fa-solid fa-users"></i>
+                Portal Siswa PKL
+            </a>
+            
+            <button class="navbar-toggler border-0 shadow-none px-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#portalOffcanvas" aria-controls="portalOffcanvas">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="portalOffcanvas" aria-labelledby="portalOffcanvasLabel">
+                <div class="offcanvas-header border-bottom">
+                    <h5 class="offcanvas-title" id="portalOffcanvasLabel">Menu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body d-flex flex-column flex-md-row align-items-md-center justify-content-md-end">
+                    <div class="portal-nav-links ms-md-auto me-md-4 mt-0 pt-0 border-0">
+                        @if(Auth::user()->role === 'guru_pondok')
+                            <a href="{{ route('portal.guru.absensi-rombongan') }}" class="portal-nav-link {{ request()->routeIs('portal.guru.absensi-rombongan') ? 'active' : '' }}"><i class="fa-solid fa-users me-2"></i> Absensi Rombongan</a>
+                        @else
+                            <a href="{{ route('portal.biodata') }}" class="portal-nav-link {{ request()->routeIs('portal.biodata') ? 'active' : '' }}">Biodata</a>
+                            <a href="{{ route('portal.informasi') }}" class="portal-nav-link {{ request()->routeIs('portal.informasi') ? 'active' : '' }}">Informasi PKL</a>
+                            <a href="{{ route('portal.absensi') }}" class="portal-nav-link {{ request()->routeIs('portal.absensi') ? 'active' : '' }}">Absensi</a>
+                            <a href="{{ route('portal.laporan') }}" class="portal-nav-link {{ request()->routeIs('portal.laporan') ? 'active' : '' }}">Pengajuan Laporan</a>
+                        @endif
+                    </div>
+                    
+                    <div class="dropdown mt-3 mt-md-0 border-top pt-3 border-md-0 pt-md-0 portal-user-menu-wrapper">
+                        <div class="portal-user-menu" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-regular fa-user-circle" style="font-size: 1.5rem; color: #64748b;"></i>
+                            <span style="font-weight: 500; font-size: 0.95rem; color: #475569;">
+                                {{ Auth::user()->name }} <i class="fa-solid fa-chevron-down ms-1" style="font-size: 0.7rem;"></i>
+                            </span>
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 position-absolute">
+                            <li>
+                                <form action="{{ route('portal.logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-danger"><i class="fa-solid fa-sign-out-alt me-2"></i> Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-                <li>
-                    <form action="{{ route('portal.logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="dropdown-item text-danger"><i class="fa-solid fa-sign-out-alt me-2"></i> Logout</button>
-                    </form>
-                </li>
-            </ul>
         </div>
     </nav>
     @endif
@@ -242,6 +275,8 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @stack('scripts')
 </body>
 </html>

@@ -104,10 +104,12 @@
                     <div class="alert alert-success mt-3">
                         <strong>Langkah Selanjutnya:</strong><br>
                         @if($application->tingkat_pendidikan === 'Mahasiswa')
-                            Selamat! Anda dinyatakan Lolos Sepenuhnya. Silakan segera menghubungi Admin kami melalui pesan WhatsApp di nomor <strong>+62 811-3059-8801</strong> untuk koordinasi jadwal dan arahan proses interview selanjutnya.
+                            Selamat! Anda terdaftar sebagai peserta INTERNSHIP PROGRAM Lembaga Pelatihan Kerja Paiton Selaras. Silakan segera menghubungi Admin kami melalui pesan WhatsApp di nomor <strong>+62 811-3059-8801</strong> untuk koordinasi jadwal dan arahan proses interview selanjutnya.
                         @else
-                            Selamat! Anda dinyatakan Lolos Sepenuhnya. Silakan segera menghubungi Admin kami melalui pesan WhatsApp di nomor <strong>+62 811-3059-8801</strong> untuk melakukan konfirmasi jadwal mulai masuk dan mendapatkan arahan selanjutnya.
+                            Selamat! Anda terdaftar sebagai peserta INTERNSHIP PROGRAM Lembaga Pelatihan Kerja Paiton Selaras. Jadwal mulai masuk otomatis mengikuti gelombang yang dipilih oleh pendaftar.
                         @endif
+                        <br><br>
+                        Silakan periksa kotak masuk (inbox) email yang Anda gunakan saat mendaftar guna mendapatkan kredensial akses login ke portal peserta PKL.
                     </div>
                 @endif
 

@@ -9,7 +9,7 @@ use App\Filament\Amsadmin\Resources\Amsadmin\Attendances\Pages\ViewAttendance;
 use App\Filament\Amsadmin\Resources\Amsadmin\Attendances\Schemas\AttendanceForm;
 use App\Filament\Amsadmin\Resources\Amsadmin\Attendances\Schemas\AttendanceInfolist;
 use App\Filament\Amsadmin\Resources\Amsadmin\Attendances\Tables\AttendancesTable;
-use App\Models\Amsadmin\Attendance;
+use App\Models\Attendance;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;

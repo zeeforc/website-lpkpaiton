@@ -28,6 +28,8 @@ class ApplicationInfolist
                     ->columnSpanFull(),
                 \Filament\Infolists\Components\TextEntry::make('email_balasan')->label('Email Surat Balasan')
                     ->icon('heroicon-m-envelope'),
+                \Filament\Infolists\Components\TextEntry::make('created_at')->label('Tanggal Pendaftaran')
+                    ->dateTime('d M Y, H:i'),
                 
                 \Filament\Infolists\Components\RepeatableEntry::make('documents')
                     ->label('Surat Pengantar Resmi & Proposal')

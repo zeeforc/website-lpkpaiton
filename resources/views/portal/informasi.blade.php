@@ -9,10 +9,8 @@
         border: 1px solid #e2e8f0;
         border-radius: 12px;
         padding: 20px;
-        display: flex;
-        gap: 30px;
+        gap: 20px;
         margin-bottom: 25px;
-        align-items: center;
     }
     .info-badge {
         width: 60px;
@@ -40,7 +38,6 @@
     .doc-header {
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
         margin-bottom: 15px;
     }
     .status-tanggungan-card {
@@ -77,24 +74,26 @@
 </div>
 
 <!-- Header Info -->
-<div class="info-header-card">
+<div class="info-header-card d-flex flex-column flex-md-row align-items-center text-center text-md-start">
     <div class="info-badge">
         <i class="fa-regular fa-clipboard"></i>
     </div>
     <div>
-        <div class="d-flex align-items-center gap-2 mb-1">
+        <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-1">
             <span style="width: 10px; height: 10px; background: #3b82f6; border-radius: 50%; display: inline-block;"></span>
             <span class="fw-bold text-dark">PKL Sedang Berlangsung</span>
         </div>
         <div class="text-secondary" style="font-size: 0.85rem">Periode PKL</div>
-        <div class="fw-medium text-dark" style="font-size: 0.9rem">{{ $application->periode_gelombang }}</div>
+        <div class="fw-medium text-dark" style="font-size: 0.9rem">{{ optional($application)->periode_gelombang ?? '-' }}</div>
     </div>
-    <div class="info-divider"></div>
+    <div class="info-divider d-none d-md-block"></div>
+    <hr class="d-block d-md-none w-100 my-1 text-secondary opacity-25">
     <div>
         <div class="text-secondary mb-1" style="font-size: 0.85rem">Tempat PKL</div>
         <div class="fw-medium text-dark" style="font-size: 0.9rem">LPK Paiton Selaras</div>
     </div>
-    <div class="info-divider"></div>
+    <div class="info-divider d-none d-md-block"></div>
+    <hr class="d-block d-md-none w-100 my-1 text-secondary opacity-25">
     <div>
         <div class="text-secondary mb-1" style="font-size: 0.85rem">Pembimbing Industri</div>
         <div class="fw-medium text-dark" style="font-size: 0.9rem">Admin, LPK</div>
@@ -106,13 +105,13 @@
     <div class="col-lg-6">
         <!-- Tata Tertib -->
         <div class="doc-card">
-            <div class="doc-header">
+            <div class="doc-header flex-column flex-md-row align-items-center align-items-md-start text-center text-md-start gap-3">
                 <div>
                     <h6 class="fw-bold text-dark mb-1"><i class="fa-regular fa-file-lines text-primary me-2"></i> TATA TERTIB</h6>
                     <div class="fw-semibold text-dark">LPK Paiton Selaras</div>
                     <div class="text-secondary" style="font-size: 0.85rem">Ketentuan yang wajib dipatuhi selama mengikuti kegiatan PKL.</div>
                 </div>
-                <div class="text-end">
+                <div class="text-center text-md-end">
                     <i class="fa-regular fa-file-pdf fs-3 text-secondary"></i>
                     <div class="text-secondary mt-1" style="font-size: 0.75rem">PDF<br>1.2 MB</div>
                 </div>
@@ -135,9 +134,15 @@
                 </div>
             </div>
             
-            <button class="btn btn-outline-primary btn-sm rounded-pill fw-medium px-4">
+            @if(isset($tataTertib) && $tataTertib->value)
+            <a href="{{ asset('storage/' . $tataTertib->value) }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill fw-medium px-4">
                 <i class="fa-solid fa-download me-2"></i> Lihat / Unduh Tata Tertib
+            </a>
+            @else
+            <button class="btn btn-outline-secondary btn-sm rounded-pill fw-medium px-4" disabled>
+                <i class="fa-solid fa-download me-2"></i> File Belum Tersedia
             </button>
+            @endif
         </div>
 
         <!-- Status Tanggungan -->
@@ -149,6 +154,7 @@
                     if(!$adminComplete) $belumCount++;
                     if(!$docComplete) $belumCount++;
                     if(!$laporan || $laporan->status != 'approved') $belumCount++;
+                    if($laporan && $laporan->status == 'rejected' && $laporan->tanggungan_type) $belumCount++;
                 @endphp
                 @if($belumCount > 0)
                     <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 rounded-pill">{{ $belumCount }} Belum Selesai</span>
@@ -220,6 +226,27 @@
                 </div>
                 <a href="{{ route('portal.laporan') }}" class="btn btn-outline-custom">Lihat Detail</a>
             </div>
+
+            @if($laporan && $laporan->status == 'rejected' && $laporan->tanggungan_type)
+            <!-- Custom Tanggungan dari Admin -->
+            <div class="tanggungan-item">
+                <div class="d-flex align-items-start">
+                    <div class="status-dot mt-1" style="background-color: #ef4444;"></div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="fw-semibold text-dark">{{ $laporan->tanggungan_type }}</span>
+                            <span class="badge bg-danger bg-opacity-10 text-danger" style="font-size: 0.7rem">Revisi / Ditolak</span>
+                        </div>
+                        <div class="text-secondary" style="font-size: 0.85rem">
+                            Catatan: {{ $laporan->admin_note }}
+                            <br><br>
+                            <span class="text-danger fw-medium"><i class="fa-solid fa-circle-exclamation me-1"></i> Harap segera menghubungi staf administrasi LPK Paiton Selaras untuk tindak lanjut penyelesaian tanggungan Anda.</span>
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ route('portal.laporan') }}" class="btn btn-outline-custom">Lihat Detail</a>
+            </div>
+            @endif
             
             <div class="mt-3 p-3 bg-light rounded text-secondary d-flex gap-2" style="font-size: 0.85rem">
                 <i class="fa-solid fa-circle-info mt-1"></i>
@@ -232,13 +259,13 @@
     <div class="col-lg-6">
         <!-- SOP PKL -->
         <div class="doc-card">
-            <div class="doc-header">
+            <div class="doc-header flex-column flex-md-row align-items-center align-items-md-start text-center text-md-start gap-3">
                 <div>
                     <h6 class="fw-bold text-dark mb-1"><i class="fa-solid fa-clipboard-check text-primary me-2"></i> SOP PKL</h6>
                     <div class="fw-semibold text-dark">LPK Paiton Selaras</div>
                     <div class="text-secondary" style="font-size: 0.85rem">Prosedur dan alur pelaksanaan PKL di LPK Paiton Selaras.</div>
                 </div>
-                <div class="text-end">
+                <div class="text-center text-md-end">
                     <i class="fa-regular fa-file-pdf fs-3 text-secondary"></i>
                     <div class="text-secondary mt-1" style="font-size: 0.75rem">PDF<br>1.5 MB</div>
                 </div>
@@ -260,9 +287,15 @@
                 </div>
             </div>
             
-            <button class="btn btn-outline-primary btn-sm rounded-pill fw-medium px-4">
+            @if(isset($sopPkl) && $sopPkl->value)
+            <a href="{{ asset('storage/' . $sopPkl->value) }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill fw-medium px-4">
                 <i class="fa-solid fa-download me-2"></i> Lihat / Unduh SOP
+            </a>
+            @else
+            <button class="btn btn-outline-secondary btn-sm rounded-pill fw-medium px-4" disabled>
+                <i class="fa-solid fa-download me-2"></i> File Belum Tersedia
             </button>
+            @endif
         </div>
 
         <!-- Informasi Penting -->
@@ -280,7 +313,7 @@
 
         <!-- Butuh Bantuan -->
         <div class="card-custom">
-            <div class="card-body-custom d-flex justify-content-between align-items-center">
+            <div class="card-body-custom d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start gap-3">
                 <div>
                     <h6 class="fw-bold text-dark mb-1"><i class="fa-regular fa-user text-primary me-2"></i> BUTUH BANTUAN?</h6>
                     <div class="text-secondary mb-2" style="font-size: 0.85rem">Hubungi staf LPK Paiton Selaras.</div>
@@ -290,7 +323,7 @@
                     <div class="text-secondary mt-1" style="font-size: 0.85rem"><i class="fa-regular fa-clock me-2"></i> Senin - Jumat | 08.00 - 16.00 WIB</div>
                 </div>
                 <div class="d-flex flex-column gap-2">
-                    <a href="https://wa.me/6281130598801" target="_blank" class="btn btn-outline-success rounded-pill fw-medium btn-sm px-3">
+                    <a href="https://wa.me/6281130598801" target="_blank" class="btn btn-outline-success rounded-pill fw-medium btn-sm px-3 mt-3 mt-md-0">
                         <i class="fa-brands fa-whatsapp me-1"></i> Hubungi via WhatsApp
                     </a>
                 </div>

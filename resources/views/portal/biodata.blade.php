@@ -63,6 +63,16 @@
     <p class="page-subtitle">Kelola informasi pribadi dan data PKL Anda.</p>
 </div>
 
+@if(empty($profile->face_descriptor))
+<div class="alert alert-warning d-flex align-items-center" role="alert">
+    <i class="fa-solid fa-triangle-exclamation me-3 fs-4"></i>
+    <div>
+        <strong>Penting!</strong> Anda belum mendaftarkan data wajah untuk keperluan absensi. 
+        <a href="{{ route('portal.face-registration') }}" class="alert-link">Klik di sini untuk mendaftarkan wajah Anda sekarang</a>.
+    </div>
+</div>
+@endif
+
 <form action="{{ route('portal.biodata.update') }}" method="POST">
     @csrf
     <div class="row">
@@ -75,14 +85,21 @@
                     <button type="submit" class="btn-outline-primary-custom">Simpan Perubahan</button>
                 </div>
                 <div class="card-body-custom">
-                    <div class="profile-card mb-4">
-                        <div class="profile-avatar">
-                            <i class="fa-solid fa-user"></i>
+                    <div class="d-flex flex-column flex-md-row text-center text-md-start" style="gap: 20px;">
+                        <div class="profile-avatar mx-auto mx-md-0" style="overflow: hidden; padding: 0; flex-shrink: 0;">
+                            @if(isset($pasFoto) || $profile->pas_foto)
+                                @php
+                                    $fotoPath = $profile->pas_foto ? asset('storage/' . $profile->pas_foto) : asset('storage/' . $pasFoto->file_path);
+                                @endphp
+                                <img src="{{ $fotoPath }}" alt="Pas Foto" style="width:100%; height:100%; object-fit:cover; border-radius:12px;">
+                            @else
+                                <i class="fa-solid fa-user"></i>
+                            @endif
                         </div>
                         <div style="flex:1;">
                             <div class="row mb-2">
                                 <div class="col-sm-4 text-secondary">Nama Lengkap</div>
-                                <div class="col-sm-8 fw-medium">{{ $application->nama_lengkap }}</div>
+                                <div class="col-sm-8 fw-medium">{{ optional($application)->nama_lengkap ?? Auth::user()->name }}</div>
                             </div>
                             <div class="row mb-2 align-items-center">
                                 <div class="col-sm-4 text-secondary">Nama Panggilan</div>
@@ -128,9 +145,9 @@
                     
                     <div class="row mb-2">
                         <div class="col-sm-3 text-secondary">No. HP</div>
-                        <div class="col-sm-3 fw-medium">{{ $application->no_hp }}</div>
+                        <div class="col-sm-3 fw-medium">{{ optional($application)->no_hp ?? '-' }}</div>
                         <div class="col-sm-2 text-secondary">Email</div>
-                        <div class="col-sm-4 fw-medium">{{ $application->email_balasan }}</div>
+                        <div class="col-sm-4 fw-medium">{{ optional($application)->email_balasan ?? Auth::user()->email }}</div>
                     </div>
                     <div class="row mt-3 align-items-start">
                         <div class="col-sm-3 text-secondary pt-1">Alamat</div>
@@ -158,7 +175,7 @@
                             <div class="data-row">
                                 <div class="data-label">Periode PKL</div>
                                 <div class="data-separator">:</div>
-                                <div class="data-value">{{ $application->periode_gelombang }} ({{ $application->lama_durasi_bulan }} Bulan)</div>
+                                <div class="data-value">{{ optional($application)->periode_gelombang ?? '-' }} ({{ optional($application)->lama_durasi_bulan ?? '-' }} Bulan)</div>
                             </div>
                             <div class="data-row">
                                 <div class="data-label">Nama Instansi</div>
@@ -168,7 +185,7 @@
                             <div class="data-row">
                                 <div class="data-label">Posisi / Bidang</div>
                                 <div class="data-separator">:</div>
-                                <div class="data-value">{{ $application->jurusan }}</div>
+                                <div class="data-value">{{ optional($application)->jurusan ?? '-' }}</div>
                             </div>
                             
                             <hr class="text-secondary my-4" style="opacity: 0.1">
@@ -209,7 +226,7 @@
                 <div class="card-body-custom">
                     <div class="row mb-2 align-items-center">
                         <div class="col-sm-5 text-secondary">Nama Sekolah</div>
-                        <div class="col-sm-7 fw-medium">{{ $application->instansi }}</div>
+                        <div class="col-sm-7 fw-medium">{{ optional($application)->instansi ?? '-' }}</div>
                     </div>
                     <div class="row mb-2 align-items-center">
                         <div class="col-sm-5 text-secondary">NPSN</div>
@@ -219,7 +236,7 @@
                     </div>
                     <div class="row mb-2 align-items-center">
                         <div class="col-sm-5 text-secondary">Jurusan</div>
-                        <div class="col-sm-7 fw-medium">{{ $application->jurusan }}</div>
+                        <div class="col-sm-7 fw-medium">{{ optional($application)->jurusan ?? '-' }}</div>
                     </div>
                     <div class="row mb-2 align-items-center">
                         <div class="col-sm-5 text-secondary">Kelas / SMT</div>

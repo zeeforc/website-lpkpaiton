@@ -237,21 +237,21 @@
                                 <div class="col-md-6">
                                     <label class="form-label text-secondary" style="font-size: 0.85rem">Nama Lengkap</label>
                                     <div class="position-relative">
-                                        <input type="text" class="form-control form-control-sm form-control-lock" value="{{ $application->nama_lengkap }}" readonly>
+                                        <input type="text" class="form-control form-control-sm form-control-lock" value="{{ optional($application)->nama_lengkap ?? Auth::user()->name }}" readonly>
                                         <i class="fa-solid fa-lock lock-icon"></i>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label text-secondary" style="font-size: 0.85rem">Jurusan</label>
                                     <div class="position-relative">
-                                        <input type="text" class="form-control form-control-sm form-control-lock" value="{{ $application->jurusan }}" readonly>
+                                        <input type="text" class="form-control form-control-sm form-control-lock" value="{{ optional($application)->jurusan ?? '-' }}" readonly>
                                         <i class="fa-solid fa-lock lock-icon"></i>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label text-secondary" style="font-size: 0.85rem">NIS / NISN</label>
                                     <div class="position-relative">
-                                        <input type="text" class="form-control form-control-sm form-control-lock" value="{{ $profile->nis ?? '-' }} / {{ $profile->nisn ?? '-' }}" readonly>
+                                        <input type="text" class="form-control form-control-sm form-control-lock" value="{{ optional($profile)->nis ?? '-' }} / {{ optional($profile)->nisn ?? '-' }}" readonly>
                                         <i class="fa-solid fa-lock lock-icon"></i>
                                     </div>
                                 </div>
@@ -265,14 +265,14 @@
                                 <div class="col-md-6">
                                     <label class="form-label text-secondary" style="font-size: 0.85rem">Asal Sekolah</label>
                                     <div class="position-relative">
-                                        <input type="text" class="form-control form-control-sm form-control-lock" value="{{ $application->instansi }}" readonly>
+                                        <input type="text" class="form-control form-control-sm form-control-lock" value="{{ optional($application)->instansi ?? '-' }}" readonly>
                                         <i class="fa-solid fa-lock lock-icon"></i>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label text-secondary" style="font-size: 0.85rem">Periode PKL</label>
                                     <div class="position-relative">
-                                        <input type="text" class="form-control form-control-sm form-control-lock" value="{{ $application->periode_gelombang }}" readonly>
+                                        <input type="text" class="form-control form-control-sm form-control-lock" value="{{ optional($application)->periode_gelombang ?? '-' }}" readonly>
                                         <i class="fa-solid fa-lock lock-icon"></i>
                                     </div>
                                 </div>
@@ -321,15 +321,35 @@
                 <i class="fa-solid fa-lock text-primary"></i>
                 <h6 class="fw-bold text-dark m-0">Sertifikat PKL</h6>
             </div>
-            <div class="card-body-custom text-center py-5">
-                @if($laporan && $laporan->status == 'approved')
-                    <i class="fa-solid fa-award fs-1 text-success mb-3"></i>
-                    <p class="text-secondary" style="font-size: 0.85rem">Sertifikat PKL Anda telah tersedia dan dapat diunduh.</p>
-                    <button class="btn btn-success btn-sm rounded-pill px-4"><i class="fa-solid fa-download me-2"></i> Unduh Sertifikat</button>
+            <div class="card-body-custom py-4">
+                @if($certificates->count() > 0)
+                    @php $cert = $certificates->sortByDesc('created_at')->first(); @endphp
+                    <div class="d-flex flex-column gap-3">
+                        <div class="p-3 border rounded text-start d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="fa-solid fa-certificate fs-2 text-warning"></i>
+                                <div>
+                                    <h6 class="m-0 fw-bold text-dark">{{ $cert->title }}</h6>
+                                    <small class="text-secondary">Diterbitkan: {{ $cert->created_at->format('d M Y') }}</small>
+                                </div>
+                            </div>
+                            <a href="{{ asset('storage/' . $cert->file_path) }}" target="_blank" class="btn btn-success btn-sm rounded-pill px-3">
+                                <i class="fa-solid fa-download me-1"></i> Unduh
+                            </a>
+                        </div>
+                    </div>
+                @elseif($laporan && $laporan->status == 'approved')
+                    <div class="text-center py-4">
+                        <i class="fa-solid fa-award fs-1 text-success mb-3"></i>
+                        <p class="text-secondary" style="font-size: 0.85rem">Laporan disetujui. Sertifikat Anda sedang disiapkan oleh admin.</p>
+                        <button class="btn btn-outline-secondary btn-sm rounded-pill px-4" disabled>Menunggu Sertifikat</button>
+                    </div>
                 @else
-                    <i class="fa-solid fa-lock fs-1 text-secondary mb-3 opacity-50"></i>
-                    <p class="text-secondary" style="font-size: 0.85rem">Sertifikat PKL akan tersedia setelah laporan Anda disetujui oleh admin.</p>
-                    <button class="btn btn-outline-secondary btn-sm rounded-pill px-4" disabled>Belum Tersedia</button>
+                    <div class="text-center py-4">
+                        <i class="fa-solid fa-lock fs-1 text-secondary mb-3 opacity-50"></i>
+                        <p class="text-secondary" style="font-size: 0.85rem">Sertifikat PKL akan tersedia setelah laporan Anda disetujui oleh admin.</p>
+                        <button class="btn btn-outline-secondary btn-sm rounded-pill px-4" disabled>Belum Tersedia</button>
+                    </div>
                 @endif
             </div>
         </div>
@@ -385,6 +405,10 @@
                             <div class="alert {{ $laporan->status == 'rejected' ? 'alert-danger' : 'alert-info' }} m-0 p-3" style="font-size: 0.85rem">
                                 <strong>Pesan dari Admin:</strong><br>
                                 {{ $laporan->admin_note }}
+                                @if($laporan->status == 'rejected')
+                                    <hr style="opacity: 0.15; margin: 10px 0;">
+                                    <span class="fw-medium"><i class="fa-solid fa-circle-exclamation me-1"></i> Harap segera menghubungi staf administrasi LPK Paiton Selaras untuk tindak lanjut penyelesaian tanggungan Anda.</span>
+                                @endif
                             </div>
                         @else
                             <div class="alert alert-warning m-0 p-3" style="font-size: 0.85rem">
