@@ -5,13 +5,21 @@
 @push('styles')
 <style>
     .stat-card {
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 20px;
         padding: 25px 20px;
         display: flex;
         align-items: center;
         gap: 20px;
+        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 40px -10px rgba(0,0,0,0.08);
     }
     .stat-icon {
         width: 60px;
@@ -44,10 +52,13 @@
     }
     
     .table-custom {
-        background: #fff;
-        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 20px;
         overflow: hidden;
-        border: 1px solid #e2e8f0;
+        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
     }
     .table-custom th {
         background: #f8fafc;
@@ -104,7 +115,7 @@
 </div>
 
 <!-- Stats Row -->
-<div class="row mb-4">
+<div class="row mb-4 g-3">
     <div class="col-md-3">
         <div class="stat-card">
             <div class="stat-icon bg-light-blue"><i class="fa-regular fa-calendar"></i></div>

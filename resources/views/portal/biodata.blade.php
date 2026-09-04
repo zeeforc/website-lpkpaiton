@@ -24,12 +24,15 @@
         display: flex;
         gap: 20px;
         align-items: center;
-        background: #f8fafc;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
         padding: 15px 20px;
-        border-radius: 8px;
+        border-radius: 12px;
         margin-top: 20px;
         font-size: 0.85rem;
-        color: #64748b;
+        color: #475569;
     }
     .legend-item {
         display: flex;
@@ -317,7 +320,7 @@
                 </div>
             </div>
             
-            <div class="info-legend d-flex justify-content-center mt-3 bg-white border">
+            <div class="info-legend d-flex justify-content-center mt-3">
                 <div class="legend-item"><div class="legend-color-gray"></div> Dikelola Admin</div>
                 <div class="legend-item ms-4"><div class="legend-color-blue"></div> Dapat diedit siswa</div>
             </div>

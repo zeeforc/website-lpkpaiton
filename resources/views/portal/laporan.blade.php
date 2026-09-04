@@ -5,11 +5,14 @@
 @push('styles')
 <style>
     .timeline-container {
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 20px;
         padding: 30px;
         margin-bottom: 25px;
+        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
     }
     .timeline-steps {
         display: flex;
@@ -70,19 +73,7 @@
         color: #64748b;
         margin-top: 5px;
     }
-    .card-custom {
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        margin-bottom: 20px;
-    }
-    .card-header-custom {
-        padding: 20px;
-        border-bottom: 1px solid #e2e8f0;
-    }
-    .card-body-custom {
-        padding: 20px;
-    }
+    /* card-custom inherits from layout.blade.php */
     .form-control-lock {
         background-color: #f8fafc;
         border-color: #e2e8f0;

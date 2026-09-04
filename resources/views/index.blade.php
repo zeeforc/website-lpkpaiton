@@ -102,10 +102,12 @@
                         <div class="col-md-6">
                             <div class="d-flex gap-3">
                                 <div class="glass-card">
-                                    <div class="fs-3">⚙️</div>
+                                    <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mb-3" style="width: 48px; height: 48px; color: #fd7a2a;">
+                                        <i data-feather="settings"></i>
+                                    </div>
                                     <div>
-                                        <h3 class="h6 mb-1">Mekanik</h3>
-                                        <p class="small text-dark mb-0">
+                                        <h3 class="h6 mb-2 fw-bold">Mekanik</h3>
+                                        <p class="small text-dark mb-0" style="line-height: 1.6;">
                                             Kerja bangku, bubut dasar, dan pelatihan dasar
                                             pengelasan untuk mempersiapkan peserta menjadi teknisi
                                             mekanik yang terampil dan sigap menghadapi kebutuhan
@@ -119,10 +121,12 @@
                             <div class="d-flex gap-3">
 
                                 <div class="glass-card">
-                                    <div class="fs-3">💡</div>
+                                    <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mb-3" style="width: 48px; height: 48px; color: #fd7a2a;">
+                                        <i data-feather="zap"></i>
+                                    </div>
                                     <div>
-                                        <h3 class="h6 mb-1">Listrik</h3>
-                                        <p class="small text-dark mb-0">
+                                        <h3 class="h6 mb-2 fw-bold">Listrik</h3>
+                                        <p class="small text-dark mb-0" style="line-height: 1.6;">
                                             Dasar instalasi listrik, relay, panel, dan sistem
                                             kontrol sederhana hingga penerapan di lingkungan kerja
                                             nyata dengan pendampingan instruktur bersertifikat.
@@ -223,13 +227,13 @@
         <div class="row g-4">
             <div class="col-lg-6">
                 <h2 class="section-title">Kontak Kami</h2>
-                <p class="section-subtitle small text-dark">
+                <p class="section-subtitle small text-dark mb-4">
                     Hubungi kami untuk informasi jadwal pelatihan, persyaratan
                     pendaftaran, kerja sama industri, atau kunjungan studi ke
                     fasilitas pelatihan.
                 </p>
 
-                <div class="contact-card mb-4">
+                <div class="glass-card mb-4" style="padding: 2.5rem;">
 
                     @if ($errors->any())
                     <div class="alert alert-danger small">
@@ -251,74 +255,84 @@
                         @csrf
 
                         <div class="mb-3">
-                            <label class="form-label small">Nama</label>
-                            <input type="text" name="name" class="form-control form-control-sm"
-                                value="{{ old('name') }}" required />
+                            <label class="form-label small fw-semibold text-dark">Nama Lengkap</label>
+                            <input type="text" name="name" class="form-control"
+                                style="background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.8); border-radius: 12px; padding: 12px 16px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);"
+                                placeholder="Masukkan nama Anda" value="{{ old('name') }}" required />
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label small">Email</label>
-                            <input type="email" name="email" class="form-control form-control-sm"
+                            <label class="form-label small fw-semibold text-dark">Email</label>
+                            <input type="email" name="email" class="form-control"
+                                style="background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.8); border-radius: 12px; padding: 12px 16px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);"
                                 placeholder="nama@email.com" value="{{ old('email') }}" required />
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label small">Pesan</label>
-                            <textarea name="message" class="form-control form-control-sm" rows="4"
-                                placeholder="Tuliskan pertanyaan atau kebutuhan pelatihan Anda"
+                        <div class="mb-4">
+                            <label class="form-label small fw-semibold text-dark">Pesan</label>
+                            <textarea name="message" class="form-control" rows="4"
+                                style="background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.8); border-radius: 12px; padding: 12px 16px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);"
+                                placeholder="Tuliskan pertanyaan atau kebutuhan pelatihan Anda..."
                                 required>{{ old('message') }}</textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-gradient btn-sm">
-                            Kirim
+                        <button type="submit" class="btn btn-gradient w-100" style="border-radius: 12px; padding: 12px; font-weight: 600;">
+                            <i data-feather="send" class="me-2" style="width: 18px; height: 18px;"></i> Kirim Pesan
                         </button>
                     </form>
                 </div>
             </div>
-
             <div class="col-lg-6">
-                <div class="glass-card h-100">
-                    <h3 class="h6 mb-3">Informasi Kontak</h3>
+                <div class="glass-card h-100" style="padding: 2.5rem;">
+                    <h3 class="h5 mb-4 fw-bold">Informasi Kontak</h3>
 
-                    <div class="d-flex align-items-start gap-3 mb-3">
-                        <div class="fs-4">📞</div>
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm" style="width: 48px; height: 48px; color: #fd7a2a;">
+                            <i data-feather="phone"></i>
+                        </div>
                         <div>
-                            <div class="small text-uppercase text-dark">
+                            <div class="small text-uppercase text-secondary fw-semibold" style="letter-spacing: 0.5px;">
                                 Phone
                             </div>
-                            <div class="small">+62 123 456 7890</div>
+                            <div class="fw-medium text-dark">+62 123 456 7890</div>
                         </div>
                     </div>
 
-                    <div class="d-flex align-items-start gap-3 mb-3">
-                        <div class="fs-4">📧</div>
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm" style="width: 48px; height: 48px; color: #fd7a2a;">
+                            <i data-feather="mail"></i>
+                        </div>
                         <div>
-                            <div class="small text-uppercase text-dark">
+                            <div class="small text-uppercase text-secondary fw-semibold" style="letter-spacing: 0.5px;">
                                 Email
                             </div>
-                            <div class="small">lpkpaiton@gmail.com</div>
+                            <div class="fw-medium text-dark">lpkpaiton@gmail.com</div>
                         </div>
                     </div>
 
-                    <div class="d-flex align-items-start gap-3 mb-3">
-                        <div class="fs-4">🌐</div>
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm" style="width: 48px; height: 48px; color: #fd7a2a;">
+                            <i data-feather="share-2"></i>
+                        </div>
                         <div>
-                            <div class="small text-uppercase text-dark">
+                            <div class="small text-uppercase text-secondary fw-semibold" style="letter-spacing: 0.5px;">
                                 Social
                             </div>
-                            <div class="d-flex gap-3 small">
-                                <a href="#" class="link-dark text-decoration-none">Facebook</a>
-                                <a href="#" class="link-dark text-decoration-none">Instagram</a>
+                            <div class="d-flex gap-3 mt-1">
+                                <a href="#" class="text-dark text-decoration-none fw-medium hover-primary d-flex align-items-center"><i data-feather="facebook" class="me-1" style="width: 16px; height: 16px;"></i> Facebook</a>
+                                <a href="#" class="text-dark text-decoration-none fw-medium hover-primary d-flex align-items-center"><i data-feather="instagram" class="me-1" style="width: 16px; height: 16px;"></i> Instagram</a>
                             </div>
                         </div>
                     </div>
+                    
+                    <hr class="my-4" style="border-color: rgba(0,0,0,0.1);">
 
-                    <p class="small text-dark mb-0">
-                        Staf administrasi kami siap membantu pada hari kerja dengan jam
-                        layanan pukul 08.00 sampai 16.00 waktu setempat.
+                    <p class="small text-secondary m-0 d-flex" style="line-height: 1.6;">
+                        <i data-feather="info" class="me-2 flex-shrink-0" style="width: 18px; height: 18px; margin-top: 2px;"></i> 
+                        <span>Staf administrasi kami siap membantu pada hari kerja dengan jam layanan pukul 08.00 sampai 16.00 waktu setempat.</span>
                     </p>
                 </div>
-            </div>
+            </div>            
         </div>
     </div>
 </section>

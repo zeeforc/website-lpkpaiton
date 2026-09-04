@@ -478,7 +478,7 @@
         const ctx = document.getElementById('pklYearlyChart');
         if (ctx && sortedData.length > 0) {
             const maxTotal = Math.max(...sortedData.map(item => Number(item.total)));
-            const gap = maxTotal * 0.05; // Gap adalah 5% dari nilai tertinggi
+            const gap = maxTotal * 0.015; // Gap diperkecil jadi 1.5% agar lebih padat dan menyatu
 
             let pklChart = new Chart(ctx, {
                 type: 'bar',
@@ -491,10 +491,10 @@
                             data: sortedData.map(item => [0, Math.floor(Number(item.total) * 0.45)]),
                             backgroundColor: '#1a1a2e',
                             hoverBackgroundColor: '#111122',
-                            borderRadius: 10,
+                            borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 12, bottomRight: 12 },
                             borderSkipped: false,
-                            barPercentage: 0.6,
-                            categoryPercentage: 0.7
+                            barPercentage: 0.65,
+                            categoryPercentage: 0.75
                         },
                         {
                             label: 'Total Peserta',
@@ -502,15 +502,15 @@
                             data: sortedData.map(item => {
                                 let total = Number(item.total);
                                 let base = Math.floor(total * 0.45);
-                                let start = Math.min(base + gap, total - (total * 0.05)); // Pastikan gak bablas
+                                let start = Math.min(base + gap, total - (total * 0.015)); 
                                 return [start, total];
                             }),
                             backgroundColor: '#fd7a2a',
                             hoverBackgroundColor: '#e86a20',
-                            borderRadius: 10,
+                            borderRadius: { topLeft: 12, topRight: 12, bottomLeft: 0, bottomRight: 0 },
                             borderSkipped: false,
-                            barPercentage: 0.6,
-                            categoryPercentage: 0.7
+                            barPercentage: 0.65,
+                            categoryPercentage: 0.75
                         }
                     ]
                 },
@@ -577,14 +577,14 @@
                 }
                 
                 const currentMax = Math.max(...filteredData.map(item => Number(item.total)));
-                const currentGap = currentMax * 0.05;
+                const currentGap = currentMax * 0.015;
 
                 pklChart.data.labels = filteredData.map(item => item.year);
                 pklChart.data.datasets[0].data = filteredData.map(item => [0, Math.floor(Number(item.total) * 0.45)]);
                 pklChart.data.datasets[1].data = filteredData.map(item => {
                     let total = Number(item.total);
                     let base = Math.floor(total * 0.45);
-                    let start = Math.min(base + currentGap, total - (total * 0.05));
+                    let start = Math.min(base + currentGap, total - (total * 0.015));
                     return [start, total];
                 });
                 pklChart.update();

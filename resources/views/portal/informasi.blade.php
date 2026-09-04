@@ -5,12 +5,15 @@
 @push('styles')
 <style>
     .info-header-card {
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 20px;
-        gap: 20px;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 20px;
+        padding: 24px;
+        gap: 24px;
         margin-bottom: 25px;
+        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
     }
     .info-badge {
         width: 60px;
@@ -29,11 +32,19 @@
         background: #e2e8f0;
     }
     .doc-card {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 20px;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 16px;
+        padding: 24px;
         margin-bottom: 20px;
+        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.03);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .doc-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 40px -10px rgba(0,0,0,0.08);
     }
     .doc-header {
         display: flex;
@@ -41,10 +52,13 @@
         margin-bottom: 15px;
     }
     .status-tanggungan-card {
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 20px;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
     }
     .tanggungan-item {
         display: flex;
