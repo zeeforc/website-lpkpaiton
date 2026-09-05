@@ -113,13 +113,13 @@
                             <div class="row mb-2 align-items-center">
                                 <div class="col-sm-4 text-secondary">NIS</div>
                                 <div class="col-sm-8">
-                                    <input type="text" name="nis" class="form-control form-control-sm" value="{{ $profile->nis }}">
+                                    <input type="number" name="nis" class="form-control form-control-sm" value="{{ $profile->nis }}">
                                 </div>
                             </div>
                             <div class="row mb-2 align-items-center">
                                 <div class="col-sm-4 text-secondary">NISN</div>
                                 <div class="col-sm-8">
-                                    <input type="text" name="nisn" class="form-control form-control-sm" value="{{ $profile->nisn }}">
+                                    <input type="number" name="nisn" class="form-control form-control-sm" value="{{ $profile->nisn }}">
                                 </div>
                             </div>
                             <div class="row mb-2 align-items-center">
@@ -205,7 +205,7 @@
                                         <input type="text" name="guru_pembimbing_nama" class="form-control form-control-sm" placeholder="Nama Guru" value="{{ $profile->guru_pembimbing_nama }}">
                                     </div>
                                     <div>
-                                        <input type="text" name="guru_pembimbing_hp" class="form-control form-control-sm" placeholder="No HP Guru" value="{{ $profile->guru_pembimbing_hp }}">
+                                        <input type="number" name="guru_pembimbing_hp" class="form-control form-control-sm" placeholder="No HP Guru" value="{{ $profile->guru_pembimbing_hp }}">
                                     </div>
                                 </div>
                             </div>
@@ -262,7 +262,7 @@
                     <div class="row mb-2 align-items-center">
                         <div class="col-sm-5 text-secondary">HP Wali Kelas</div>
                         <div class="col-sm-7">
-                            <input type="text" name="no_hp_wali_kelas" class="form-control form-control-sm" value="{{ $profile->no_hp_wali_kelas }}">
+                            <input type="number" name="no_hp_wali_kelas" class="form-control form-control-sm" value="{{ $profile->no_hp_wali_kelas }}">
                         </div>
                     </div>
                 </div>
@@ -289,7 +289,7 @@
                     <div class="row mb-2 align-items-center">
                         <div class="col-sm-4 text-secondary">No. HP</div>
                         <div class="col-sm-8">
-                            <input type="text" name="no_hp_kontak_darurat" class="form-control form-control-sm" value="{{ $profile->no_hp_kontak_darurat }}">
+                            <input type="number" name="no_hp_kontak_darurat" class="form-control form-control-sm" value="{{ $profile->no_hp_kontak_darurat }}">
                         </div>
                     </div>
                     <div class="row mt-2 align-items-start">

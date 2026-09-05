@@ -112,7 +112,7 @@
     let detectionLoop;
 
     // Pastikan models path sesuai
-    const MODEL_URL = '{{ asset("models") }}';
+    const MODEL_URL = '/models';
 
     async function initFaceAPI() {
         try {

@@ -258,7 +258,7 @@
     async function initFaceAPI() {
         try {
             overlayText.innerText = 'Memuat model AI...';
-            const MODEL_URL = '{{ asset("models") }}';
+            const MODEL_URL = '/models';
             
             await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
             await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
