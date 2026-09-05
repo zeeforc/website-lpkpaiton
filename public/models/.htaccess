@@ -1,0 +1,15 @@
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+</IfModule>
+
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>
+
+<FilesMatch "^[^.]+$">
+    ForceType application/octet-stream
+</FilesMatch>
+
+<FilesMatch "\.(json)$">
+    ForceType application/json
+</FilesMatch>
