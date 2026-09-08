@@ -187,9 +187,22 @@ Route::get('/amsadmin/export-paving-attendances', function () {
             
         // Header info
         $sheet->mergeCells('A1:F1');
-        $sheet->setCellValue('A1', 'LEMBAGA PELATIHAN KERJA PAITON SELARAS');
-        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
-        $sheet->getStyle('A1')->getAlignment()->setHorizontal('center');
+        $sheet->getRowDimension(1)->setRowHeight(60);
+        if (file_exists(public_path('images/paving_header.png'))) {
+            $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+            $drawing->setName('Logo');
+            $drawing->setDescription('Logo');
+            $drawing->setPath(public_path('images/paving_header.png'));
+            $drawing->setCoordinates('A1');
+            $drawing->setOffsetY(5);
+            $drawing->setOffsetX(5);
+            $drawing->setHeight(70);
+            $drawing->setWorksheet($sheet);
+        } else {
+            $sheet->setCellValue('A1', 'LEMBAGA PELATIHAN KERJA PAITON SELARAS');
+            $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+            $sheet->getStyle('A1')->getAlignment()->setHorizontal('center');
+        }
         
         $sheet->mergeCells('A2:B2');
         $sheet->setCellValue('A2', 'EMPLOYEE DAILY TIME SHEET');
@@ -264,17 +277,28 @@ Route::get('/amsadmin/export-paving-attendances', function () {
         }
         
         // Signatures
-        $row += 1;
+        $signRowStart = $row;
         $sheet->setCellValue('A' . $row, 'Prepared by,');
         $sheet->setCellValue('B' . $row, 'Approved by,');
-        $sheet->mergeCells("D{$row}:F{$row}");
-        $sheet->setCellValue('D' . $row, 'Confirmed & Acknowledged by,');
+        $sheet->mergeCells("C{$row}:F{$row}");
+        $sheet->setCellValue('C' . $row, 'Confirmed & Acknowledged by,');
         
         $row += 4;
         $sheet->setCellValue('A' . $row, $user->name);
         $sheet->getStyle('A' . $row)->getFont()->setUnderline(true)->setItalic(true);
         $sheet->setCellValue('B' . $row, 'User');
         $sheet->getStyle('B' . $row)->getFont()->setUnderline(true)->setItalic(true);
+        $sheet->mergeCells("C{$row}:F{$row}");
+        $sheet->setCellValue('C' . $row, '........................................................');
+        $sheet->getStyle("C{$row}")->getAlignment()->setHorizontal('center');
+        
+        $row += 1;
+        $sheet->setCellValue('A' . $row, 'Employee');
+        $sheet->getStyle('A' . $row)->getFont()->setItalic(true);
+        
+        $signRowEnd = $row;
+        $sheet->getStyle("A{$signRowStart}:B{$signRowEnd}")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle("C{$signRowStart}:F{$signRowEnd}")->getBorders()->getOutline()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
         
         // Auto size columns
         $sheet->getColumnDimension('A')->setWidth(10);
