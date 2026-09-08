@@ -564,6 +564,10 @@ class PortalController extends Controller
             
             $attendance->check_out = $now;
             $attendance->notes .= ' | Pulang: ' . $now->format('H:i');
+            
+            if ($request->has('work_description')) {
+                $attendance->work_description = $request->work_description;
+            }
         }
         
         $attendance->save();

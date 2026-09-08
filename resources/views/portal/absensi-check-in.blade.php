@@ -143,6 +143,13 @@
                     </div>
                 </div>
 
+                @if($attendance && $attendance->check_in)
+                    <div class="mt-3">
+                        <label class="fw-bold mb-2">Deskripsi Pekerjaan Hari Ini <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="work-description" rows="3" placeholder="Contoh: Pindah cetak paving, trial cetak kanstin..." required></textarea>
+                    </div>
+                @endif
+
                 <div class="mt-4">
                     <button type="button" id="btn-submit" class="btn btn-primary btn-absen" disabled>
                         <i class="fa-solid fa-fingerprint me-2"></i> 
@@ -159,6 +166,7 @@
     @csrf
     <input type="hidden" name="latitude" id="input-lat">
     <input type="hidden" name="longitude" id="input-lng">
+    <input type="hidden" name="work_description" id="input-work-description">
     <input type="hidden" name="type" value="{{ ($attendance && $attendance->check_in) ? 'out' : 'in' }}">
 </form>
 
@@ -377,6 +385,16 @@
     }
 
     btnSubmit.addEventListener('click', function() {
+        const descInput = document.getElementById('work-description');
+        if (descInput) {
+            if (!descInput.value.trim()) {
+                alert('Silakan isi deskripsi pekerjaan hari ini sebelum absen pulang.');
+                descInput.focus();
+                return;
+            }
+            document.getElementById('input-work-description').value = descInput.value;
+        }
+
         document.getElementById('input-lat').value = userLat;
         document.getElementById('input-lng').value = userLng;
         

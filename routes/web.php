@@ -159,45 +159,142 @@ Route::get('/amsadmin/export-attendances', function () {
 })->name('admin.attendances.export');
 
 Route::get('/amsadmin/export-paving-attendances', function () {
-    $attendances = \App\Models\Attendance::with('user')->whereHas('user', function ($query) {
-        $query->where('role', 'karyawan_paving');
-    })->get();
+    $currentMonth = date('m');
+    $currentYear = date('Y');
+    $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
+    $monthNames = [1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    $monthName = $monthNames[(int)$currentMonth];
+    
+    $users = \App\Models\User::where('role', 'karyawan_paving')->get();
     
     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
+    $spreadsheet->removeSheetByIndex(0); // Remove default sheet
     
-    // Set Header
-    $sheet->setCellValue('A1', 'ID');
-    $sheet->setCellValue('B1', 'Nama Karyawan');
-    $sheet->setCellValue('C1', 'Tanggal');
-    $sheet->setCellValue('D1', 'Status');
-    $sheet->setCellValue('E1', 'Check In');
-    $sheet->setCellValue('F1', 'Check Out');
-    $sheet->setCellValue('G1', 'Catatan');
-
-    // Make Header Bold
-    $sheet->getStyle('A1:G1')->getFont()->setBold(true);
-    // Add border to Header
-    $sheet->getStyle('A1:G1')->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-
-    $row = 2;
-    foreach ($attendances as $attendance) {
-        $sheet->setCellValue('A' . $row, $attendance->id);
-        $sheet->setCellValue('B' . $row, $attendance->user ? $attendance->user->name : '-');
-        $sheet->setCellValue('C' . $row, $attendance->date);
-        $sheet->setCellValue('D' . $row, $attendance->status);
-        $sheet->setCellValue('E' . $row, $attendance->check_in);
-        $sheet->setCellValue('F' . $row, $attendance->check_out);
-        $sheet->setCellValue('G' . $row, $attendance->notes);
-        $row++;
+    foreach ($users as $index => $user) {
+        // Excel sheet names max 31 characters
+        $sheetName = substr(str_replace(['*', ':', '/', '\\', '?', '[', ']'], '', $user->name), 0, 31);
+        $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $sheetName);
+        $spreadsheet->addSheet($sheet, $index);
+        
+        // Fetch attendances
+        $attendances = \App\Models\Attendance::where('user_id', $user->id)
+            ->whereMonth('date', $currentMonth)
+            ->whereYear('date', $currentYear)
+            ->get()
+            ->keyBy(function($item) {
+                return (int) \Carbon\Carbon::parse($item->date)->format('j');
+            });
+            
+        // Header info
+        $sheet->mergeCells('A1:F1');
+        $sheet->setCellValue('A1', 'LEMBAGA PELATIHAN KERJA PAITON SELARAS');
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal('center');
+        
+        $sheet->mergeCells('A2:B2');
+        $sheet->setCellValue('A2', 'EMPLOYEE DAILY TIME SHEET');
+        $sheet->setCellValue('C2', 'NAME');
+        $sheet->mergeCells('D2:F2');
+        $sheet->setCellValue('D2', $user->name);
+        
+        $sheet->mergeCells('A3:B3');
+        $sheet->setCellValue('A3', "01-{$daysInMonth} {$monthName} {$currentYear}");
+        $sheet->setCellValue('C3', 'JOB TITLE');
+        $sheet->mergeCells('D3:F3');
+        $sheet->setCellValue('D3', 'Karyawan Paving');
+        
+        // Table Headers
+        $sheet->mergeCells('A4:A5');
+        $sheet->setCellValue('A4', 'DATE');
+        
+        $sheet->mergeCells('B4:D4');
+        $sheet->setCellValue('B4', 'TIME RECORD');
+        $sheet->setCellValue('B5', 'START');
+        $sheet->setCellValue('C5', 'FINISH');
+        $sheet->setCellValue('D5', 'HOURS');
+        
+        $sheet->mergeCells('E4:E5');
+        $sheet->setCellValue('E4', 'DESCRIPTION');
+        
+        $sheet->mergeCells('F4:F5');
+        $sheet->setCellValue('F4', 'ACQUISITION');
+        
+        // Styling headers
+        $headerStyle = [
+            'font' => ['bold' => true],
+            'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
+            'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+        ];
+        $sheet->getStyle('A2:F5')->applyFromArray($headerStyle);
+        
+        // Data Rows
+        $row = 6;
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $currentDateStr = "{$currentYear}-{$currentMonth}-" . str_pad($day, 2, '0', STR_PAD_LEFT);
+            $isWeekend = \Carbon\Carbon::parse($currentDateStr)->isWeekend();
+            
+            $sheet->setCellValue('A' . $row, $day);
+            $sheet->getStyle('A'.$row)->getAlignment()->setHorizontal('center');
+            
+            $attendance = $attendances->get($day);
+            
+            if ($isWeekend) {
+                // Blue background for weekend
+                $sheet->getStyle("A{$row}:F{$row}")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                      ->getStartColor()->setARGB('FFB4C6E7'); // Light blue
+            } else {
+                if ($attendance && $attendance->status === 'Hadir') {
+                    $sheet->setCellValue('B' . $row, '07:00');
+                    $sheet->setCellValue('C' . $row, '16:00');
+                    $sheet->setCellValue('D' . $row, '8'); // HOURS
+                    
+                    // Center align B, C, D
+                    $sheet->getStyle("B{$row}:D{$row}")->getAlignment()->setHorizontal('center');
+                }
+                
+                if ($attendance) {
+                    $sheet->setCellValue('E' . $row, $attendance->work_description ?? '');
+                }
+            }
+            
+            // Borders
+            $sheet->getStyle("A{$row}:F{$row}")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            
+            $row++;
+        }
+        
+        // Signatures
+        $row += 1;
+        $sheet->setCellValue('A' . $row, 'Prepared by,');
+        $sheet->setCellValue('B' . $row, 'Approved by,');
+        $sheet->mergeCells("D{$row}:F{$row}");
+        $sheet->setCellValue('D' . $row, 'Confirmed & Acknowledged by,');
+        
+        $row += 4;
+        $sheet->setCellValue('A' . $row, $user->name);
+        $sheet->getStyle('A' . $row)->getFont()->setUnderline(true)->setItalic(true);
+        $sheet->setCellValue('B' . $row, 'User');
+        $sheet->getStyle('B' . $row)->getFont()->setUnderline(true)->setItalic(true);
+        
+        // Auto size columns
+        $sheet->getColumnDimension('A')->setWidth(10);
+        $sheet->getColumnDimension('B')->setWidth(15);
+        $sheet->getColumnDimension('C')->setWidth(15);
+        $sheet->getColumnDimension('D')->setWidth(15);
+        $sheet->getColumnDimension('E')->setWidth(40);
+        $sheet->getColumnDimension('F')->setWidth(20);
     }
-
-    // Auto size columns
-    foreach (range('A', 'G') as $col) {
-        $sheet->getColumnDimension($col)->setAutoSize(true);
+    
+    // If no users
+    if ($users->isEmpty()) {
+        $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, 'No Data');
+        $spreadsheet->addSheet($sheet, 0);
+        $sheet->setCellValue('A1', 'Tidak ada data karyawan paving.');
     }
-
-    $fileName = 'Laporan_Absensi_Karyawan_Paving_' . date('Y-m-d') . '.xlsx';
+    
+    $spreadsheet->setActiveSheetIndex(0);
+    
+    $fileName = 'Laporan_Absensi_Karyawan_Paving_' . $monthNames[(int)$currentMonth] . '_' . $currentYear . '.xlsx';
     
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment;filename="' . $fileName . '"');
