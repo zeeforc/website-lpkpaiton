@@ -27,6 +27,13 @@ class LeaveRequestResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'reason';
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->whereHas('user', function ($query) {
+            $query->where('role', '!=', 'karyawan_paving');
+        });
+    }
+
     public static function form(Schema $schema): Schema
     {
         return LeaveRequestForm::configure($schema);

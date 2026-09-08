@@ -95,14 +95,21 @@
     <div class="login-container w-100">
     <div class="login-header">
         <i class="fa-solid fa-users-rectangle"></i>
-        <h1 class="login-title">Portal Siswa PKL</h1>
-        <p class="login-subtitle">Masuk untuk mengelola kegiatan PKL Anda</p>
+        <h1 class="login-title">Pendaftaran Karyawan Paving</h1>
+        <p class="login-subtitle">Daftarkan akun Anda untuk absensi harian</p>
     </div>
 
-    <form action="{{ route('portal.login.post') }}" method="POST">
+    <form action="{{ route('portal.register-karyawan.post') }}" method="POST">
         @csrf
-        <div class="mb-4 text-start">
-            <label class="form-label text-secondary fw-semibold" style="font-size: 0.9rem;">Email Login</label>
+        <div class="mb-3 text-start">
+            <label class="form-label text-secondary fw-semibold" style="font-size: 0.9rem;">Nama Lengkap</label>
+            <input type="text" name="name" class="form-control form-control-custom" placeholder="Masukkan nama lengkap Anda" required value="{{ old('name') }}">
+            @error('name')
+                <div class="text-danger mt-1" style="font-size: 0.85rem;">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3 text-start">
+            <label class="form-label text-secondary fw-semibold" style="font-size: 0.9rem;">Email</label>
             <input type="email" name="email" class="form-control form-control-custom" placeholder="Masukkan email Anda" required value="{{ old('email') }}">
             @error('email')
                 <div class="text-danger mt-1" style="font-size: 0.85rem;">{{ $message }}</div>
@@ -110,13 +117,16 @@
         </div>
         <div class="mb-4 text-start">
             <label class="form-label text-secondary fw-semibold" style="font-size: 0.9rem;">Password</label>
-            <input type="password" name="password" class="form-control form-control-custom" placeholder="Masukkan password" required>
+            <input type="password" name="password" class="form-control form-control-custom" placeholder="Buat password (min. 6 karakter)" required>
+            @error('password')
+                <div class="text-danger mt-1" style="font-size: 0.85rem;">{{ $message }}</div>
+            @enderror
         </div>
-        <button type="submit" class="btn btn-login">Masuk ke Portal</button>
+        <button type="submit" class="btn btn-login">Daftar Sekarang</button>
     </form>
     
     <div class="mt-4 text-center">
-        <a href="{{ route('portal.register-karyawan') }}" class="text-decoration-none text-primary" style="font-size: 0.9rem; font-weight: 500;">Bukan Siswa PKL? Daftar sebagai Karyawan Paving di sini</a>
+        <a href="{{ route('portal.login') }}" class="text-decoration-none text-primary" style="font-size: 0.9rem; font-weight: 500;">Sudah punya akun? Login di sini</a>
     </div>
     
     <div class="mt-4 text-secondary fw-medium" style="font-size: 0.85rem;">

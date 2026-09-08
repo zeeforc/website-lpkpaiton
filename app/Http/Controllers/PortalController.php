@@ -19,6 +19,8 @@ class PortalController extends Controller
         if (Auth::check()) {
             if (Auth::user()->role === 'guru_pondok') {
                 return redirect()->route('portal.guru.absensi-rombongan');
+            } elseif (Auth::user()->role === 'karyawan_paving') {
+                return redirect()->route('portal.absensi.check-in');
             }
             return redirect()->route('portal.biodata');
         }
@@ -46,6 +48,8 @@ class PortalController extends Controller
 
             if ($user->role === 'guru_pondok') {
                 return redirect()->route('portal.guru.absensi-rombongan');
+            } elseif ($user->role === 'karyawan_paving') {
+                return redirect()->route('portal.absensi.check-in');
             }
             return redirect()->route('portal.biodata');
         }
@@ -63,11 +67,46 @@ class PortalController extends Controller
         return redirect()->route('portal.login');
     }
 
+    public function showRegisterKaryawan()
+    {
+        if (Auth::check()) {
+            if (Auth::user()->role === 'guru_pondok') {
+                return redirect()->route('portal.guru.absensi-rombongan');
+            } elseif (Auth::user()->role === 'karyawan_paving') {
+                return redirect()->route('portal.absensi.check-in');
+            }
+            return redirect()->route('portal.biodata');
+        }
+        return view('portal.register-karyawan');
+    }
+
+    public function registerKaryawan(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:users,email'],
+            'password' => ['required', 'min:6'],
+        ]);
+
+        $user = \App\Models\User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+            'role' => 'karyawan_paving',
+        ]);
+
+        Auth::login($user);
+
+        return redirect()->route('portal.absensi.check-in')->with('success', 'Pendaftaran berhasil. Silakan daftarkan wajah Anda untuk absensi.');
+    }
+
     public function biodata()
     {
         $user = Auth::user();
         if ($user->role === 'guru_pondok') {
             return redirect()->route('portal.guru.absensi-rombongan');
+        } elseif ($user->role === 'karyawan_paving') {
+            return redirect()->route('portal.absensi.check-in');
         }
         $profile = $user->studentProfile ?? StudentProfile::create(['user_id' => $user->id]);
         $application = Application::where('user_id', $user->id)->first();
@@ -110,6 +149,8 @@ class PortalController extends Controller
         $user = Auth::user();
         if ($user->role === 'guru_pondok') {
             return redirect()->route('portal.guru.absensi-rombongan');
+        } elseif ($user->role === 'karyawan_paving') {
+            return redirect()->route('portal.absensi.check-in');
         }
         $application = Application::where('user_id', $user->id)->first();
         
@@ -342,6 +383,8 @@ class PortalController extends Controller
         $user = Auth::user();
         if ($user->role === 'guru_pondok') {
             return redirect()->route('portal.guru.absensi-rombongan');
+        } elseif ($user->role === 'karyawan_paving') {
+            return redirect()->route('portal.absensi.check-in');
         }
         $laporan = ReportSubmission::where('user_id', $user->id)->latest()->first();
         $application = Application::where('user_id', $user->id)->first();

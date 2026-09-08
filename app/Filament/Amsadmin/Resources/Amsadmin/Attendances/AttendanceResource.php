@@ -24,6 +24,13 @@ class AttendanceResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'id';
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->whereHas('user', function ($query) {
+            $query->where('role', '!=', 'karyawan_paving');
+        });
+    }
+
     public static function form(Schema $schema): Schema
     {
         return AttendanceForm::configure($schema);
