@@ -20,7 +20,10 @@ class LeaveRequestResource extends Resource
 {
     protected static ?string $model = LeaveRequest::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationIcon = 'heroicon-o-envelope-open';
+    protected static ?string $navigationLabel = 'Pengajuan Izin';
+    protected static ?string $pluralModelLabel = 'Pengajuan Izin';
+    protected static ?string $modelLabel = 'Pengajuan Izin';
 
     protected static ?string $recordTitleAttribute = 'reason';
 
