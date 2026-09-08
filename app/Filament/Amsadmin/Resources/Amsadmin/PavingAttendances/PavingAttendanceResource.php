@@ -8,7 +8,7 @@ use App\Filament\Amsadmin\Resources\Amsadmin\PavingAttendances\Pages\ListPavingA
 use App\Filament\Amsadmin\Resources\Amsadmin\PavingAttendances\Pages\ViewPavingAttendance;
 use App\Filament\Amsadmin\Resources\Amsadmin\PavingAttendances\Schemas\PavingAttendanceForm;
 use App\Filament\Amsadmin\Resources\Amsadmin\PavingAttendances\Schemas\PavingAttendanceInfolist;
-use App\Filament\Amsadmin\Resources\Amsadmin\PavingAttendances\Tables\PavingPavingAttendancesTable;
+use App\Filament\Amsadmin\Resources\Amsadmin\PavingAttendances\Tables\PavingAttendancesTable;
 use App\Models\Attendance;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -25,7 +25,7 @@ class PavingAttendanceResource extends Resource
     protected static ?string $recordTitleAttribute = 'id';
 
     protected static ?string $navigationLabel = 'Absensi Karyawan';
-    protected static ?string $navigationGroup = 'Karyawan Paving';
+    protected static string | \UnitEnum | null $navigationGroup = 'Karyawan Paving';
     protected static ?string $modelLabel = 'Absensi Karyawan';
     protected static ?string $pluralModelLabel = 'Absensi Karyawan';
 
@@ -48,7 +48,7 @@ class PavingAttendanceResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return PavingPavingAttendancesTable::configure($table);
+        return PavingAttendancesTable::configure($table);
     }
 
     public static function getRelations(): array

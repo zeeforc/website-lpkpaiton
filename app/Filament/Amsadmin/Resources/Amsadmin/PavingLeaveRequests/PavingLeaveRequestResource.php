@@ -8,7 +8,7 @@ use App\Filament\Amsadmin\Resources\Amsadmin\PavingLeaveRequests\Pages\ListPavin
 use App\Filament\Amsadmin\Resources\Amsadmin\PavingLeaveRequests\Pages\ViewPavingLeaveRequest;
 use App\Filament\Amsadmin\Resources\Amsadmin\PavingLeaveRequests\Schemas\PavingLeaveRequestForm;
 use App\Filament\Amsadmin\Resources\Amsadmin\PavingLeaveRequests\Schemas\PavingLeaveRequestInfolist;
-use App\Filament\Amsadmin\Resources\Amsadmin\PavingLeaveRequests\Tables\PavingPavingLeaveRequestsTable;
+use App\Filament\Amsadmin\Resources\Amsadmin\PavingLeaveRequests\Tables\PavingLeaveRequestsTable;
 use App\Models\LeaveRequest;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -28,7 +28,7 @@ class PavingLeaveRequestResource extends Resource
     protected static ?string $recordTitleAttribute = 'reason';
 
     protected static ?string $navigationLabel = 'Pengajuan Izin Karyawan';
-    protected static ?string $navigationGroup = 'Karyawan Paving';
+    protected static string | \UnitEnum | null $navigationGroup = 'Karyawan Paving';
     protected static ?string $modelLabel = 'Izin Karyawan';
     protected static ?string $pluralModelLabel = 'Pengajuan Izin Karyawan';
 
@@ -51,7 +51,7 @@ class PavingLeaveRequestResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return PavingPavingLeaveRequestsTable::configure($table);
+        return PavingLeaveRequestsTable::configure($table);
     }
 
     public static function getRelations(): array
