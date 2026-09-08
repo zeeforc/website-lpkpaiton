@@ -296,8 +296,10 @@ Route::get('/amsadmin/export-paving-attendances', function () {
         $sheet->setCellValue('A' . $row, 'Employee');
         $sheet->getStyle('A' . $row)->getFont()->setItalic(true);
         
-        $signRowEnd = $row;
-        $sheet->getStyle("A{$signRowStart}:B{$signRowEnd}")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $signRowEnd = $row + 1; // Tambah satu baris kosong di bawah nama agar lebih mirip
+        
+        $sheet->getStyle("A{$signRowStart}:A{$signRowEnd}")->getBorders()->getOutline()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle("B{$signRowStart}:B{$signRowEnd}")->getBorders()->getOutline()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
         $sheet->getStyle("C{$signRowStart}:F{$signRowEnd}")->getBorders()->getOutline()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
         
         // Auto size columns
