@@ -40,6 +40,31 @@ class LeaveRequestsTable
                 //
             ])
             ->actions([
+                \Filament\Actions\Action::make('approve')
+                    ->label('Setujui')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->action(function ($record) {
+                        $record->update(['status' => 'approved']);
+                    })
+                    ->requiresConfirmation()
+                    ->visible(fn ($record) => $record->status === 'pending'),
+                \Filament\Actions\Action::make('reject')
+                    ->label('Tolak')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->form([
+                        \Filament\Forms\Components\Textarea::make('admin_notes')
+                            ->label('Alasan Penolakan / Catatan')
+                            ->required(),
+                    ])
+                    ->action(function (array $data, $record): void {
+                        $record->update([
+                            'status' => 'rejected',
+                            'admin_notes' => $data['admin_notes'],
+                        ]);
+                    })
+                    ->visible(fn ($record) => $record->status === 'pending'),
                 \Filament\Actions\EditAction::make(),
                 \Filament\Actions\ViewAction::make(),
             ])
