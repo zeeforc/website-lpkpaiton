@@ -170,8 +170,13 @@
     @if(!($attendance && $attendance->check_in && $attendance->check_out))
     
     // Data dari backend
+    @if(Auth::user()->role === 'karyawan_paving')
+    const TARGET_LAT = {{ $settings['paving_latitude'] ?? '-7.7126' }};
+    const TARGET_LNG = {{ $settings['paving_longitude'] ?? '113.4687' }};
+    @else
     const TARGET_LAT = {{ $settings['lpk_latitude'] ?? '-7.7126' }};
     const TARGET_LNG = {{ $settings['lpk_longitude'] ?? '113.4687' }};
+    @endif
     const MAX_RADIUS = {{ $settings['absensi_radius'] ?? '50' }}; // in meters
     const SAVED_DESCRIPTOR = {!! $profile->face_descriptor ?? '[]' !!};
     

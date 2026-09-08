@@ -49,12 +49,18 @@ class PengaturanLokasi extends Page implements HasForms
     {
         $lat = Setting::where('key', 'lpk_latitude')->value('value') ?? '-7.7126';
         $lng = Setting::where('key', 'lpk_longitude')->value('value') ?? '113.4687';
+        $pavingLat = Setting::where('key', 'paving_latitude')->value('value') ?? '-7.7126';
+        $pavingLng = Setting::where('key', 'paving_longitude')->value('value') ?? '113.4687';
         $radius = Setting::where('key', 'absensi_radius')->value('value') ?? '50';
 
         $this->form->fill([
             'location' => [
                 'lat' => (float) $lat,
                 'lng' => (float) $lng,
+            ],
+            'paving_location' => [
+                'lat' => (float) $pavingLat,
+                'lng' => (float) $pavingLng,
             ],
             'absensi_radius' => $radius,
         ]);
@@ -68,7 +74,7 @@ class PengaturanLokasi extends Page implements HasForms
                     ->description('Cari lokasi LPK Paiton Selaras (menggunakan form search di dalam peta) dan geser pin merah ke titik bangunan yang paling tepat.')
                     ->schema([
                         Map::make('location')
-                            ->label('Peta Lokasi')
+                            ->label('Peta Lokasi LPK')
                             ->columnSpanFull()
                             ->defaultLocation(latitude: -7.7126, longitude: 113.4687)
                             ->showMarker()
@@ -78,12 +84,29 @@ class PengaturanLokasi extends Page implements HasForms
                             ->draggable()
                             ->clickable(false)
                             ->showMyLocationButton(),
-                            
+                    ]),
+                Section::make('Titik Koordinat Paving')
+                    ->description('Cari lokasi Paving (menggunakan form search di dalam peta) dan geser pin merah ke titik bangunan yang paling tepat.')
+                    ->schema([
+                        Map::make('paving_location')
+                            ->label('Peta Lokasi Paving')
+                            ->columnSpanFull()
+                            ->defaultLocation(latitude: -7.7126, longitude: 113.4687)
+                            ->showMarker()
+                            ->markerColor('#ff0000')
+                            ->showFullscreenControl()
+                            ->showZoomControl()
+                            ->draggable()
+                            ->clickable(false)
+                            ->showMyLocationButton(),
+                    ]),
+                Section::make('Radius Toleransi')
+                    ->schema([
                         TextInput::make('absensi_radius')
                             ->label('Radius Toleransi Absensi (Meter)')
                             ->numeric()
                             ->required()
-                            ->helperText('Jarak maksimal (dalam meter) siswa diperbolehkan absen dari titik lokasi di atas.'),
+                            ->helperText('Jarak maksimal (dalam meter) siswa/karyawan diperbolehkan absen dari titik lokasi di atas.'),
                     ])
             ])
             ->statePath('data');
@@ -95,11 +118,18 @@ class PengaturanLokasi extends Page implements HasForms
 
         $lat = $data['location']['lat'] ?? null;
         $lng = $data['location']['lng'] ?? null;
+        $pavingLat = $data['paving_location']['lat'] ?? null;
+        $pavingLng = $data['paving_location']['lng'] ?? null;
         $radius = $data['absensi_radius'] ?? null;
 
         if ($lat && $lng) {
             Setting::updateOrCreate(['key' => 'lpk_latitude'], ['value' => $lat, 'name' => 'LPK Latitude']);
             Setting::updateOrCreate(['key' => 'lpk_longitude'], ['value' => $lng, 'name' => 'LPK Longitude']);
+        }
+
+        if ($pavingLat && $pavingLng) {
+            Setting::updateOrCreate(['key' => 'paving_latitude'], ['value' => $pavingLat, 'name' => 'Paving Latitude']);
+            Setting::updateOrCreate(['key' => 'paving_longitude'], ['value' => $pavingLng, 'name' => 'Paving Longitude']);
         }
         
         if ($radius) {
