@@ -9,14 +9,14 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 
-class PavingPavingLeaveRequestsTable
+class PavingLeaveRequestsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
                 TextColumn::make('user.name')
-                    ->label('Siswa')
+                    ->label('Karyawan')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('date')
