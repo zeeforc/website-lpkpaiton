@@ -14,7 +14,7 @@ class ListAttendances extends ListRecords
     {
         return [
             \Filament\Actions\Action::make('export_csv')
-                ->label('Download Laporan (CSV)')
+                ->label('Download Laporan (Excel)')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->url(fn () => route('admin.attendances.export'))
                 ->openUrlInNewTab(),

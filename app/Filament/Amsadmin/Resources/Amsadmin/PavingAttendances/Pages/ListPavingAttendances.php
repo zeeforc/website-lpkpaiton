@@ -14,9 +14,9 @@ class ListPavingAttendances extends ListRecords
     {
         return [
             \Filament\Actions\Action::make('export_csv')
-                ->label('Download Laporan (CSV)')
+                ->label('Download Laporan (Excel)')
                 ->icon('heroicon-o-arrow-down-tray')
-                ->url(fn () => route('admin.PavingAttendances.export'))
+                ->url(fn () => route('admin.paving-attendances.export'))
                 ->openUrlInNewTab(),
             CreateAction::make(),
         ];

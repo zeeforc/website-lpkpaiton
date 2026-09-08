@@ -109,7 +109,9 @@ Route::prefix('portal')->name('portal.')->group(function () {
 });
 
 Route::get('/amsadmin/export-attendances', function () {
-    $attendances = \App\Models\Attendance::with('user')->get();
+    $attendances = \App\Models\Attendance::with('user')->whereHas('user', function ($query) {
+        $query->where('role', '!=', 'karyawan_paving');
+    })->get();
     
     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
@@ -145,7 +147,7 @@ Route::get('/amsadmin/export-attendances', function () {
         $sheet->getColumnDimension($col)->setAutoSize(true);
     }
 
-    $fileName = 'Laporan_Absensi_' . date('Y-m-d') . '.xlsx';
+    $fileName = 'Laporan_Absensi_Siswa_' . date('Y-m-d') . '.xlsx';
     
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment;filename="' . $fileName . '"');
@@ -155,3 +157,53 @@ Route::get('/amsadmin/export-attendances', function () {
     $writer->save('php://output');
     exit;
 })->name('admin.attendances.export');
+
+Route::get('/amsadmin/export-paving-attendances', function () {
+    $attendances = \App\Models\Attendance::with('user')->whereHas('user', function ($query) {
+        $query->where('role', 'karyawan_paving');
+    })->get();
+    
+    $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    
+    // Set Header
+    $sheet->setCellValue('A1', 'ID');
+    $sheet->setCellValue('B1', 'Nama Karyawan');
+    $sheet->setCellValue('C1', 'Tanggal');
+    $sheet->setCellValue('D1', 'Status');
+    $sheet->setCellValue('E1', 'Check In');
+    $sheet->setCellValue('F1', 'Check Out');
+    $sheet->setCellValue('G1', 'Catatan');
+
+    // Make Header Bold
+    $sheet->getStyle('A1:G1')->getFont()->setBold(true);
+    // Add border to Header
+    $sheet->getStyle('A1:G1')->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+    $row = 2;
+    foreach ($attendances as $attendance) {
+        $sheet->setCellValue('A' . $row, $attendance->id);
+        $sheet->setCellValue('B' . $row, $attendance->user ? $attendance->user->name : '-');
+        $sheet->setCellValue('C' . $row, $attendance->date);
+        $sheet->setCellValue('D' . $row, $attendance->status);
+        $sheet->setCellValue('E' . $row, $attendance->check_in);
+        $sheet->setCellValue('F' . $row, $attendance->check_out);
+        $sheet->setCellValue('G' . $row, $attendance->notes);
+        $row++;
+    }
+
+    // Auto size columns
+    foreach (range('A', 'G') as $col) {
+        $sheet->getColumnDimension($col)->setAutoSize(true);
+    }
+
+    $fileName = 'Laporan_Absensi_Karyawan_Paving_' . date('Y-m-d') . '.xlsx';
+    
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment;filename="' . $fileName . '"');
+    header('Cache-Control: max-age=0');
+    
+    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+    $writer->save('php://output');
+    exit;
+})->name('admin.paving-attendances.export');
