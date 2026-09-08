@@ -212,6 +212,10 @@
                             <span class="status-badge hadir">Hadir</span>
                         @elseif($att->status == 'Telat')
                             <span class="status-badge telat">Telat</span>
+                        @elseif($att->status == 'Libur')
+                            <span class="status-badge text-white" style="background-color: #64748b;">Libur</span>
+                        @elseif($att->status == 'Sakit' || $att->status == 'Izin')
+                            <span class="status-badge text-dark" style="background-color: #cbd5e1;">{{ $att->status }}</span>
                         @else
                             <span class="status-badge tidak-hadir">{{ $att->status }}</span>
                         @endif

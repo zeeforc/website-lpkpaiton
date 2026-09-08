@@ -266,8 +266,9 @@
             
             startVideo();
         } catch (error) {
-            overlayText.innerText = 'Gagal memuat AI. Refresh halaman.';
-            console.error(error);
+            console.error("Error init Face API:", error);
+            overlayText.innerText = 'Error AI: ' + (error.message || error);
+            overlay.style.background = 'rgba(220, 53, 69, 0.8)';
         }
     }
 

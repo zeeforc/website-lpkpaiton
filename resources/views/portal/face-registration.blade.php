@@ -126,7 +126,7 @@
             startVideo();
         } catch (error) {
             console.error("Gagal memuat model:", error);
-            statusText.innerText = 'Gagal memuat sistem AI. Coba muat ulang halaman.';
+            statusText.innerText = 'Error AI: ' + (error.message || error);
             statusMessage.style.background = 'rgba(220, 53, 69, 0.8)';
             document.querySelector('.loader-spinner').style.display = 'none';
         }

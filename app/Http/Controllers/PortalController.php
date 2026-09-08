@@ -8,6 +8,8 @@ use App\Models\StudentProfile;
 use App\Models\Attendance;
 use App\Models\ReportSubmission;
 use App\Models\Application;
+use App\Models\LeaveRequest;
+use App\Models\Holiday;
 use Carbon\Carbon;
 
 class PortalController extends Controller
@@ -131,15 +133,100 @@ class PortalController extends Controller
         $month = $request->get('month', now()->format('m'));
         $year = $request->get('year', now()->format('Y'));
         
-        $attendances = Attendance::where('user_id', $user->id)
+        $startDate = Carbon::createFromDate($year, $month, 1);
+        $endDate = $startDate->copy()->endOfMonth();
+        
+        // Fetch all attendances for the month
+        $attendancesData = Attendance::where('user_id', $user->id)
             ->whereMonth('date', $month)
             ->whereYear('date', $year)
-            ->orderBy('date', 'desc')
-            ->paginate(10);
+            ->get()
+            ->keyBy(fn($item) => Carbon::parse($item->date)->format('Y-m-d'));
             
-        $totalDays = Attendance::where('user_id', $user->id)->count();
-        $present = Attendance::where('user_id', $user->id)->where('status', 'Hadir')->count();
-        $absent = Attendance::where('user_id', $user->id)->where('status', '!=', 'Hadir')->count();
+        // Fetch all holidays
+        $holidays = Holiday::whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->get()
+            ->keyBy(fn($item) => Carbon::parse($item->date)->format('Y-m-d'));
+            
+        // Fetch all approved leaves
+        $leaves = LeaveRequest::where('user_id', $user->id)
+            ->whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->where('status', 'approved')
+            ->get()
+            ->keyBy(fn($item) => Carbon::parse($item->date)->format('Y-m-d'));
+
+        // Generate all days in the month up to today (or end of month if it's a past month)
+        $limitDate = ($month == now()->format('m') && $year == now()->format('Y')) ? now() : $endDate;
+        
+        $attendances = collect();
+        $totalDays = 0;
+        $present = 0;
+        $absent = 0;
+
+        for ($date = $endDate->copy(); $date->gte($startDate); $date->subDay()) {
+            if ($date->gt($limitDate) && $date->format('Y-m-d') !== $limitDate->format('Y-m-d')) {
+                continue;
+            }
+            
+            $dateString = $date->format('Y-m-d');
+            $isWeekend = $date->isWeekend();
+            
+            $status = 'Tidak Hadir';
+            $notes = null;
+            $checkIn = null;
+            $checkOut = null;
+            
+            // Priorities: Holiday -> Weekend -> Leave -> Attendance -> Absent
+            if (isset($holidays[$dateString])) {
+                $status = 'Libur';
+                $notes = $holidays[$dateString]->name;
+            } elseif ($isWeekend) {
+                $status = 'Libur';
+                $notes = 'Libur Akhir Pekan';
+            } elseif (isset($leaves[$dateString])) {
+                $status = ucfirst($leaves[$dateString]->type); // Izin / Sakit
+                $notes = 'Surat keterangan diajukan';
+            } elseif (isset($attendancesData[$dateString])) {
+                $att = $attendancesData[$dateString];
+                $status = $att->status;
+                $notes = $att->notes;
+                $checkIn = $att->check_in;
+                $checkOut = $att->check_out;
+            }
+            
+            if ($status !== 'Libur') {
+                $totalDays++;
+                if ($status === 'Hadir' || $status === 'Telat') {
+                    $present++;
+                } else {
+                    $absent++;
+                }
+            }
+
+            // Create a pseudo object to match the view's expectation
+            $attendances->push((object)[
+                'date' => $dateString,
+                'check_in' => $checkIn,
+                'check_out' => $checkOut,
+                'status' => $status,
+                'notes' => $notes,
+            ]);
+        }
+        
+        // Manual pagination logic since it's a collection now
+        $perPage = 10;
+        $page = request()->get('page', 1);
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            $attendances->forPage($page, $perPage),
+            $attendances->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+        $attendances = $paginator;
+        
         $percentage = $totalDays > 0 ? round(($present / $totalDays) * 100) : 0;
             
         return view('portal.absensi', compact('attendances', 'totalDays', 'present', 'absent', 'percentage', 'month', 'year'));
@@ -155,12 +242,29 @@ class PortalController extends Controller
         $month = $request->get('month', now()->format('m'));
         $year = $request->get('year', now()->format('Y'));
         
-        $attendances = Attendance::where('user_id', $user->id)
+        $startDate = Carbon::createFromDate($year, $month, 1);
+        $endDate = $startDate->copy()->endOfMonth();
+        
+        $attendancesData = Attendance::where('user_id', $user->id)
             ->whereMonth('date', $month)
             ->whereYear('date', $year)
-            ->orderBy('date', 'asc')
-            ->get();
+            ->get()
+            ->keyBy(fn($item) => Carbon::parse($item->date)->format('Y-m-d'));
             
+        $holidays = Holiday::whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->get()
+            ->keyBy(fn($item) => Carbon::parse($item->date)->format('Y-m-d'));
+            
+        $leaves = LeaveRequest::where('user_id', $user->id)
+            ->whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->where('status', 'approved')
+            ->get()
+            ->keyBy(fn($item) => Carbon::parse($item->date)->format('Y-m-d'));
+            
+        $limitDate = ($month == now()->format('m') && $year == now()->format('Y')) ? now() : $endDate;
+        
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         
@@ -177,14 +281,43 @@ class PortalController extends Controller
         $sheet->getStyle('A1:F1')->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
         $row = 2;
-        foreach ($attendances as $att) {
-            $dateParsed = \Carbon\Carbon::parse($att->date);
-            $sheet->setCellValue('A' . $row, $dateParsed->format('d M Y'));
-            $sheet->setCellValue('B' . $row, $dateParsed->isoFormat('dddd'));
-            $sheet->setCellValue('C' . $row, $att->check_in ? \Carbon\Carbon::parse($att->check_in)->format('H:i') : '-');
-            $sheet->setCellValue('D' . $row, $att->check_out ? \Carbon\Carbon::parse($att->check_out)->format('H:i') : '-');
-            $sheet->setCellValue('E' . $row, $att->status);
-            $sheet->setCellValue('F' . $row, $att->notes ?? '-');
+        
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            if ($date->gt($limitDate) && $date->format('Y-m-d') !== $limitDate->format('Y-m-d')) {
+                continue;
+            }
+            
+            $dateString = $date->format('Y-m-d');
+            $isWeekend = $date->isWeekend();
+            
+            $status = 'Tidak Hadir';
+            $notes = null;
+            $checkIn = null;
+            $checkOut = null;
+            
+            if (isset($holidays[$dateString])) {
+                $status = 'Libur';
+                $notes = $holidays[$dateString]->name;
+            } elseif ($isWeekend) {
+                $status = 'Libur';
+                $notes = 'Libur Akhir Pekan';
+            } elseif (isset($leaves[$dateString])) {
+                $status = ucfirst($leaves[$dateString]->type);
+                $notes = 'Surat keterangan diajukan';
+            } elseif (isset($attendancesData[$dateString])) {
+                $att = $attendancesData[$dateString];
+                $status = $att->status;
+                $notes = $att->notes;
+                $checkIn = $att->check_in;
+                $checkOut = $att->check_out;
+            }
+
+            $sheet->setCellValue('A' . $row, $date->format('d M Y'));
+            $sheet->setCellValue('B' . $row, $date->isoFormat('dddd'));
+            $sheet->setCellValue('C' . $row, $checkIn ? \Carbon\Carbon::parse($checkIn)->format('H:i') : '-');
+            $sheet->setCellValue('D' . $row, $checkOut ? \Carbon\Carbon::parse($checkOut)->format('H:i') : '-');
+            $sheet->setCellValue('E' . $row, $status);
+            $sheet->setCellValue('F' . $row, $notes ?? '-');
             $row++;
         }
 
@@ -337,8 +470,26 @@ class PortalController extends Controller
             'type' => 'required|in:in,out',
         ]);
         
+        $today = today();
+        
+        // Cek Libur / Akhir Pekan
+        if ($today->isWeekend()) {
+            return redirect()->route('portal.absensi.check-in')->with('error', 'Hari ini adalah akhir pekan (Sabtu/Minggu). Absensi tidak diperlukan.');
+        }
+        
+        $holiday = Holiday::whereDate('date', $today)->first();
+        if ($holiday) {
+            return redirect()->route('portal.absensi.check-in')->with('error', 'Hari ini adalah hari libur ('.$holiday->name.'). Absensi tidak diperlukan.');
+        }
+        
+        // Cek Izin / Sakit
+        $leave = LeaveRequest::where('user_id', $user->id)->whereDate('date', $today)->where('status', 'approved')->first();
+        if ($leave) {
+            return redirect()->route('portal.absensi.check-in')->with('error', 'Anda telah terdaftar '.ucfirst($leave->type).' hari ini. Absensi tidak diperlukan.');
+        }
+        
         $attendance = Attendance::firstOrCreate(
-            ['user_id' => $user->id, 'date' => today()],
+            ['user_id' => $user->id, 'date' => $today],
             ['status' => 'Tidak Hadir'] // Default awal
         );
         
@@ -375,6 +526,46 @@ class PortalController extends Controller
         $attendance->save();
         
         return redirect()->route('portal.absensi.check-in')->with('success', 'Berhasil! Absensi ' . ($request->type === 'in' ? 'masuk' : 'pulang') . ' telah dicatat.');
+    }
+    
+    public function izin()
+    {
+        $user = Auth::user();
+        if ($user->role === 'guru_pondok') {
+            return redirect()->route('portal.guru.absensi-rombongan');
+        }
+        
+        $leaveRequests = LeaveRequest::where('user_id', $user->id)->orderBy('date', 'desc')->get();
+        return view('portal.izin', compact('leaveRequests'));
+    }
+    
+    public function storeIzin(Request $request)
+    {
+        $user = Auth::user();
+        $request->validate([
+            'date' => 'required|date',
+            'type' => 'required|in:sakit,izin',
+            'reason' => 'required|string',
+            'attachment' => 'required|file|mimes:pdf,jpeg,png,jpg|max:2048',
+        ]);
+        
+        $existing = LeaveRequest::where('user_id', $user->id)->whereDate('date', $request->date)->first();
+        if ($existing) {
+            return back()->with('error', 'Anda sudah pernah mengajukan perizinan untuk tanggal tersebut.');
+        }
+        
+        $path = $request->file('attachment')->store('leave_attachments', 'public');
+        
+        LeaveRequest::create([
+            'user_id' => $user->id,
+            'date' => $request->date,
+            'type' => $request->type,
+            'reason' => $request->reason,
+            'attachment_path' => $path,
+            'status' => 'pending',
+        ]);
+        
+        return back()->with('success', 'Perizinan berhasil diajukan. Silakan tunggu konfirmasi admin.');
     }
 
     public function absensiRombongan()

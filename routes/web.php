@@ -92,6 +92,9 @@ Route::prefix('portal')->name('portal.')->group(function () {
         Route::post('/absensi/check-in', [\App\Http\Controllers\PortalController::class, 'storeAbsensi'])->name('absensi.store');
         Route::get('/absensi/export', [\App\Http\Controllers\PortalController::class, 'exportAbsensi'])->name('absensi.export');
         
+        Route::get('/izin', [\App\Http\Controllers\PortalController::class, 'izin'])->name('izin');
+        Route::post('/izin', [\App\Http\Controllers\PortalController::class, 'storeIzin'])->name('izin.store');
+        
         Route::get('/face-registration', [\App\Http\Controllers\PortalController::class, 'faceRegistration'])->name('face-registration');
         Route::post('/face-registration', [\App\Http\Controllers\PortalController::class, 'storeFaceDescriptor'])->name('face-registration.store');
         

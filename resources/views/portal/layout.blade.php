@@ -292,7 +292,8 @@
                 @else
                     <a href="{{ route('portal.biodata') }}" class="sidebar-link {{ request()->routeIs('portal.biodata') ? 'active' : '' }}" title="Biodata"><i class="fa-regular fa-user"></i></a>
                     <a href="{{ route('portal.informasi') }}" class="sidebar-link {{ request()->routeIs('portal.informasi') ? 'active' : '' }}" title="Informasi PKL"><i class="fa-regular fa-compass"></i></a>
-                    <a href="{{ route('portal.absensi') }}" class="sidebar-link {{ request()->routeIs('portal.absensi') ? 'active' : '' }}" title="Absensi"><i class="fa-regular fa-calendar-check"></i></a>
+                    <a href="{{ route('portal.absensi') }}" class="sidebar-link {{ request()->routeIs('portal.absensi*') ? 'active' : '' }}" title="Absensi"><i class="fa-regular fa-calendar-check"></i></a>
+                    <a href="{{ route('portal.izin') }}" class="sidebar-link {{ request()->routeIs('portal.izin*') ? 'active' : '' }}" title="Perizinan"><i class="fa-solid fa-file-signature"></i></a>
                     <a href="{{ route('portal.laporan') }}" class="sidebar-link {{ request()->routeIs('portal.laporan') ? 'active' : '' }}" title="Pengajuan Laporan"><i class="fa-regular fa-folder-open"></i></a>
                 @endif
                 
