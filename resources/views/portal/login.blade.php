@@ -96,6 +96,17 @@
         <h1 class="login-title">Presensi</h1>
     </div>
 
+    @if (session('error'))
+        <div class="alert alert-danger" style="font-size: 0.9rem; border-radius: 8px;">
+            {{ session('error') }}
+        </div>
+    @endif
+    @if (session('success'))
+        <div class="alert alert-success" style="font-size: 0.9rem; border-radius: 8px;">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <form action="{{ route('portal.login.post') }}" method="POST">
         @csrf
         <div class="mb-4 text-start">
@@ -111,14 +122,27 @@
         </div>
         <button type="submit" class="btn btn-login">Masuk ke Portal</button>
     </form>
-    
-    <!-- <div class="mt-4 text-center">
-        <a href="{{ route('portal.register-karyawan') }}" class="text-decoration-none text-primary" style="font-size: 0.9rem; font-weight: 500;">Bukan Siswa PKL? Daftar sebagai Karyawan Paving di sini</a>
-    </div> -->
-    
+ 
     <div class="mt-4 text-secondary fw-medium" style="font-size: 0.85rem;">
         &copy; {{ date('Y') }} LPK Paiton Selaras.
     </div>
 </div>
 </div>
+
+@push('scripts')
+<script>
+    // refresh otomatis
+    let lastVisibleTime = Date.now();
+    document.addEventListener("visibilitychange", function() {
+        if (document.visibilityState === 'visible') {
+            // Jika aplikasi di-background lebih dari 30 menit, refresh halaman
+            if (Date.now() - lastVisibleTime > 1800000) {
+                window.location.reload();
+            }
+        } else {
+            lastVisibleTime = Date.now();
+        }
+    });
+</script>
+@endpush
 @endsection
