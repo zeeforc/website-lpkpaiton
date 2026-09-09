@@ -6,7 +6,7 @@
 <style>
     .login-container {
         max-width: 480px;
-        margin: 100px auto;
+        margin: 0 auto;
         background: rgba(255, 255, 255, 0.35); /* Lowered opacity for glass effect */
         backdrop-filter: blur(24px);
         -webkit-backdrop-filter: blur(24px);
@@ -77,7 +77,7 @@
 @endpush
 
 @section('content')
-<div class="position-relative d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+<div class="position-relative d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 80px);">
     <!-- Decorative Blobs behind the login card to make glassmorphism pop -->
     <div style="position: absolute; top: 30%; left: 35%; width: 350px; height: 350px; background: #3b82f6; filter: blur(90px); opacity: 0.45; border-radius: 50%; z-index: 1; animation: float 6s ease-in-out infinite;"></div>
     <div style="position: absolute; top: 50%; left: 55%; width: 300px; height: 300px; background: #8b5cf6; filter: blur(90px); opacity: 0.45; border-radius: 50%; z-index: 1; animation: float 8s ease-in-out infinite reverse;"></div>
@@ -112,9 +112,9 @@
         <button type="submit" class="btn btn-login">Masuk ke Portal</button>
     </form>
     
-    <div class="mt-4 text-center">
+    <!-- <div class="mt-4 text-center">
         <a href="{{ route('portal.register-karyawan') }}" class="text-decoration-none text-primary" style="font-size: 0.9rem; font-weight: 500;">Bukan Siswa PKL? Daftar sebagai Karyawan Paving di sini</a>
-    </div>
+    </div> -->
     
     <div class="mt-4 text-secondary fw-medium" style="font-size: 0.85rem;">
         &copy; {{ date('Y') }} LPK Paiton Selaras.

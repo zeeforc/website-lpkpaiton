@@ -348,17 +348,19 @@
     </div>
 
     <!-- PWA Install Banner -->
-    <div id="pwa-install-banner" class="alert alert-primary d-none flex-row justify-content-between align-items-center" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 400px; padding: 15px;">
-        <div class="d-flex align-items-center gap-3">
-            <img src="{{ asset('images/app_icon.png') }}" style="width: 40px; height: 40px; border-radius: 8px;">
-            <div>
-                <h6 class="mb-0 fw-bold">Install Presensi</h6>
-                <small class="mb-0 text-muted">Akses lebih cepat & mudah!</small>
+    <div class="fixed-top w-100 d-flex justify-content-center" style="z-index: 9999; pointer-events: none; padding-top: 20px;">
+        <div id="pwa-install-banner" class="alert alert-primary d-none flex-row justify-content-between align-items-center shadow-sm" style="border-radius: 12px; width: 90%; max-width: 400px; padding: 15px; pointer-events: auto;">
+            <div class="d-flex align-items-center gap-3">
+                <img src="{{ asset('images/app_icon.png') }}" style="width: 40px; height: 40px; border-radius: 8px;">
+                <div>
+                    <h6 class="mb-0 fw-bold">Install Presensi</h6>
+                    <small class="mb-0 text-muted">Akses lebih cepat & mudah!</small>
+                </div>
             </div>
-        </div>
-        <div class="d-flex gap-2">
-            <button id="pwa-install-close" class="btn btn-sm btn-light p-2"><i class="fa-solid fa-xmark"></i></button>
-            <button id="pwa-install-btn" class="btn btn-sm btn-primary fw-bold p-2">Install</button>
+            <div class="d-flex gap-2">
+                <button id="pwa-install-close" class="btn btn-sm btn-light p-2"><i class="fa-solid fa-xmark"></i></button>
+                <button id="pwa-install-btn" class="btn btn-sm btn-primary fw-bold p-2">Install</button>
+            </div>
         </div>
     </div>
 
