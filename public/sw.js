@@ -1,20 +1,31 @@
-const CACHE_NAME = 'lpk-paiton-cache-v2';
-const urlsToCache = [];
+const CACHE_NAME = 'presensi-cache-v1';
+const urlsToCache = [
+  '/',
+  '/portal/login',
+  '/manifest.json',
+  '/images/app_icon.png',
+  '/images/logo_yayasan.png'
+];
 
 self.addEventListener('install', event => {
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cache => caches.delete(cache))
-      );
-    }).then(() => self.clients.claim())
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        return cache.addAll(urlsToCache);
+      })
   );
 });
 
 self.addEventListener('fetch', event => {
-  event.respondWith(fetch(event.request));
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request).catch(() => {
+           // Provide fallback if offline
+        });
+      })
+  );
 });

@@ -347,18 +347,56 @@
         </main>
     </div>
 
-    <!-- Bootstrap JS -->
+    <!-- PWA Install Banner -->
+    <div id="pwa-install-banner" class="alert alert-primary d-none flex-row justify-content-between align-items-center" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 400px; padding: 15px;">
+        <div class="d-flex align-items-center gap-3">
+            <img src="{{ asset('images/app_icon.png') }}" style="width: 40px; height: 40px; border-radius: 8px;">
+            <div>
+                <h6 class="mb-0 fw-bold">Install Presensi</h6>
+                <small class="mb-0 text-muted">Akses lebih cepat & mudah!</small>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <button id="pwa-install-close" class="btn btn-sm btn-light p-2"><i class="fa-solid fa-xmark"></i></button>
+            <button id="pwa-install-btn" class="btn btn-sm btn-primary fw-bold p-2">Install</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <!-- PWA Service Worker -->
     <script>
+        // PWA Installation Logic
+        let deferredPrompt;
+        const pwaInstallBanner = document.getElementById('pwa-install-banner');
+        const pwaInstallBtn = document.getElementById('pwa-install-btn');
+        const pwaInstallClose = document.getElementById('pwa-install-close');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            pwaInstallBanner.classList.remove('d-none');
+            pwaInstallBanner.classList.add('d-flex');
+        });
+
+        pwaInstallBtn.addEventListener('click', async () => {
+            pwaInstallBanner.classList.remove('d-flex');
+            pwaInstallBanner.classList.add('d-none');
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            deferredPrompt = null;
+        });
+
+        pwaInstallClose.addEventListener('click', () => {
+            pwaInstallBanner.classList.remove('d-flex');
+            pwaInstallBanner.classList.add('d-none');
+        });
+
+        // Register Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js').then(registration => {
-                    console.log('SW registered: ', registration);
-                }).catch(registrationError => {
                     console.log('SW registration failed: ', registrationError);
                 });
             });
