@@ -2,10 +2,11 @@
 
 namespace App\Filament\Amsadmin\Resources\Amsadmin\PavingLeaveRequests\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 
@@ -40,7 +41,7 @@ class PavingLeaveRequestsTable
                 //
             ])
             ->actions([
-                \Filament\Actions\Action::make('approve')
+                Action::make('approve')
                     ->label('Setujui')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
@@ -49,7 +50,7 @@ class PavingLeaveRequestsTable
                     })
                     ->requiresConfirmation()
                     ->visible(fn ($record) => $record->status === 'pending'),
-                \Filament\Actions\Action::make('reject')
+                Action::make('reject')
                     ->label('Tolak')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
@@ -65,12 +66,12 @@ class PavingLeaveRequestsTable
                         ]);
                     })
                     ->visible(fn ($record) => $record->status === 'pending'),
-                \Filament\Actions\EditAction::make(),
-                \Filament\Actions\ViewAction::make(),
+                EditAction::make(),
+                ViewAction::make(),
             ])
             ->bulkActions([
-                \Filament\Actions\BulkActionGroup::make([
-                    \Filament\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
