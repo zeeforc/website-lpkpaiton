@@ -165,6 +165,13 @@ Route::get('/amsadmin/export-paving-attendances', function () {
     $monthNames = [1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
     $monthName = $monthNames[(int)$currentMonth];
     
+    $holidays = \App\Models\Holiday::whereMonth('date', $currentMonth)
+        ->whereYear('date', $currentYear)
+        ->get()
+        ->keyBy(function($item) {
+            return (int) \Carbon\Carbon::parse($item->date)->format('j');
+        });
+        
     $users = \App\Models\User::where('role', 'karyawan_paving')->get();
     
     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
@@ -245,13 +252,20 @@ Route::get('/amsadmin/export-paving-attendances', function () {
         for ($day = 1; $day <= $daysInMonth; $day++) {
             $currentDateStr = "{$currentYear}-{$currentMonth}-" . str_pad($day, 2, '0', STR_PAD_LEFT);
             $isWeekend = \Carbon\Carbon::parse($currentDateStr)->isWeekend();
+            $holiday = $holidays->get($day);
             
             $sheet->setCellValue('A' . $row, $day);
             $sheet->getStyle('A'.$row)->getAlignment()->setHorizontal('center');
             
             $attendance = $attendances->get($day);
             
-            if ($isWeekend) {
+            if ($holiday) {
+                // Red background for holiday
+                $sheet->getStyle("A{$row}:F{$row}")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                      ->getStartColor()->setARGB('FFFFCCCC'); // Light red
+                $sheet->setCellValue('E' . $row, 'Libur Nasional: ' . $holiday->name);
+                $sheet->getStyle("E{$row}")->getFont()->setItalic(true)->getColor()->setARGB('FFCC0000'); // Red text
+            } elseif ($isWeekend) {
                 // Blue background for weekend
                 $sheet->getStyle("A{$row}:F{$row}")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                       ->getStartColor()->setARGB('FFB4C6E7'); // Light blue

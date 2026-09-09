@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\Amsadmin\Resources\Amsadmin\Holidays\Pages;
+namespace App\Filament\Resources\Amsadmin\Holidays\Pages;
 
-use App\Filament\Amsadmin\Resources\Amsadmin\Holidays\HolidayResource;
+use App\Filament\Resources\Amsadmin\Holidays\HolidayResource;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
+use Filament\Resources\Pages\ManageRecords;
 
-class ListHolidays extends ListRecords
+class ManageHolidays extends ManageRecords
 {
     protected static string $resource = HolidayResource::class;
 
