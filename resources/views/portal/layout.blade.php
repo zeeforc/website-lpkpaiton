@@ -348,7 +348,7 @@
         @endif
 
         <!-- PWA Install Banner (static, sits above content) -->
-        <div class="w-100 d-flex justify-content-center" style="z-index: 50; padding: 15px 0 0 0;">
+        <div class="w-100 d-flex justify-content-center" style="z-index: 50; padding: 15px 0 20px 0;">
             <div id="pwa-install-banner" class="alert alert-primary d-none flex-row justify-content-between align-items-center shadow-sm mb-0" style="border-radius: 12px; width: 90%; max-width: 400px; padding: 15px;">
                 <div class="d-flex align-items-center gap-3">
                     <img src="{{ asset('images/app_icon.png') }}" style="width: 40px; height: 40px; border-radius: 8px;">
