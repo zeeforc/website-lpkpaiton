@@ -261,15 +261,20 @@
             color: #1e293b !important;
         }
         
-        @media (min-width: 768px) {
-            .portal-main-content {
-                padding-left: 110px; /* Space for sidebar */
+        @if(Auth::check())
+            @media (min-width: 768px) {
+                .portal-main-content {
+                    padding-left: 110px; /* Space for sidebar */
+                }
             }
-        }
+            @media (max-width: 767px) {
+                .portal-main-content {
+                    padding-bottom: 90px; /* Space for bottom bar */
+                }
+            }
+        @endif
+
         @media (max-width: 767px) {
-            .portal-main-content {
-                padding-bottom: 90px; /* Space for bottom bar */
-            }
             .portal-content {
                 padding: 20px 15px;
             }

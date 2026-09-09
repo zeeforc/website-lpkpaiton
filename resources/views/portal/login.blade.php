@@ -77,10 +77,10 @@
 @endpush
 
 @section('content')
-<div class="position-relative d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 80px);">
+<div class="position-relative d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 80px); overflow-x: hidden;">
     <!-- Decorative Blobs behind the login card to make glassmorphism pop -->
-    <div style="position: absolute; top: 30%; left: 35%; width: 350px; height: 350px; background: #3b82f6; filter: blur(90px); opacity: 0.45; border-radius: 50%; z-index: 1; animation: float 6s ease-in-out infinite;"></div>
-    <div style="position: absolute; top: 50%; left: 55%; width: 300px; height: 300px; background: #8b5cf6; filter: blur(90px); opacity: 0.45; border-radius: 50%; z-index: 1; animation: float 8s ease-in-out infinite reverse;"></div>
+    <div class="d-none d-md-block" style="position: absolute; top: 30%; left: 35%; width: 350px; height: 350px; background: #3b82f6; filter: blur(90px); opacity: 0.45; border-radius: 50%; z-index: 1; animation: float 6s ease-in-out infinite;"></div>
+    <div class="d-none d-md-block" style="position: absolute; top: 50%; left: 55%; width: 300px; height: 300px; background: #8b5cf6; filter: blur(90px); opacity: 0.45; border-radius: 50%; z-index: 1; animation: float 8s ease-in-out infinite reverse;"></div>
 
     <style>
         @keyframes float {
