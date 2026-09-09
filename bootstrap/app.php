@@ -15,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // This ensures Laravel correctly reads X-Forwarded-Proto so it knows the
         // user is on HTTPS, which is critical for secure session cookies to work.
         $middleware->trustProxies(at: '*');
+
+        // Redirect unauthenticated users to the portal login page
+        // instead of the default 'login' route which doesn't exist
+        $middleware->redirectGuestsTo(fn () => route('portal.login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (\Illuminate\Session\TokenMismatchException $e, \Illuminate\Http\Request $request) {
