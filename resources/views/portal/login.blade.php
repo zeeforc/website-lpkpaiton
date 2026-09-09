@@ -1,6 +1,6 @@
 @extends('portal.layout')
 
-@section('title', 'Login Portal PKL')
+@section('title', 'Login Presensi')
 
 @push('styles')
 <style>
@@ -23,12 +23,10 @@
     .login-header {
         margin-bottom: 40px;
     }
-    .login-header i {
-        font-size: 3.5rem;
-        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 20px;
+    .login-header img {
+        height: 120px;
+        margin-bottom: 15px;
+        object-fit: contain;
     }
     .login-title {
         font-size: 1.8rem;
@@ -94,9 +92,8 @@
 
     <div class="login-container w-100">
     <div class="login-header">
-        <i class="fa-solid fa-users-rectangle"></i>
-        <h1 class="login-title">Portal Siswa PKL</h1>
-        <p class="login-subtitle">Masuk untuk mengelola kegiatan PKL Anda</p>
+        <img src="{{ asset('images/logo_yayasan.png') }}" alt="Logo Yayasan">
+        <h1 class="login-title">Presensi</h1>
     </div>
 
     <form action="{{ route('portal.login.post') }}" method="POST">
