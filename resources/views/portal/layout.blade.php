@@ -375,36 +375,66 @@
     
     <script>
         // PWA Installation Logic
-        let deferredPrompt;
+        let deferredPrompt = null;
         const pwaInstallBanner = document.getElementById('pwa-install-banner');
         const pwaInstallBtn = document.getElementById('pwa-install-btn');
         const pwaInstallClose = document.getElementById('pwa-install-close');
 
+        function showBanner() {
+            if (localStorage.getItem('pwa-banner-dismissed')) return;
+            pwaInstallBanner.classList.remove('d-none');
+            pwaInstallBanner.classList.add('d-flex');
+            // Auto-hide after 20 seconds
+            setTimeout(() => {
+                hideBanner();
+            }, 20000);
+        }
+
+        function hideBanner() {
+            pwaInstallBanner.classList.remove('d-flex');
+            pwaInstallBanner.classList.add('d-none');
+        }
+
+        // Capture native install prompt (Chrome/Edge Android)
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            pwaInstallBanner.classList.remove('d-none');
-            pwaInstallBanner.classList.add('d-flex');
         });
 
+        // Show banner after 2 seconds on page load
+        setTimeout(() => { showBanner(); }, 2000);
+
         pwaInstallBtn.addEventListener('click', async () => {
-            pwaInstallBanner.classList.remove('d-flex');
-            pwaInstallBanner.classList.add('d-none');
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            deferredPrompt = null;
+            if (deferredPrompt) {
+                // Native install (Chrome Android)
+                hideBanner();
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+            } else {
+                // Fallback: guide user to add to homescreen manually
+                hideBanner();
+                const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+                if (isIOS) {
+                    alert('Tap ikon Share (kotak dengan panah ke atas) di Safari, lalu pilih "Add to Home Screen".');
+                } else {
+                    alert('Buka menu browser (⋮), lalu pilih "Install app" atau "Add to Home screen".');
+                }
+            }
         });
 
         pwaInstallClose.addEventListener('click', () => {
-            pwaInstallBanner.classList.remove('d-flex');
-            pwaInstallBanner.classList.add('d-none');
+            hideBanner();
+            localStorage.setItem('pwa-banner-dismissed', '1');
         });
 
         // Register Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').then(registration => {
-                    console.log('SW registration failed: ', registrationError);
+                navigator.serviceWorker.register('/sw.js').then(reg => {
+                    console.log('SW registered:', reg.scope);
+                }).catch(err => {
+                    console.log('SW registration failed:', err);
                 });
             });
         }
