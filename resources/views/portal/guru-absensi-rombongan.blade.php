@@ -92,6 +92,13 @@
     <p class="page-subtitle">Pindai wajah santri yang hadir secara bersamaan (Mode CCTV).</p>
 </div>
 
+@if(now()->format('H:i') >= '16:20')
+<div class="alert alert-warning text-center mx-auto" style="max-width: 800px;">
+    <i class="fa-solid fa-bell me-2 fs-5"></i>
+    <strong>Perhatian:</strong> Sudah lewat jam 16:20, jangan lupa untuk melakukan absen pulang santri!
+</div>
+@endif
+
 @if(count($students) === 0)
 <div class="alert alert-warning text-center">
     <i class="fa-solid fa-triangle-exclamation mb-2" style="font-size: 2rem;"></i>

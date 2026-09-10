@@ -18,7 +18,11 @@ class HolidayResource extends Resource
 {
     protected static ?string $model = Holiday::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-calendar';
+    protected static ?string $navigationLabel = 'Atur Tanggal Libur';
+    protected static string | \UnitEnum | null $navigationGroup = 'Sistem';
+    protected static ?string $modelLabel = 'Tanggal Libur';
+    protected static ?string $pluralModelLabel = 'Tanggal Libur';
 
     public static function form(Schema $schema): Schema
     {

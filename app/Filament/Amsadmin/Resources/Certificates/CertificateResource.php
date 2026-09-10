@@ -21,6 +21,7 @@ class CertificateResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
 
     protected static ?string $navigationLabel = 'Sertifikat PKL';
+    protected static string | \UnitEnum | null $navigationGroup = 'Siswa';
     
     protected static ?string $modelLabel = 'Sertifikat PKL';
     

@@ -28,6 +28,7 @@ class AmsadminPanelProvider extends PanelProvider
             ->path('amsadmin')
             ->login()
             ->authGuard('admin')
+            ->favicon(asset('images/app_icon.png'))
             ->colors([
                 'primary' => Color::Amber,
             ])

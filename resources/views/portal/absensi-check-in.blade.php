@@ -110,6 +110,13 @@
             </div>
         @endif
 
+        @if($attendance && $attendance->check_in && !$attendance->check_out && now()->format('H:i') >= '16:20')
+            <div class="alert alert-warning d-flex align-items-center mb-4">
+                <i class="fa-solid fa-bell me-2 fs-4"></i>
+                <div><strong>Perhatian:</strong> Sudah lewat jam 16:20, jangan lupa absen pulang!</div>
+            </div>
+        @endif
+
         @if($attendance && $attendance->check_in && $attendance->check_out)
             <div class="alert alert-info text-center p-4">
                 <i class="fa-solid fa-check-double text-primary mb-3" style="font-size: 3rem;"></i>

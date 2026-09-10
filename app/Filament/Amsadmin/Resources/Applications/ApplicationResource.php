@@ -25,6 +25,7 @@ class ApplicationResource extends Resource
     protected static ?string $modelLabel = 'Pendaftar';
     protected static ?string $pluralModelLabel = 'Data Pendaftar';
     protected static ?string $navigationLabel = 'Pendaftaran PKL';
+    protected static string | \UnitEnum | null $navigationGroup = 'Siswa';
 
     protected static ?string $recordTitleAttribute = 'nama_lengkap';
 

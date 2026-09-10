@@ -21,9 +21,10 @@ class LeaveRequestResource extends Resource
     protected static ?string $model = LeaveRequest::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-envelope-open';
-    protected static ?string $navigationLabel = 'Pengajuan Izin';
-    protected static ?string $pluralModelLabel = 'Pengajuan Izin';
-    protected static ?string $modelLabel = 'Pengajuan Izin';
+    protected static ?string $navigationLabel = 'Pengajuan Izin Siswa';
+    protected static string | \UnitEnum | null $navigationGroup = 'Siswa';
+    protected static ?string $pluralModelLabel = 'Pengajuan Izin Siswa';
+    protected static ?string $modelLabel = 'Izin Siswa';
 
     protected static ?string $recordTitleAttribute = 'reason';
 

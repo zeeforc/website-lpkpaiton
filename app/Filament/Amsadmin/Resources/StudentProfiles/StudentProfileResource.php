@@ -21,6 +21,7 @@ class StudentProfileResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
     protected static ?string $navigationLabel = 'Data Siswa';
+    protected static string | \UnitEnum | null $navigationGroup = 'Siswa';
     
     protected static ?string $modelLabel = 'Profil Siswa';
     

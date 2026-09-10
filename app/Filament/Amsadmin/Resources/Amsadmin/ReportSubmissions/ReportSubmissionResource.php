@@ -23,6 +23,7 @@ class ReportSubmissionResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
     protected static ?string $navigationLabel = 'Laporan Siswa';
+    protected static string | \UnitEnum | null $navigationGroup = 'Siswa';
     
     protected static ?string $modelLabel = 'Laporan Siswa';
     

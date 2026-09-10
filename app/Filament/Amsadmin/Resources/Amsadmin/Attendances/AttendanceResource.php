@@ -20,7 +20,11 @@ class AttendanceResource extends Resource
 {
     protected static ?string $model = Attendance::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
+    protected static ?string $navigationLabel = 'Absensi Siswa';
+    protected static string | \UnitEnum | null $navigationGroup = 'Siswa';
+    protected static ?string $modelLabel = 'Absensi Siswa';
+    protected static ?string $pluralModelLabel = 'Absensi Siswa';
 
     protected static ?string $recordTitleAttribute = 'id';
 
