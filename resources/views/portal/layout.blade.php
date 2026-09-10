@@ -288,13 +288,13 @@
         @if(Auth::check())
             <!-- Sidebar (Desktop/Tablet) -->
             <aside class="portal-sidebar d-none d-md-flex">
-                <a href="{{ Auth::user()->role === 'guru_pondok' ? route('portal.guru.absensi-rombongan') : (Auth::user()->role === 'karyawan_paving' ? route('portal.absensi.check-in') : route('portal.biodata')) }}" class="sidebar-brand mb-3" style="text-decoration: none;">
+                <a href="{{ Auth::user()->role === 'guru_pondok' ? route('portal.guru.absensi-rombongan') : (in_array(Auth::user()->role, ['karyawan_paving', 'instruktur_lpk']) ? route('portal.absensi.check-in') : route('portal.biodata')) }}" class="sidebar-brand mb-3" style="text-decoration: none;">
                     <i class="fa-solid fa-users" style="color: #3b82f6; font-size: 1.8rem; filter: drop-shadow(0 4px 6px rgba(59, 130, 246, 0.4));"></i>
                 </a>
                 
                 @if(Auth::user()->role === 'guru_pondok')
                     <a href="{{ route('portal.guru.absensi-rombongan') }}" class="sidebar-link {{ request()->routeIs('portal.guru.absensi-rombongan') ? 'active' : '' }}" title="Absensi Rombongan"><i class="fa-solid fa-users"></i></a>
-                @elseif(Auth::user()->role === 'karyawan_paving')
+                @elseif(in_array(Auth::user()->role, ['karyawan_paving', 'instruktur_lpk']))
                     <a href="{{ route('portal.absensi') }}" class="sidebar-link {{ request()->routeIs('portal.absensi*') ? 'active' : '' }}" title="Absensi"><i class="fa-regular fa-calendar-check"></i></a>
                     <a href="{{ route('portal.izin') }}" class="sidebar-link {{ request()->routeIs('portal.izin*') ? 'active' : '' }}" title="Perizinan"><i class="fa-solid fa-file-signature"></i></a>
                 @else
@@ -315,7 +315,7 @@
             <nav class="portal-bottombar d-flex d-md-none">
                 @if(Auth::user()->role === 'guru_pondok')
                     <a href="{{ route('portal.guru.absensi-rombongan') }}" class="bottombar-link {{ request()->routeIs('portal.guru.absensi-rombongan') ? 'active' : '' }}"><i class="fa-solid fa-users"></i></a>
-                @elseif(Auth::user()->role === 'karyawan_paving')
+                @elseif(in_array(Auth::user()->role, ['karyawan_paving', 'instruktur_lpk']))
                     <a href="{{ route('portal.absensi') }}" class="bottombar-link {{ request()->routeIs('portal.absensi*') ? 'active' : '' }}"><i class="fa-regular fa-calendar-check"></i></a>
                     <a href="{{ route('portal.izin') }}" class="bottombar-link {{ request()->routeIs('portal.izin*') ? 'active' : '' }}"><i class="fa-solid fa-file-signature"></i></a>
                 @else
