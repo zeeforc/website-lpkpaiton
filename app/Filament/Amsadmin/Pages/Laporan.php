@@ -12,7 +12,7 @@ class Laporan extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Laporan Excel';
-    protected static ?string $navigationGroup = 'Sistem';
+    protected static string | \UnitEnum | null $navigationGroup = 'Sistem';
     protected static ?string $title = 'Laporan Pendaftaran PKL';
     protected static ?int $navigationSort = 3;
 
