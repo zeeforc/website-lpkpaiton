@@ -25,14 +25,14 @@ class PavingAttendanceResource extends Resource
     protected static ?string $recordTitleAttribute = 'id';
 
     protected static ?string $navigationLabel = 'Absensi Karyawan';
-    protected static string | \UnitEnum | null $navigationGroup = 'Karyawan Paving';
+    protected static string | \UnitEnum | null $navigationGroup = 'Karyawan';
     protected static ?string $modelLabel = 'Absensi Karyawan';
     protected static ?string $pluralModelLabel = 'Absensi Karyawan';
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()->whereHas('user', function ($query) {
-            $query->where('role', 'karyawan_paving');
+            $query->whereIn('role', ['karyawan_paving', 'instruktur_lpk']);
         });
     }
 

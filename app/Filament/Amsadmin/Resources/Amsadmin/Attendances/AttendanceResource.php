@@ -27,7 +27,7 @@ class AttendanceResource extends Resource
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()->whereHas('user', function ($query) {
-            $query->where('role', '!=', 'karyawan_paving');
+            $query->whereNotIn('role', ['karyawan_paving', 'instruktur_lpk']);
         });
     }
 

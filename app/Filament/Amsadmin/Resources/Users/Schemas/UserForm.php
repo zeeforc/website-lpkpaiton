@@ -25,8 +25,9 @@ class UserForm
                         'admin' => 'Admin',
                         'siswa' => 'Siswa',
                         'guru_pondok' => 'Guru Pondok',
+                        'karyawan_paving' => 'Karyawan Paving',
+                        'instruktur_lpk' => 'Instruktur LPK',
                     ])
-                    ->required()
                     ->default('siswa'),
                 TextInput::make('password')
                     ->password()

@@ -25,6 +25,8 @@ class UsersTable
                         'primary' => 'siswa',
                         'success' => 'admin',
                         'warning' => 'guru_pondok',
+                        'danger' => 'karyawan_paving',
+                        'info' => 'instruktur_lpk',
                     ]),
                 TextColumn::make('email_verified_at')
                     ->dateTime()

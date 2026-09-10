@@ -57,3 +57,10 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+
+
+
+
+okeee udah aman broo, tapi mungkin untuk tampilan 419 ini kan masih blank hitam dan cuma text doang, buat lah lebih proper gitu bro. kalo bisa sih sesuain designya kek web portal kita

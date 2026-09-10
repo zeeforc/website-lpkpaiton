@@ -95,8 +95,8 @@
     <div class="login-container w-100">
     <div class="login-header">
         <i class="fa-solid fa-users-rectangle"></i>
-        <h1 class="login-title">Pendaftaran Karyawan Paving</h1>
-        <p class="login-subtitle">Daftarkan akun Anda untuk absensi harian</p>
+        <h1 class="login-title">Pendaftaran Karyawan</h1>
+        <p class="login-subtitle">Daftarkan akun karyawan untuk absensi harian</p>
     </div>
 
     <form action="{{ route('portal.register-karyawan.post') }}" method="POST">
@@ -115,10 +115,21 @@
                 <div class="text-danger mt-1" style="font-size: 0.85rem;">{{ $message }}</div>
             @enderror
         </div>
-        <div class="mb-4 text-start">
+        <div class="mb-3 text-start">
             <label class="form-label text-secondary fw-semibold" style="font-size: 0.9rem;">Password</label>
             <input type="password" name="password" class="form-control form-control-custom" placeholder="Buat password (min. 6 karakter)" required>
             @error('password')
+                <div class="text-danger mt-1" style="font-size: 0.85rem;">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-4 text-start">
+            <label class="form-label text-secondary fw-semibold" style="font-size: 0.9rem;">Lokasi Penempatan</label>
+            <select name="lokasi" class="form-control form-control-custom" required>
+                <option value="" disabled {{ old('lokasi') ? '' : 'selected' }}>-- Pilih Lokasi --</option>
+                <option value="lpk" {{ old('lokasi') == 'lpk' ? 'selected' : '' }}>LPK Paiton Selaras</option>
+                <option value="paving" {{ old('lokasi') == 'paving' ? 'selected' : '' }}>Paving / PLTU Paiton</option>
+            </select>
+            @error('lokasi')
                 <div class="text-danger mt-1" style="font-size: 0.85rem;">{{ $message }}</div>
             @enderror
         </div>

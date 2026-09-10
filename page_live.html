@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Presensi - LPK Paiton Selaras</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <link rel="apple-touch-icon" href="/favicon.png">
+    
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f8fafc;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 40%), 
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+            background-attachment: fixed;
+            color: #334155;
+            min-height: 100vh;
+        }
+        .portal-layout-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        .portal-main-content {
+            flex-grow: 1;
+            width: 100%;
+            transition: padding 0.3s ease;
+        }
+        .portal-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+        
+        /* Sidebar (Desktop) */
+        .portal-sidebar {
+            position: fixed;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            width: 75px;
+            height: calc(100vh - 40px);
+            max-height: 600px;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 40px;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
+        .sidebar-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #475569;
+            font-size: 1.25rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            background: #fff;
+            color: #3b82f6;
+            box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+        .sidebar-logout {
+            color: #ef4444;
+        }
+        .sidebar-logout:hover {
+            background: #fef2f2;
+            color: #dc2626;
+            box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.2);
+        }
+
+        /* Bottom Bar (Mobile) */
+        .portal-bottombar {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 30px;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        .bottombar-link {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #475569;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .bottombar-link.active {
+            background: #3b82f6;
+            color: #fff;
+            box-shadow: 0 8px 15px rgba(59, 130, 246, 0.3);
+        }
+        .page-header {
+            margin-bottom: 25px;
+        }
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+        .page-subtitle {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        .card-custom {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-custom:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px -10px rgba(0,0,0,0.08);
+        }
+        .card-header-custom {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .card-title-custom {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+        }
+        .card-title-custom i {
+            color: #3b82f6;
+        }
+        .card-body-custom {
+            padding: 20px;
+        }
+        .data-row {
+            display: flex;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+        .data-label {
+            width: 160px;
+            color: #64748b;
+            flex-shrink: 0;
+        }
+        .data-separator {
+            width: 20px;
+            color: #64748b;
+        }
+        .data-value {
+            color: #1e293b;
+            font-weight: 500;
+        }
+        .btn-outline-custom {
+            border: 1px solid rgba(203, 213, 225, 0.8);
+            color: #475569;
+            background: rgba(248, 250, 252, 0.6);
+            font-size: 0.85rem;
+            padding: 6px 16px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-outline-custom:hover {
+            background: rgba(241, 245, 249, 0.9);
+            color: #0F172A;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .btn-outline-primary-custom {
+            border: 1px solid #3b82f6;
+            color: #3b82f6;
+            background: transparent;
+            font-size: 0.85rem;
+            padding: 6px 16px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-outline-primary-custom:hover {
+            background: #3b82f6;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+        
+        /* Glassmorphism Inputs */
+        .form-control, .form-select {
+            background-color: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            color: #334155;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15), inset 0 2px 4px rgba(0,0,0,0.02);
+            background-color: rgba(255, 255, 255, 0.8);
+            transform: translateY(-1px);
+        }
+        .form-control:disabled, .form-control[readonly], .form-select:disabled {
+            background-color: rgba(241, 245, 249, 0.5);
+            color: #64748b;
+        }
+        
+        /* SweetAlert Glassmorphism */
+        .swal-glass {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 24px !important;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1) !important;
+            color: #1e293b !important;
+        }
+        
+        
+        @media (max-width: 767px) {
+            .portal-content {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+    <style>
+    .login-container {
+        max-width: 480px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.35); /* Lowered opacity for glass effect */
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+        padding: 50px 40px;
+        text-align: center;
+        position: relative;
+        z-index: 10;
+    }
+    .login-header {
+        margin-bottom: 40px;
+    }
+    .login-header img {
+        height: 120px;
+        margin-bottom: 15px;
+        object-fit: contain;
+    }
+    .login-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #0F172A;
+        letter-spacing: -0.5px;
+    }
+    .login-subtitle {
+        color: #64748b;
+        font-size: 1rem;
+    }
+    .form-control-custom {
+        background-color: rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 12px;
+        padding: 14px 18px;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .form-control-custom:focus {
+        border-color: #8b5cf6;
+        box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15), inset 0 2px 4px rgba(0,0,0,0.02);
+        background-color: rgba(255, 255, 255, 0.8);
+        transform: translateY(-1px);
+    }
+    .btn-login {
+        background-color: #111827;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        width: 100%;
+        font-weight: 600;
+        font-size: 1.05rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-top: 10px;
+    }
+    .btn-login:hover {
+        background-color: #3b82f6;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+    }
+    .btn-login:active {
+        transform: scale(0.97);
+    }
+</style>
+</head>
+<body>
+
+    <div class="portal-layout-wrapper">
+        
+        <main class="portal-main-content">
+            <div class="portal-content">
+                
+        <!-- PWA Install Banner (static, sits above content) -->
+        <div class="w-100 d-flex justify-content-center" style="z-index: 50; padding: 15px 0 20px 0;">
+            <div id="pwa-install-banner" class="alert alert-primary d-none flex-row justify-content-between align-items-center shadow-sm mb-0" style="border-radius: 12px; width: 90%; max-width: 400px; padding: 15px;">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="https://lpkpaiton.site/images/app_icon.png" style="width: 40px; height: 40px; border-radius: 8px;">
+                    <div>
+                        <h6 class="mb-0 fw-bold">Install Presensi</h6>
+                        <small class="mb-0 text-muted">Akses lebih cepat & mudah!</small>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button id="pwa-install-close" class="btn btn-sm btn-light p-2"><i class="fa-solid fa-xmark"></i></button>
+                    <button id="pwa-install-btn" class="btn btn-sm btn-primary fw-bold p-2">Install</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="position-relative d-flex flex-column justify-content-center align-items-center" style="min-height: 100vh; overflow: hidden; padding-bottom: 120px;">
+    <!-- Decorative Blobs behind the login card to make glassmorphism pop -->
+    <div class="d-none d-md-block" style="position: absolute; top: 30%; left: 35%; width: 350px; height: 350px; background: #3b82f6; filter: blur(90px); opacity: 0.45; border-radius: 50%; z-index: 1; animation: float 6s ease-in-out infinite;"></div>
+    <div class="d-none d-md-block" style="position: absolute; top: 50%; left: 55%; width: 300px; height: 300px; background: #8b5cf6; filter: blur(90px); opacity: 0.45; border-radius: 50%; z-index: 1; animation: float 8s ease-in-out infinite reverse;"></div>
+
+    <style>
+        @keyframes float {
+            0% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+            100% { transform: translateY(0px) scale(1); }
+        }
+    </style>
+
+    <div class="login-container w-100">
+    <div class="login-header">
+        <img src="https://lpkpaiton.site/images/logo_yayasan.png" alt="Logo Yayasan">
+        <h1 class="login-title">Presensi</h1>
+    </div>
+
+        
+    <form action="https://lpkpaiton.site/portal/login" method="POST">
+        <input type="hidden" name="_token" value="CQAS2YRjZ1Yps3XjYGBMkhU07QCNnEz8BgNhzCc8" autocomplete="off">        <div class="mb-4 text-start">
+            <label class="form-label text-secondary fw-semibold" style="font-size: 0.9rem;">Email Login</label>
+            <input type="email" name="email" class="form-control form-control-custom" placeholder="Masukkan email Anda" required value="">
+                    </div>
+        <div class="mb-4 text-start">
+            <label class="form-label text-secondary fw-semibold" style="font-size: 0.9rem;">Password</label>
+            <input type="password" name="password" class="form-control form-control-custom" placeholder="Masukkan password" required>
+        </div>
+        <button type="submit" class="btn btn-login">Masuk ke Portal</button>
+    </form>
+ 
+    <div class="mt-4 text-secondary fw-medium" style="font-size: 0.85rem;">
+        &copy; 2026 LPK Paiton Selaras.
+    </div>
+</div>
+</div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        // PWA Installation Logic
+        let deferredPrompt = null;
+        const pwaInstallBanner = document.getElementById('pwa-install-banner');
+        const pwaInstallBtn = document.getElementById('pwa-install-btn');
+        const pwaInstallClose = document.getElementById('pwa-install-close');
+
+        function showBanner() {
+            if (localStorage.getItem('pwa-banner-dismissed')) return;
+            pwaInstallBanner.classList.remove('d-none');
+            pwaInstallBanner.classList.add('d-flex');
+            // Auto-hide after 20 seconds
+            setTimeout(() => {
+                hideBanner();
+            }, 20000);
+        }
+
+        function hideBanner() {
+            pwaInstallBanner.classList.remove('d-flex');
+            pwaInstallBanner.classList.add('d-none');
+        }
+
+        // Capture native install prompt (Chrome/Edge Android)
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        // Show banner after 2 seconds on page load
+        setTimeout(() => { showBanner(); }, 2000);
+
+        pwaInstallBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                // Native install (Chrome Android)
+                hideBanner();
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+            } else {
+                // Fallback: guide user to add to homescreen manually
+                hideBanner();
+                const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+                if (isIOS) {
+                    alert('Tap ikon Share (kotak dengan panah ke atas) di Safari, lalu pilih "Add to Home Screen".');
+                } else {
+                    alert('Buka menu browser (⋮), lalu pilih "Install app" atau "Add to Home screen".');
+                }
+            }
+        });
+
+        pwaInstallClose.addEventListener('click', () => {
+            hideBanner();
+            localStorage.setItem('pwa-banner-dismissed', '1');
+        });
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(reg => {
+                    console.log('SW registered:', reg.scope);
+                }).catch(err => {
+                    console.log('SW registration failed:', err);
+                });
+            });
+        }
+        
+        function confirmLogout(form) {
+            Swal.fire({
+                title: 'Keluar Portal?',
+                text: "Apakah Anda yakin ingin keluar dari portal siswa?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Ya, Keluar',
+                cancelButtonText: 'Batal',
+                background: 'rgba(255, 255, 255, 0.65)',
+                backdrop: 'rgba(15, 23, 42, 0.4)',
+                customClass: {
+                    popup: 'swal-glass'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+    </script>
+    
+    <script>
+    // refresh otomatis
+    let lastVisibleTime = Date.now();
+    document.addEventListener("visibilitychange", function() {
+        if (document.visibilityState === 'visible') {
+            // Jika aplikasi di-background lebih dari 30 menit, refresh halaman
+            if (Date.now() - lastVisibleTime > 1800000) {
+                window.location.reload();
+            }
+        } else {
+            lastVisibleTime = Date.now();
+        }
+    });
+</script>
+</body>
+</html>

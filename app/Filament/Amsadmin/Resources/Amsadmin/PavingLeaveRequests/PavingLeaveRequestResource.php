@@ -26,14 +26,14 @@ class PavingLeaveRequestResource extends Resource
     protected static ?string $recordTitleAttribute = 'reason';
 
     protected static ?string $navigationLabel = 'Pengajuan Izin Karyawan';
-    protected static string | \UnitEnum | null $navigationGroup = 'Karyawan Paving';
+    protected static string | \UnitEnum | null $navigationGroup = 'Karyawan';
     protected static ?string $modelLabel = 'Izin Karyawan';
     protected static ?string $pluralModelLabel = 'Pengajuan Izin Karyawan';
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()->whereHas('user', function ($query) {
-            $query->where('role', 'karyawan_paving');
+            $query->whereIn('role', ['karyawan_paving', 'instruktur_lpk']);
         });
     }
 

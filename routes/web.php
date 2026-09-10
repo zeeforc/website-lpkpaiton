@@ -83,6 +83,9 @@ Route::prefix('portal')->name('portal.')->group(function () {
     Route::get('/register-karyawan', [\App\Http\Controllers\PortalController::class, 'showRegisterKaryawan'])->name('register-karyawan');
     Route::post('/register-karyawan', [\App\Http\Controllers\PortalController::class, 'registerKaryawan'])->name('register-karyawan.post');
     Route::post('/logout', [\App\Http\Controllers\PortalController::class, 'logout'])->name('logout');
+    Route::get('/test-419', function () {
+        throw new \Illuminate\Session\TokenMismatchException;
+    });
 
     Route::middleware('auth')->group(function () {
         Route::get('/biodata', [\App\Http\Controllers\PortalController::class, 'biodata'])->name('biodata');
