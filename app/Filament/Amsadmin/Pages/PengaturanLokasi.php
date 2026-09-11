@@ -47,22 +47,13 @@ class PengaturanLokasi extends Page implements HasForms
 
     public function mount(): void
     {
-        $lat = Setting::where('key', 'lpk_latitude')->value('value') ?? '-7.7126';
-        $lng = Setting::where('key', 'lpk_longitude')->value('value') ?? '113.4687';
-        $pavingLat = Setting::where('key', 'paving_latitude')->value('value') ?? '-7.7126';
-        $pavingLng = Setting::where('key', 'paving_longitude')->value('value') ?? '113.4687';
-        $radius = Setting::where('key', 'absensi_radius')->value('value') ?? '50';
-
         $this->form->fill([
+            'target_lokasi' => 'lpk',
+            'absensi_radius' => Setting::where('key', 'absensi_radius')->value('value') ?? '50',
             'location' => [
-                'lat' => (float) $lat,
-                'lng' => (float) $lng,
-            ],
-            'paving_location' => [
-                'lat' => (float) $pavingLat,
-                'lng' => (float) $pavingLng,
-            ],
-            'absensi_radius' => $radius,
+                'lat' => (float) (Setting::where('key', 'lpk_latitude')->value('value') ?? '-7.7126'),
+                'lng' => (float) (Setting::where('key', 'lpk_longitude')->value('value') ?? '113.4687'),
+            ]
         ]);
     }
 
@@ -70,12 +61,37 @@ class PengaturanLokasi extends Page implements HasForms
     {
         return $schema
             ->components([
-                Section::make('Titik Koordinat LPK')
-                    ->description('Cari lokasi LPK Paiton Selaras (menggunakan form search di dalam peta) dan geser pin merah ke titik bangunan yang paling tepat.')
+                Section::make('Pilih Lokasi yang Diatur')
+                    ->schema([
+                        \Filament\Forms\Components\Select::make('target_lokasi')
+                            ->label('Lokasi')
+                            ->options([
+                                'lpk' => 'LPK Paiton Selaras',
+                                'paving' => 'Paving / PLTU Paiton'
+                            ])
+                            ->live()
+                            ->afterStateUpdated(function (\Filament\Forms\Set $set, $state) {
+                                if ($state === 'lpk') {
+                                    $set('location', [
+                                        'lat' => (float) (Setting::where('key', 'lpk_latitude')->value('value') ?? '-7.7126'),
+                                        'lng' => (float) (Setting::where('key', 'lpk_longitude')->value('value') ?? '113.4687'),
+                                    ]);
+                                } else {
+                                    $set('location', [
+                                        'lat' => (float) (Setting::where('key', 'paving_latitude')->value('value') ?? '-7.7126'),
+                                        'lng' => (float) (Setting::where('key', 'paving_longitude')->value('value') ?? '113.4687'),
+                                    ]);
+                                }
+                            })
+                            ->required(),
+                    ]),
+
+                Section::make('Titik Koordinat')
+                    ->description('Cari lokasi menggunakan form search di dalam peta dan geser pin merah ke titik bangunan yang paling tepat.')
                     ->schema([
                         Map::make('location')
-                            ->label('Peta Lokasi LPK')
-                            ->id('map_lpk')
+                            ->label('Peta Lokasi')
+                            ->id('main_map')
                             ->columnSpanFull()
                             ->defaultLocation(latitude: -7.7126, longitude: 113.4687)
                             ->showMarker()
@@ -86,22 +102,7 @@ class PengaturanLokasi extends Page implements HasForms
                             ->clickable(false)
                             ->showMyLocationButton(),
                     ]),
-                Section::make('Titik Koordinat Paving')
-                    ->description('Cari lokasi Paving (menggunakan form search di dalam peta) dan geser pin merah ke titik bangunan yang paling tepat.')
-                    ->schema([
-                        Map::make('paving_location')
-                            ->label('Peta Lokasi Paving')
-                            ->id('map_paving')
-                            ->columnSpanFull()
-                            ->defaultLocation(latitude: -7.7126, longitude: 113.4687)
-                            ->showMarker()
-                            ->markerColor('#ff0000')
-                            ->showFullscreenControl()
-                            ->showZoomControl()
-                            ->draggable()
-                            ->clickable(false)
-                            ->showMyLocationButton(),
-                    ]),
+
                 Section::make('Radius Toleransi')
                     ->schema([
                         TextInput::make('absensi_radius')
@@ -118,20 +119,19 @@ class PengaturanLokasi extends Page implements HasForms
     {
         $data = $this->form->getState();
 
+        $target = $data['target_lokasi'] ?? 'lpk';
         $lat = $data['location']['lat'] ?? null;
         $lng = $data['location']['lng'] ?? null;
-        $pavingLat = $data['paving_location']['lat'] ?? null;
-        $pavingLng = $data['paving_location']['lng'] ?? null;
         $radius = $data['absensi_radius'] ?? null;
 
         if ($lat && $lng) {
-            Setting::updateOrCreate(['key' => 'lpk_latitude'], ['value' => $lat, 'name' => 'LPK Latitude']);
-            Setting::updateOrCreate(['key' => 'lpk_longitude'], ['value' => $lng, 'name' => 'LPK Longitude']);
-        }
-
-        if ($pavingLat && $pavingLng) {
-            Setting::updateOrCreate(['key' => 'paving_latitude'], ['value' => $pavingLat, 'name' => 'Paving Latitude']);
-            Setting::updateOrCreate(['key' => 'paving_longitude'], ['value' => $pavingLng, 'name' => 'Paving Longitude']);
+            if ($target === 'lpk') {
+                Setting::updateOrCreate(['key' => 'lpk_latitude'], ['value' => $lat, 'name' => 'LPK Latitude']);
+                Setting::updateOrCreate(['key' => 'lpk_longitude'], ['value' => $lng, 'name' => 'LPK Longitude']);
+            } else {
+                Setting::updateOrCreate(['key' => 'paving_latitude'], ['value' => $lat, 'name' => 'Paving Latitude']);
+                Setting::updateOrCreate(['key' => 'paving_longitude'], ['value' => $lng, 'name' => 'Paving Longitude']);
+            }
         }
         
         if ($radius) {
@@ -140,7 +140,7 @@ class PengaturanLokasi extends Page implements HasForms
 
         Notification::make()
             ->title('Berhasil disimpan')
-            ->body('Titik lokasi LPK telah diperbarui.')
+            ->body('Titik lokasi telah diperbarui.')
             ->success()
             ->send();
     }
