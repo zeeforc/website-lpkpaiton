@@ -117,7 +117,12 @@
         </div>
         <div class="mb-3 text-start">
             <label class="form-label text-secondary fw-semibold" style="font-size: 0.9rem;">Password</label>
-            <input type="password" name="password" class="form-control form-control-custom" placeholder="Buat password (min. 6 karakter)" required>
+            <div class="position-relative">
+                <input type="password" id="password" name="password" class="form-control form-control-custom pe-5" placeholder="Buat password (min. 6 karakter)" required>
+                <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent text-secondary" id="togglePassword" style="padding: 0 15px;">
+                    <i class="fa-regular fa-eye"></i>
+                </button>
+            </div>
             @error('password')
                 <div class="text-danger mt-1" style="font-size: 0.85rem;">{{ $message }}</div>
             @enderror
@@ -143,6 +148,19 @@
     <div class="mt-4 text-secondary fw-medium" style="font-size: 0.85rem;">
         &copy; {{ date('Y') }} LPK Paiton Selaras.
     </div>
-</div>
-</div>
+@push('scripts')
+<script>
+    // toggle password visibility
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#password');
+    if(togglePassword && password) {
+        togglePassword.addEventListener('click', function (e) {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+    }
+</script>
+@endpush
 @endsection

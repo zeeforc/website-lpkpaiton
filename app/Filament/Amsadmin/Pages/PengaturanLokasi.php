@@ -75,6 +75,7 @@ class PengaturanLokasi extends Page implements HasForms
                     ->schema([
                         Map::make('location')
                             ->label('Peta Lokasi LPK')
+                            ->id('map_lpk')
                             ->columnSpanFull()
                             ->defaultLocation(latitude: -7.7126, longitude: 113.4687)
                             ->showMarker()
@@ -90,6 +91,7 @@ class PengaturanLokasi extends Page implements HasForms
                     ->schema([
                         Map::make('paving_location')
                             ->label('Peta Lokasi Paving')
+                            ->id('map_paving')
                             ->columnSpanFull()
                             ->defaultLocation(latitude: -7.7126, longitude: 113.4687)
                             ->showMarker()
