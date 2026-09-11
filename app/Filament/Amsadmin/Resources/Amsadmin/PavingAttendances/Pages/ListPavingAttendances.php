@@ -16,8 +16,20 @@ class ListPavingAttendances extends ListRecords
             \Filament\Actions\Action::make('export_csv')
                 ->label('Download Laporan (Excel)')
                 ->icon('heroicon-o-arrow-down-tray')
-                ->url(fn () => route('admin.paving-attendances.export'))
-                ->openUrlInNewTab(),
+                ->form([
+                    \Filament\Forms\Components\Select::make('role')
+                        ->label('Pilih Data Role')
+                        ->options([
+                            'karyawan_paving' => 'Karyawan Paving',
+                            'instruktur_lpk' => 'Instruktur LPK',
+                            'semua' => 'Semua Karyawan',
+                        ])
+                        ->default('karyawan_paving')
+                        ->required(),
+                ])
+                ->action(function (array $data) {
+                    return redirect()->route('admin.paving-attendances.export', ['role' => $data['role']]);
+                }),
             CreateAction::make(),
         ];
     }

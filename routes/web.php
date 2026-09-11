@@ -161,7 +161,7 @@ Route::get('/amsadmin/export-attendances', function () {
     exit;
 })->name('admin.attendances.export');
 
-Route::get('/amsadmin/export-paving-attendances', function () {
+Route::get('/amsadmin/export-paving-attendances', function (\Illuminate\Http\Request $request) {
     $currentMonth = date('m');
     $currentYear = date('Y');
     $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
@@ -175,7 +175,13 @@ Route::get('/amsadmin/export-paving-attendances', function () {
             return (int) \Carbon\Carbon::parse($item->date)->format('j');
         });
         
-    $users = \App\Models\User::where('role', 'karyawan_paving')->get();
+    $roleFilter = $request->input('role', 'karyawan_paving');
+    
+    if ($roleFilter === 'semua') {
+        $users = \App\Models\User::whereIn('role', ['karyawan_paving', 'instruktur_lpk'])->get();
+    } else {
+        $users = \App\Models\User::where('role', $roleFilter)->get();
+    }
     
     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     $spreadsheet->removeSheetByIndex(0); // Remove default sheet
@@ -224,7 +230,8 @@ Route::get('/amsadmin/export-paving-attendances', function () {
         $sheet->setCellValue('A3', "01-{$daysInMonth} {$monthName} {$currentYear}");
         $sheet->setCellValue('C3', 'JOB TITLE');
         $sheet->mergeCells('D3:F3');
-        $sheet->setCellValue('D3', 'Karyawan Paving');
+        $jobTitle = $user->role === 'instruktur_lpk' ? 'Instruktur LPK' : 'Karyawan Paving';
+        $sheet->setCellValue('D3', $jobTitle);
         
         // Table Headers
         $sheet->mergeCells('A4:A5');
@@ -332,12 +339,13 @@ Route::get('/amsadmin/export-paving-attendances', function () {
     if ($users->isEmpty()) {
         $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, 'No Data');
         $spreadsheet->addSheet($sheet, 0);
-        $sheet->setCellValue('A1', 'Tidak ada data karyawan paving.');
+        $sheet->setCellValue('A1', 'Tidak ada data karyawan.');
     }
     
     $spreadsheet->setActiveSheetIndex(0);
     
-    $fileName = 'Laporan_Absensi_Karyawan_Paving_' . $monthNames[(int)$currentMonth] . '_' . $currentYear . '.xlsx';
+    $roleStr = $roleFilter === 'semua' ? 'Semua_Karyawan' : ($roleFilter === 'instruktur_lpk' ? 'Instruktur_LPK' : 'Karyawan_Paving');
+    $fileName = 'Laporan_Absensi_' . $roleStr . '_' . $monthNames[(int)$currentMonth] . '_' . $currentYear . '.xlsx';
     
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment;filename="' . $fileName . '"');
