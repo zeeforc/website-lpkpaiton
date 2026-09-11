@@ -92,10 +92,17 @@
     <p class="page-subtitle">Pindai wajah santri yang hadir secara bersamaan (Mode CCTV).</p>
 </div>
 
-@if(now()->format('H:i') >= '16:20')
-<div class="alert alert-warning text-center mx-auto" style="max-width: 800px;">
-    <i class="fa-solid fa-bell me-2 fs-5"></i>
-    <strong>Perhatian:</strong> Sudah lewat jam 16:20, jangan lupa untuk melakukan absen pulang santri!
+@php
+    $jamPulangSiswa = substr($settings['jam_pulang_siswa'] ?? '16:00', 0, 5);
+    $jamPulangSiswaToleransi = \Carbon\Carbon::createFromFormat('H:i', $jamPulangSiswa)->addMinutes(20)->format('H:i');
+@endphp
+
+@if(now()->format('H:i') >= $jamPulangSiswaToleransi)
+<div class="alert alert-warning d-flex align-items-center mb-4">
+    <i class="fa-solid fa-bell me-2 fs-4"></i>
+    <div>
+    <strong>Perhatian:</strong> Sudah lewat jam {{ $jamPulangSiswaToleransi }}, jangan lupa untuk melakukan absen pulang santri!
+    </div>
 </div>
 @endif
 

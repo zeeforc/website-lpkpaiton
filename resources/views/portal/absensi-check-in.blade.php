@@ -110,10 +110,24 @@
             </div>
         @endif
 
-        @if($attendance && $attendance->check_in && !$attendance->check_out && now()->format('H:i') >= '16:20')
+        @php
+            $role = Auth::user()->role;
+            if ($role === 'karyawan_paving') {
+                $jamPulang = $settings['jam_pulang_paving'] ?? '16:00';
+            } elseif ($role === 'instruktur_lpk') {
+                $jamPulang = $settings['jam_pulang_instruktur'] ?? '16:00';
+            } else {
+                $jamPulang = $settings['jam_pulang_siswa'] ?? '16:00';
+            }
+            // Ensure format H:i
+            $jamPulang = substr($jamPulang, 0, 5);
+            $jamPulangToleransi = \Carbon\Carbon::createFromFormat('H:i', $jamPulang)->addMinutes(20)->format('H:i');
+        @endphp
+
+        @if($attendance && $attendance->check_in && !$attendance->check_out && now()->format('H:i') >= $jamPulangToleransi)
             <div class="alert alert-warning d-flex align-items-center mb-4">
                 <i class="fa-solid fa-bell me-2 fs-4"></i>
-                <div><strong>Perhatian:</strong> Sudah lewat jam 16:20, jangan lupa absen pulang!</div>
+                <div><strong>Perhatian:</strong> Sudah lewat jam {{ $jamPulangToleransi }}, jangan lupa absen pulang!</div>
             </div>
         @endif
 

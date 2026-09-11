@@ -542,13 +542,34 @@ class PortalController extends Controller
         $now = now();
         $currentTime = $now->format('H:i:s');
         
+        $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
+        $role = $user->role;
+        
+        if ($role === 'karyawan_paving') {
+            $jamMasuk = $settings['jam_masuk_paving'] ?? '07:00';
+            $jamPulang = $settings['jam_pulang_paving'] ?? '16:00';
+        } elseif ($role === 'instruktur_lpk') {
+            $jamMasuk = $settings['jam_masuk_instruktur'] ?? '07:00';
+            $jamPulang = $settings['jam_pulang_instruktur'] ?? '16:00';
+        } else {
+            $jamMasuk = $settings['jam_masuk_siswa'] ?? '07:00';
+            $jamPulang = $settings['jam_pulang_siswa'] ?? '16:00';
+        }
+        
+        $jamMasuk = substr($jamMasuk, 0, 5);
+        $jamPulang = substr($jamPulang, 0, 5);
+        
+        $jamMasukLimit = \Carbon\Carbon::createFromFormat('H:i', $jamMasuk)->addMinutes(12)->format('H:i:s');
+        $jamPulangLimit = $jamPulang . ':00';
+
         if ($request->type === 'in') {
             if ($attendance->check_in) {
                 return redirect()->route('portal.absensi.check-in')->with('error', 'Anda sudah melakukan absen masuk hari ini.');
             }
+            
             $attendance->check_in = $now;
             
-            if ($currentTime <= '07:12:00') {
+            if ($currentTime <= $jamMasukLimit) {
                 $attendance->status = 'Hadir';
             } else {
                 $attendance->status = 'Telat';
@@ -561,8 +582,8 @@ class PortalController extends Controller
             if ($attendance->check_out) {
                 return redirect()->route('portal.absensi.check-in')->with('error', 'Anda sudah melakukan absen pulang hari ini.');
             }
-            if ($currentTime < '16:00:00') {
-                return redirect()->route('portal.absensi.check-in')->with('error', 'Belum waktunya pulang. Waktu pulang minimal adalah jam 16:00.');
+            if ($currentTime < $jamPulangLimit) {
+                return redirect()->route('portal.absensi.check-in')->with('error', "Belum waktunya pulang. Waktu pulang minimal adalah jam $jamPulang.");
             }
             
             $attendance->check_out = $now;
@@ -654,9 +675,15 @@ class PortalController extends Controller
         
         $now = now();
         $currentTime = $now->format('H:i:s');
+        $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
+        $jamMasuk = substr($settings['jam_masuk_siswa'] ?? '07:00', 0, 5);
+        $jamPulang = substr($settings['jam_pulang_siswa'] ?? '16:00', 0, 5);
         
-        if ($request->type === 'out' && $currentTime < '16:00:00') {
-            return response()->json(['success' => false, 'message' => 'Belum waktunya pulang. Waktu pulang minimal adalah jam 16:00.'], 400);
+        $jamMasukLimit = \Carbon\Carbon::createFromFormat('H:i', $jamMasuk)->addMinutes(12)->format('H:i:s');
+        $jamPulangLimit = $jamPulang . ':00';
+        
+        if ($request->type === 'out' && $currentTime < $jamPulangLimit) {
+            return response()->json(['success' => false, 'message' => "Belum waktunya pulang. Waktu pulang minimal adalah jam $jamPulang."], 400);
         }
         
         $count = 0;
@@ -669,7 +696,7 @@ class PortalController extends Controller
             if ($request->type === 'in') {
                 if (!$attendance->check_in) {
                     $attendance->check_in = $now;
-                    if ($currentTime <= '07:12:00') {
+                    if ($currentTime <= $jamMasukLimit) {
                         $attendance->status = 'Hadir';
                     } else {
                         $attendance->status = 'Telat';

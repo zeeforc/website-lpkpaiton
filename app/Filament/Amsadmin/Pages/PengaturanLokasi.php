@@ -28,12 +28,12 @@ class PengaturanLokasi extends Page implements HasForms
 
     public static function getNavigationLabel(): string
     {
-        return 'Pengaturan Lokasi LPK';
+        return 'Pengaturan Absensi';
     }
 
     public function getTitle(): string | \Illuminate\Contracts\Support\Htmlable
     {
-        return 'Pengaturan Lokasi LPK';
+        return 'Pengaturan Absensi & Lokasi';
     }
 
     public static function getNavigationSort(): ?int
@@ -53,7 +53,13 @@ class PengaturanLokasi extends Page implements HasForms
             'location' => [
                 'lat' => (float) (Setting::where('key', 'lpk_latitude')->value('value') ?? '-7.7126'),
                 'lng' => (float) (Setting::where('key', 'lpk_longitude')->value('value') ?? '113.4687'),
-            ]
+            ],
+            'jam_masuk_siswa' => Setting::where('key', 'jam_masuk_siswa')->value('value') ?? '07:00',
+            'jam_pulang_siswa' => Setting::where('key', 'jam_pulang_siswa')->value('value') ?? '16:00',
+            'jam_masuk_instruktur' => Setting::where('key', 'jam_masuk_instruktur')->value('value') ?? '07:00',
+            'jam_pulang_instruktur' => Setting::where('key', 'jam_pulang_instruktur')->value('value') ?? '16:00',
+            'jam_masuk_paving' => Setting::where('key', 'jam_masuk_paving')->value('value') ?? '07:00',
+            'jam_pulang_paving' => Setting::where('key', 'jam_pulang_paving')->value('value') ?? '16:00',
         ]);
     }
 
@@ -110,6 +116,38 @@ class PengaturanLokasi extends Page implements HasForms
                             ->numeric()
                             ->required()
                             ->helperText('Jarak maksimal (dalam meter) siswa/karyawan diperbolehkan absen dari titik lokasi di atas.'),
+                    ]),
+                    
+                Section::make('Jam Operasional')
+                    ->description('Atur jam masuk dan jam pulang untuk masing-masing peran pengguna (format 24 jam).')
+                    ->columns(2)
+                    ->schema([
+                        \Filament\Forms\Components\TimePicker::make('jam_masuk_siswa')
+                            ->label('Jam Masuk Siswa')
+                            ->seconds(false)
+                            ->required(),
+                        \Filament\Forms\Components\TimePicker::make('jam_pulang_siswa')
+                            ->label('Jam Pulang Siswa')
+                            ->seconds(false)
+                            ->required(),
+                            
+                        \Filament\Forms\Components\TimePicker::make('jam_masuk_instruktur')
+                            ->label('Jam Masuk Instruktur LPK')
+                            ->seconds(false)
+                            ->required(),
+                        \Filament\Forms\Components\TimePicker::make('jam_pulang_instruktur')
+                            ->label('Jam Pulang Instruktur LPK')
+                            ->seconds(false)
+                            ->required(),
+                            
+                        \Filament\Forms\Components\TimePicker::make('jam_masuk_paving')
+                            ->label('Jam Masuk Karyawan Paving')
+                            ->seconds(false)
+                            ->required(),
+                        \Filament\Forms\Components\TimePicker::make('jam_pulang_paving')
+                            ->label('Jam Pulang Karyawan Paving')
+                            ->seconds(false)
+                            ->required(),
                     ])
             ])
             ->statePath('data');
@@ -138,9 +176,22 @@ class PengaturanLokasi extends Page implements HasForms
             Setting::updateOrCreate(['key' => 'absensi_radius'], ['value' => $radius, 'name' => 'Absensi Radius (M)']);
         }
 
+        $times = [
+            'jam_masuk_siswa', 'jam_pulang_siswa',
+            'jam_masuk_instruktur', 'jam_pulang_instruktur',
+            'jam_masuk_paving', 'jam_pulang_paving'
+        ];
+        foreach ($times as $t) {
+            if (isset($data[$t])) {
+                // Konversi format H:i:s ke H:i jika perlu, TimePicker returns H:i:s
+                $val = substr($data[$t], 0, 5); 
+                Setting::updateOrCreate(['key' => $t], ['value' => $val, 'name' => ucwords(str_replace('_', ' ', $t))]);
+            }
+        }
+
         Notification::make()
             ->title('Berhasil disimpan')
-            ->body('Titik lokasi telah diperbarui.')
+            ->body('Pengaturan absensi telah diperbarui.')
             ->success()
             ->send();
     }
