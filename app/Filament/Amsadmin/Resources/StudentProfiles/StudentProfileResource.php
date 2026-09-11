@@ -29,6 +29,13 @@ class StudentProfileResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'id';
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->whereHas('user', function ($query) {
+            $query->where('role', 'siswa');
+        });
+    }
+
     public static function form(Schema $schema): Schema
     {
         return StudentProfileForm::configure($schema);

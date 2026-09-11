@@ -14,6 +14,10 @@ class AttendancesTable
     {
         return $table
             ->columns([
+                \Filament\Tables\Columns\ImageColumn::make('user.studentProfile.pas_foto')
+                    ->label('Foto')
+                    ->circular()
+                    ->defaultImageUrl(url('images/default-avatar.png')),
                 \Filament\Tables\Columns\TextColumn::make('user.name')
                     ->label('Siswa')
                     ->searchable()

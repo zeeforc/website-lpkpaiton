@@ -188,7 +188,8 @@ Route::get('/amsadmin/export-paving-attendances', function (\Illuminate\Http\Req
     
     foreach ($users as $index => $user) {
         // Excel sheet names max 31 characters
-        $sheetName = substr(str_replace(['*', ':', '/', '\\', '?', '[', ']'], '', $user->name), 0, 31);
+        $baseName = substr(str_replace(['*', ':', '/', '\\', '?', '[', ']'], '', $user->name), 0, 25);
+        $sheetName = $baseName . '_' . $user->id;
         $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $sheetName);
         $spreadsheet->addSheet($sheet, $index);
         
