@@ -70,7 +70,7 @@ class PengaturanLokasi extends Page implements HasForms
                                 'paving' => 'Paving / PLTU Paiton'
                             ])
                             ->live()
-                            ->afterStateUpdated(function (\Filament\Forms\Set $set, $state) {
+                            ->afterStateUpdated(function ($set, $state) {
                                 if ($state === 'lpk') {
                                     $set('location', [
                                         'lat' => (float) (Setting::where('key', 'lpk_latitude')->value('value') ?? '-7.7126'),
