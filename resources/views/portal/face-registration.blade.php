@@ -8,11 +8,15 @@
         position: relative;
         width: 100%;
         max-width: 600px;
+        min-height: 400px;
         margin: 0 auto;
         border-radius: 12px;
         overflow: hidden;
         background: #0f172a;
         box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     #video {
         width: 100%;
