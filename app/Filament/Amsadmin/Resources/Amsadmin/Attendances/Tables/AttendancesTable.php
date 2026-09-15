@@ -17,7 +17,7 @@ class AttendancesTable
                 \Filament\Tables\Columns\ImageColumn::make('user.studentProfile.pas_foto')
                     ->label('Foto')
                     ->circular()
-                    ->defaultImageUrl(url('images/default-avatar.png')),
+                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name='.urlencode($record->user->name ?? 'User').'&color=FFFFFF&background=111827'),
                 \Filament\Tables\Columns\TextColumn::make('user.name')
                     ->label('Siswa')
                     ->searchable()
