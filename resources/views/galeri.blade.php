@@ -35,8 +35,10 @@
         <div class="container gallery-inner">
             <div class="row align-items-center gy-4">
                 <div class="col-lg-5">
-                    <h6 class="section-subtitle text-dark">Dokumentasi</h6>
-                    <h2 class="section-title text-dark">Kegiatan</h2>
+                    <div class="mb-4">
+                        <p class="text-uppercase fw-bold text-muted mb-3" style="letter-spacing: 2px; font-size: 0.75rem;">Dokumentasi</p>
+                        <h2 class="display-6 fw-bold mb-3 text-dark" style="letter-spacing: -1px;">Kegiatan <span style="color: #fd7a2a;">LPK</span></h2>
+                    </div>
                     <p class="section-body text-dark">
                         Seluruh kegiatan yang dilaksanakan kita dokumentasikan dan
                         ditampilkan di halaman ini karena kenangan yang disimpan dalam

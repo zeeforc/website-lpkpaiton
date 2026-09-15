@@ -20,6 +20,10 @@ class UserForm
                     ->email()
                     ->required()
                     ->maxLength(255),
+                TextInput::make('phone')
+                    ->tel()
+                    ->maxLength(20)
+                    ->unique(ignoreRecord: true),
                 Select::make('role')
                     ->options([
                         'admin' => 'Admin',

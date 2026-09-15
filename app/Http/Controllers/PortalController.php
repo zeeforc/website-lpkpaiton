@@ -85,8 +85,13 @@ class PortalController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
+            'phone' => ['required', 'string', 'regex:/^08[0-9]{8,13}$/', 'unique:users,phone'],
             'password' => ['required', 'min:6'],
             'lokasi' => ['required', 'in:lpk,paving'],
+        ], [
+            'email.unique' => 'Email ini sudah terdaftar di sistem.',
+            'phone.unique' => 'Nomor telepon ini sudah terdaftar di sistem.',
+            'phone.regex' => 'Format nomor telepon tidak valid. Gunakan format 08xxxxxxxxxx.',
         ]);
 
         $role = $request->lokasi === 'lpk' ? 'instruktur_lpk' : 'karyawan_paving';
@@ -94,6 +99,7 @@ class PortalController extends Controller
         $user = \App\Models\User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => \Illuminate\Support\Facades\Hash::make($request->password),
             'role' => $role,
         ]);
@@ -447,10 +453,19 @@ class PortalController extends Controller
             }
             $distance = sqrt($sum);
             
-            // Threshold 0.55 for uniqueness check. 
-            // Jika distance < 0.55, berarti wajah ini dianggap mirip / sama dengan yang sudah ada di database
-            if ($distance < 0.55) {
-                return false; // Wajah sudah terdaftar oleh orang lain
+            // Threshold 0.45 for uniqueness check (ketat).
+            // TinyFaceDetector menghasilkan descriptor yang kurang presisi
+            // dibanding model SSD atau MTCNN, sehingga threshold harus lebih ketat
+            // untuk menghindari false positive (orang berbeda dianggap sama).
+            if ($distance < 0.45) {
+                \Log::warning('Face uniqueness check failed', [
+                    'new_user_id' => $currentUserId,
+                    'conflicting_profile_id' => $profile->id,
+                    'conflicting_user_id' => $profile->user_id,
+                    'distance' => $distance,
+                    'threshold' => 0.45,
+                ]);
+                return false;
             }
         }
         

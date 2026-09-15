@@ -38,8 +38,10 @@
 
     <section class="section-detail section-sarana" id="sarana">
         <div class="container">
-            <h6 class="section-subtitle text-secondary">Detail</h6>
-            <h2 class="section-title text-dark">Sarana</h2>
+            <div class="mb-4 text-center">
+                <p class="text-uppercase fw-bold text-muted mb-3" style="letter-spacing: 2px; font-size: 0.75rem;">Fasilitas Utama</p>
+                <h2 class="display-6 fw-bold mb-3 text-dark" style="letter-spacing: -1px;">Detail <span style="color: #fd7a2a;">Sarana</span></h2>
+            </div>
 
             <p class="section-body text-dark">
                 {{ $saranaDesk }}
@@ -54,10 +56,10 @@
                 $firstSlide = $prasaranaData->first();
                 @endphp
                 <div class="col-lg-5">
-                    <h6 class="section-subtitle text-dark">Detail</h6>
-                    <h2 class="section-title text-dark" id="prasaranaHeading">
-                        Prasarana
-                    </h2>
+                    <div class="mb-4">
+                        <p class="text-uppercase fw-bold text-muted mb-3" style="letter-spacing: 2px; font-size: 0.75rem;">Fasilitas Pendukung</p>
+                        <h2 class="display-6 fw-bold mb-3 text-dark" style="letter-spacing: -1px;">Detail <span style="color: #fd7a2a;" id="prasaranaHeading">Prasarana</span></h2>
+                    </div>
 
                     <p class="section-body text-dark" id="prasaranaDescription">
                         {{ $firstSlide['description'] ?? 'Belum ada data prasarana' }}

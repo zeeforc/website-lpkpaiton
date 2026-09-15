@@ -32,7 +32,24 @@ Route::get('/', function () {
             ->get();
     });
 
-    return view('index', compact('home', 'vimi', 'teams'));
+    $visitorSetting = \App\Models\Setting::firstOrCreate(
+        ['key' => 'visitor_count'],
+        ['value' => '1250', 'name' => 'Jumlah Pengunjung']
+    );
+
+    if (!session()->has('visited')) {
+        $val = (int) $visitorSetting->value;
+        $visitorSetting->update(['value' => $val + 1]);
+        session()->put('visited', true);
+    }
+
+    $visitorCount = number_format((int)$visitorSetting->value, 0, ',', '.');
+
+    $latestBerita = cache()->remember('home_latest_berita', now()->addMinutes(10), function () {
+        return \App\Models\BeritaUtama::latest('created_at')->take(3)->get();
+    });
+
+    return view('index', compact('home', 'vimi', 'teams', 'visitorCount', 'latestBerita'));
 })->name('home');
 
 Route::get('/index', function () {

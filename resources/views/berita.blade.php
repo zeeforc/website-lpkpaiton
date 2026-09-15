@@ -100,8 +100,10 @@
 
                 {{-- LEFT: Text --}}
                 <div class="col-lg-5">
-                    <p class="pkl-stats-label">DATA PESERTA</p>
-                    <h2 class="pkl-stats-title">Peserta PKL</h2>
+                    <div class="mb-4">
+                        <p class="text-uppercase fw-bold text-muted mb-3" style="letter-spacing: 2px; font-size: 0.75rem;">Data Peserta</p>
+                        <h2 class="display-6 fw-bold mb-3 text-dark" style="letter-spacing: -1px;">Peserta <span style="color: #fd7a2a;">PKL</span></h2>
+                    </div>
                     <p class="pkl-stats-desc">
                         Berikut adalah ringkasan data peserta Praktik Kerja Lapangan yang telah tercatat di LPK Paiton Selaras.
                     </p>
@@ -255,8 +257,10 @@
             <div class="row align-items-center gy-4">
                 <div class="col-lg-4 d-flex flex-column align-item-start justify-content-start">
                     <div class="latest-text-block d-flex flex-column justify-content-start">
-                        <h6 class="section-subtitle text-dark text-start">Berita</h6>
-                        <h2 class="section-title text-dark text-start">Terbaru</h2>
+                        <div class="mb-4">
+                            <p class="text-uppercase fw-bold text-muted mb-3" style="letter-spacing: 2px; font-size: 0.75rem;">Informasi Terkini</p>
+                            <h2 class="display-6 fw-bold mb-3 text-dark" style="letter-spacing: -1px;">Berita <span style="color: #fd7a2a;">Terbaru</span></h2>
+                        </div>
                         <p class="section-body text-dark text-start ms-auto">
                             Seluruh kegiatan yang dilaksanakan kita dokumentasikan dan
                             ditampilkan di halaman ini karena kenangan yang disimpan dalam
@@ -305,9 +309,9 @@
         <div class="container position-relative">
             <div class="row align-items-center gy-4">
                 <div class="col-lg-4">
-                    <div class="other-news-text">
-                        <h6 class="section-subtitle text-start text-dark">Berita</h6>
-                        <h2 class="section-title text-start text-dark">Lainnya</h2>
+                    <div class="other-news-text mb-4">
+                        <p class="text-uppercase fw-bold text-muted mb-3" style="letter-spacing: 2px; font-size: 0.75rem;">Informasi Lainnya</p>
+                        <h2 class="display-6 fw-bold mb-3 text-dark" style="letter-spacing: -1px;">Berita <span style="color: #fd7a2a;">Lainnya</span></h2>
                         <p class="section-body text-start text-dark ms-auto">
                             Seluruh kegiatan yang dilaksanakan kita dokumentasikan dan
                             ditampilkan di halaman ini karena kenangan yang disimpan dalam

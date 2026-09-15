@@ -116,6 +116,13 @@
             @enderror
         </div>
         <div class="mb-3 text-start">
+            <label class="form-label text-secondary fw-semibold" style="font-size: 0.9rem;">Nomor Telepon</label>
+            <input type="tel" name="phone" class="form-control form-control-custom" placeholder="Contoh: 081234567890" required value="{{ old('phone') }}" pattern="08[0-9]{8,13}">
+            @error('phone')
+                <div class="text-danger mt-1" style="font-size: 0.85rem;">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3 text-start">
             <label class="form-label text-secondary fw-semibold" style="font-size: 0.9rem;">Password</label>
             <div class="position-relative">
                 <input type="password" id="password" name="password" class="form-control form-control-custom pe-5" placeholder="Buat password (min. 6 karakter)" required>
