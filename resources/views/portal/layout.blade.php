@@ -349,6 +349,26 @@
             </div>
         @endif
 
+        @php
+            $showPengumuman = \App\Models\Setting::where('key', 'tampilkan_pengumuman')->value('value') === '1';
+            $pengumumanText = \App\Models\Setting::where('key', 'pengumuman_global')->value('value');
+        @endphp
+        
+        @if($showPengumuman && $pengumumanText)
+            <div class="alert alert-warning alert-dismissible fade show mb-4 shadow-sm" role="alert" style="border-radius: 16px; border: 1px solid rgba(245, 158, 11, 0.3); background-color: rgba(254, 252, 232, 0.8); backdrop-filter: blur(10px);">
+                <div class="d-flex align-items-start gap-3">
+                    <div class="text-warning fs-4 mt-1">
+                        <i class="fa-solid fa-bullhorn fa-shake"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold text-dark mb-1">Pengumuman Penting</h6>
+                        <p class="mb-0 text-secondary" style="font-size: 0.9rem;">{!! nl2br(e($pengumumanText)) !!}</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <!-- PWA Install Banner (static, sits above content) -->
         <div class="w-100 d-flex justify-content-center" style="z-index: 50; padding: 15px 0 20px 0;">
             <div id="pwa-install-banner" class="alert alert-primary d-none flex-row justify-content-between align-items-center shadow-sm mb-0" style="border-radius: 12px; width: 90%; max-width: 400px; padding: 15px;">

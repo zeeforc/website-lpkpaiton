@@ -60,6 +60,8 @@ class PengaturanLokasi extends Page implements HasForms
             'jam_pulang_instruktur' => Setting::where('key', 'jam_pulang_instruktur')->value('value') ?? '16:00',
             'jam_masuk_paving' => Setting::where('key', 'jam_masuk_paving')->value('value') ?? '07:00',
             'jam_pulang_paving' => Setting::where('key', 'jam_pulang_paving')->value('value') ?? '16:00',
+            'pengumuman_global' => Setting::where('key', 'pengumuman_global')->value('value') ?? 'Sistem absensi wajah baru saja diperbarui. Dimohon kepada semua user untuk mendaftarkan ulang wajahnya di menu Pendaftaran Wajah.',
+            'tampilkan_pengumuman' => Setting::where('key', 'tampilkan_pengumuman')->value('value') === '1',
         ]);
     }
 
@@ -148,6 +150,18 @@ class PengaturanLokasi extends Page implements HasForms
                             ->label('Jam Pulang Karyawan Paving')
                             ->seconds(false)
                             ->required(),
+                    ]),
+                    
+                Section::make('Pengumuman Global')
+                    ->description('Tampilkan pengumuman penting di seluruh halaman portal user.')
+                    ->schema([
+                        \Filament\Forms\Components\Toggle::make('tampilkan_pengumuman')
+                            ->label('Tampilkan Pengumuman')
+                            ->default(false),
+                        \Filament\Forms\Components\Textarea::make('pengumuman_global')
+                            ->label('Isi Pengumuman')
+                            ->rows(3)
+                            ->placeholder('Masukkan isi pengumuman...'),
                     ])
             ])
             ->statePath('data');
@@ -188,6 +202,11 @@ class PengaturanLokasi extends Page implements HasForms
                 Setting::updateOrCreate(['key' => $t], ['value' => $val, 'name' => ucwords(str_replace('_', ' ', $t))]);
             }
         }
+
+        if (isset($data['pengumuman_global'])) {
+            Setting::updateOrCreate(['key' => 'pengumuman_global'], ['value' => $data['pengumuman_global'], 'name' => 'Pengumuman Global']);
+        }
+        Setting::updateOrCreate(['key' => 'tampilkan_pengumuman'], ['value' => $data['tampilkan_pengumuman'] ? '1' : '0', 'name' => 'Tampilkan Pengumuman']);
 
         Notification::make()
             ->title('Berhasil disimpan')
