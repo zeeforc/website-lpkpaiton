@@ -192,6 +192,7 @@
     <input type="hidden" name="latitude" id="input-lat">
     <input type="hidden" name="longitude" id="input-lng">
     <input type="hidden" name="work_description" id="input-work-description">
+    <input type="hidden" name="photo" id="input-photo">
     <input type="hidden" name="type" value="{{ ($attendance && $attendance->check_in) ? 'out' : 'in' }}">
 </form>
 
@@ -422,6 +423,13 @@
 
         document.getElementById('input-lat').value = userLat;
         document.getElementById('input-lng').value = userLng;
+        
+        // Capture photo
+        const captureCanvas = document.createElement('canvas');
+        captureCanvas.width = video.videoWidth;
+        captureCanvas.height = video.videoHeight;
+        captureCanvas.getContext('2d').drawImage(video, 0, 0);
+        document.getElementById('input-photo').value = captureCanvas.toDataURL('image/jpeg', 0.6);
         
         this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Memproses...';
         this.disabled = true;

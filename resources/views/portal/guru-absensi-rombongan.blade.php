@@ -405,6 +405,13 @@
         this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Menyimpan...';
         this.disabled = true;
         
+        // Capture single group photo
+        const captureCanvas = document.createElement('canvas');
+        captureCanvas.width = video.videoWidth;
+        captureCanvas.height = video.videoHeight;
+        captureCanvas.getContext('2d').drawImage(video, 0, 0);
+        const groupPhoto = captureCanvas.toDataURL('image/jpeg', 0.6); // compress
+
         fetch('{{ route("portal.guru.absensi-rombongan.store") }}', {
             method: 'POST',
             headers: {
@@ -415,7 +422,8 @@
                 student_ids: studentIdsArray,
                 latitude: userLat,
                 longitude: userLng,
-                type: type
+                type: type,
+                photo: groupPhoto
             })
         })
         .then(async response => {

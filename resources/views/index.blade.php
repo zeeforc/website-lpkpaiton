@@ -199,7 +199,7 @@
 </section>
 
 <!-- Berita Terbaru -->
-<section id="berita" class="section-padding">
+<!-- <section id="berita" class="section-padding">
     <div class="container">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5">
             <div class="mb-4 mb-md-0">
@@ -240,10 +240,10 @@
             <a href="{{ route('berita.index') }}" class="btn btn-outline-dark btn-sm rounded-pill w-100">Lihat Semua Berita</a>
         </div>
     </div>
-</section>
+</section> -->
 
 <!-- Testimoni Alumni -->
-<section id="testimoni" class="section-padding">
+<!-- <section id="testimoni" class="section-padding">
     <div class="container">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5">
             <div class="mb-4 mb-md-0">
@@ -261,7 +261,6 @@
         </div>
         
         <div class="row g-4 justify-content-center">
-            <!-- Card 1 -->
             <div class="col-md-4">
                 <div class="card h-100 border-0 p-4 p-lg-5" style="background-color: #f7f8fa; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
                     <div class="d-flex justify-content-between align-items-center mb-5">
@@ -288,7 +287,6 @@
                 </div>
             </div>
             
-            <!-- Card 2 -->
             <div class="col-md-4">
                 <div class="card h-100 border-0 p-4 p-lg-5" style="background-color: #f7f8fa; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
                     <div class="d-flex justify-content-between align-items-center mb-5">
@@ -315,7 +313,6 @@
                 </div>
             </div>
 
-            <!-- Card 3 -->
             <div class="col-md-4">
                 <div class="card h-100 border-0 p-4 p-lg-5" style="background-color: #f7f8fa; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
                     <div class="d-flex justify-content-between align-items-center mb-5">
@@ -343,7 +340,6 @@
             </div>
         </div>
         
-        <!-- Mobile Arrows -->
         <div class="d-flex d-md-none gap-2 justify-content-center mt-5">
             <div class="d-flex align-items-center justify-content-center rounded-circle border border-dark" style="width: 48px; height: 48px; cursor: pointer;">
                 <i data-feather="arrow-left" style="width: 20px; height: 20px;"></i>
@@ -353,7 +349,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> -->
 
 <!-- Alamat Kantor -->
 <section id="alamat" class="section-padding">

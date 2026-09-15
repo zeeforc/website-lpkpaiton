@@ -15,9 +15,14 @@ class AttendancesTable
         return $table
             ->columns([
                 \Filament\Tables\Columns\ImageColumn::make('user.studentProfile.pas_foto')
-                    ->label('Foto')
+                    ->label('Foto Profil')
                     ->circular()
                     ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name='.urlencode($record->user->name ?? 'User').'&color=FFFFFF&background=111827'),
+                \Filament\Tables\Columns\ImageColumn::make('photo_path')
+                    ->label('Foto Absensi')
+                    ->square()
+                    ->disk('public')
+                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name=Expired&color=FFFFFF&background=ef4444'),
                 \Filament\Tables\Columns\TextColumn::make('user.name')
                     ->label('Siswa')
                     ->searchable()

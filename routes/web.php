@@ -298,10 +298,21 @@ Route::get('/amsadmin/export-paving-attendances', function (\Illuminate\Http\Req
                 $sheet->getStyle("A{$row}:F{$row}")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                       ->getStartColor()->setARGB('FFB4C6E7'); // Light blue
             } else {
-                if ($attendance && $attendance->status === 'Hadir') {
-                    $sheet->setCellValue('B' . $row, '07:00');
-                    $sheet->setCellValue('C' . $row, '16:00');
-                    $sheet->setCellValue('D' . $row, '8'); // HOURS
+                if ($attendance && in_array($attendance->status, ['Hadir', 'Telat'])) {
+                    $checkIn = $attendance->check_in ? \Carbon\Carbon::parse($attendance->check_in)->format('H:i') : '-';
+                    $checkOut = $attendance->check_out ? \Carbon\Carbon::parse($attendance->check_out)->format('H:i') : '-';
+                    
+                    $sheet->setCellValue('B' . $row, $checkIn);
+                    $sheet->setCellValue('C' . $row, $checkOut);
+                    
+                    if ($attendance->check_in && $attendance->check_out) {
+                        $start = \Carbon\Carbon::parse($attendance->check_in);
+                        $end = \Carbon\Carbon::parse($attendance->check_out);
+                        $hours = round($start->diffInMinutes($end) / 60, 1);
+                        $sheet->setCellValue('D' . $row, $hours);
+                    } else {
+                        $sheet->setCellValue('D' . $row, '-');
+                    }
                     
                     // Center align B, C, D
                     $sheet->getStyle("B{$row}:D{$row}")->getAlignment()->setHorizontal('center');

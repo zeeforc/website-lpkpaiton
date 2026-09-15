@@ -609,6 +609,19 @@ class PortalController extends Controller
             }
         }
         
+        if ($request->has('photo')) {
+            $imageParts = explode(";base64,", $request->photo);
+            if (count($imageParts) == 2) {
+                $imageTypeAux = explode("image/", $imageParts[0]);
+                $imageType = $imageTypeAux[1];
+                $imageBase64 = base64_decode($imageParts[1]);
+                $fileName = 'attendance_' . $user->id . '_' . time() . '.' . $imageType;
+                $filePath = 'attendances/' . $fileName;
+                \Illuminate\Support\Facades\Storage::disk('public')->put($filePath, $imageBase64);
+                $attendance->photo_path = $filePath;
+            }
+        }
+        
         $attendance->save();
         
         return redirect()->route('portal.absensi.check-in')->with('success', 'Berhasil! Absensi ' . ($request->type === 'in' ? 'masuk' : 'pulang') . ' telah dicatat.');
@@ -701,6 +714,19 @@ class PortalController extends Controller
             return response()->json(['success' => false, 'message' => "Belum waktunya pulang. Waktu pulang minimal adalah jam $jamPulang."], 400);
         }
         
+        $filePath = null;
+        if ($request->has('photo')) {
+            $imageParts = explode(";base64,", $request->photo);
+            if (count($imageParts) == 2) {
+                $imageTypeAux = explode("image/", $imageParts[0]);
+                $imageType = $imageTypeAux[1];
+                $imageBase64 = base64_decode($imageParts[1]);
+                $fileName = 'group_attendance_' . $user->id . '_' . time() . '.' . $imageType;
+                $filePath = 'attendances/' . $fileName;
+                \Illuminate\Support\Facades\Storage::disk('public')->put($filePath, $imageBase64);
+            }
+        }
+        
         $count = 0;
         foreach ($request->student_ids as $student_id) {
             $attendance = Attendance::firstOrCreate(
@@ -717,6 +743,7 @@ class PortalController extends Controller
                         $attendance->status = 'Telat';
                     }
                     $attendance->notes = 'Rombongan (Masuk): ' . $now->format('H:i');
+                    if ($filePath) $attendance->photo_path = $filePath;
                     $attendance->save();
                     $count++;
                 }
@@ -724,6 +751,9 @@ class PortalController extends Controller
                 if (!$attendance->check_out && $attendance->check_in) {
                     $attendance->check_out = $now;
                     $attendance->notes .= ' | Rombongan (Pulang): ' . $now->format('H:i');
+                    if ($filePath && !$attendance->photo_path) {
+                        $attendance->photo_path = $filePath;
+                    }
                     $attendance->save();
                     $count++;
                 }
