@@ -475,7 +475,7 @@
                             <div class="small text-uppercase text-secondary fw-semibold" style="letter-spacing: 0.5px;">
                                 Phone
                             </div>
-                            <div class="fw-medium text-dark">+62 123 456 7890</div>
+                            <div class="fw-medium text-dark">+62 811-3059-8801</div>
                         </div>
                     </div>
 
@@ -487,7 +487,7 @@
                             <div class="small text-uppercase text-secondary fw-semibold" style="letter-spacing: 0.5px;">
                                 Email
                             </div>
-                            <div class="fw-medium text-dark">lpkpaiton@gmail.com</div>
+                            <div class="fw-medium text-dark">doclpkselaras@gmail.com</div>
                         </div>
                     </div>
 
