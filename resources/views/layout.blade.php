@@ -16,9 +16,9 @@
 
     <link rel="stylesheet" href="{{ asset('style/navbar.css') }}" />
     <link rel="stylesheet" href="{{ asset('style/footer.css') }}" />
-    <link rel="icon" type="image/png" href="{{ asset('images/app_icon.png') }}">
-    <link rel="shortcut icon" href="{{ asset('images/app_icon.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/app_icon.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('assets/logo/logo.png') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/logo/logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/logo/logo.png') }}">
 
     @stack('styles')
     @stack('script')

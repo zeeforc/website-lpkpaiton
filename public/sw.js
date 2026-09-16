@@ -1,7 +1,7 @@
 const CACHE_NAME = 'presensi-cache-v2';
 const urlsToCache = [
   '/manifest.json',
-  '/images/app_icon.png',
+  '/assets/logo/logo.png',
   '/images/logo_yayasan.png'
 ];
 

@@ -14,9 +14,9 @@
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#2563eb">
-    <link rel="icon" type="image/png" href="{{ asset('images/app_icon.png') }}">
-    <link rel="shortcut icon" href="{{ asset('images/app_icon.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/app_icon.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('assets/logo/logo.png') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/logo/logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/logo/logo.png') }}">
     
     <style>
         body {
@@ -373,7 +373,7 @@
         <div class="w-100 d-flex justify-content-center" style="z-index: 50; padding: 15px 0 20px 0;">
             <div id="pwa-install-banner" class="alert alert-primary d-none flex-row justify-content-between align-items-center shadow-sm mb-0" style="border-radius: 12px; width: 90%; max-width: 400px; padding: 15px;">
                 <div class="d-flex align-items-center gap-3">
-                    <img src="{{ asset('images/app_icon.png') }}" style="width: 40px; height: 40px; border-radius: 8px;">
+                    <img src="{{ asset('assets/logo/logo.png') }}" style="width: 40px; height: 40px; border-radius: 8px;">
                     <div>
                         <h6 class="mb-0 fw-bold">Install Presensi</h6>
                         <small class="mb-0 text-muted">Akses lebih cepat & mudah!</small>

@@ -618,7 +618,11 @@ class PortalController extends Controller
                 $fileName = 'attendance_' . $user->id . '_' . time() . '.' . $imageType;
                 $filePath = 'attendances/' . $fileName;
                 \Illuminate\Support\Facades\Storage::disk('public')->put($filePath, $imageBase64);
-                $attendance->photo_path = $filePath;
+                
+                // Safety net: cek apakah kolom photo_path sudah di-migrate di production
+                if (\Illuminate\Support\Facades\Schema::hasColumn('attendances', 'photo_path')) {
+                    $attendance->photo_path = $filePath;
+                }
             }
         }
         
@@ -743,7 +747,9 @@ class PortalController extends Controller
                         $attendance->status = 'Telat';
                     }
                     $attendance->notes = 'Rombongan (Masuk): ' . $now->format('H:i');
-                    if ($filePath) $attendance->photo_path = $filePath;
+                    if ($filePath && \Illuminate\Support\Facades\Schema::hasColumn('attendances', 'photo_path')) {
+                        $attendance->photo_path = $filePath;
+                    }
                     $attendance->save();
                     $count++;
                 }
@@ -751,7 +757,7 @@ class PortalController extends Controller
                 if (!$attendance->check_out && $attendance->check_in) {
                     $attendance->check_out = $now;
                     $attendance->notes .= ' | Rombongan (Pulang): ' . $now->format('H:i');
-                    if ($filePath && !$attendance->photo_path) {
+                    if ($filePath && !$attendance->photo_path && \Illuminate\Support\Facades\Schema::hasColumn('attendances', 'photo_path')) {
                         $attendance->photo_path = $filePath;
                     }
                     $attendance->save();

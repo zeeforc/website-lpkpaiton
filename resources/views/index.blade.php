@@ -29,11 +29,11 @@
                     <a href="#kontak" class="btn btn-gradient"> Hubungi Kami </a>
                 </div>
                 
-                <div class="mt-4 pt-2">
+                <!-- <div class="mt-4 pt-2">
                     <div class="d-inline-flex align-items-center px-3 py-2 rounded-pill" style="background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.6);">
                         <span class="text-dark small fw-medium">✨ Telah dipercaya dan dikunjungi oleh lebih dari <strong>{{ $visitorCount }}</strong> orang</span>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <div class="col-lg-6">
@@ -351,6 +351,7 @@
     </div>
 </section> -->
 
+
 <!-- Alamat Kantor -->
 <section id="alamat" class="section-padding">
     <div class="container">
@@ -365,14 +366,13 @@
                         LPK Paiton Selaras berlokasi di:
                     </p>
                     <p class="small mb-3">
-                        Jl. Brigjend. Dusan Pesisir, Sumberanyar,<br />
+                        Jl. Brigaan. Dusun Pesisir, Sumberanyar,<br />
                         Kec. Paiton, Kabupaten Probolinggo,<br />
                         Jawa Timur 67291, Indonesia.
                     </p>
                     <p class="small text-dark mb-0">
-                        Untuk petunjuk arah yang lebih rinci, silakan tekan lingkarang
-                        si samping maka akan diarahkan ke Google Maps dan ikuti rambu
-                        menuju kawasan pelatihan Paiton.
+                        Untuk petunjuk arah yang lebih rinci, silakan buka map
+                        di bawah ini dan ikuti petunjuk arah menuju lokasi Lpk Paiton Selaras.
                     </p>
                 </div>
             </div>
