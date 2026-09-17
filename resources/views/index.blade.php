@@ -2,6 +2,111 @@
 @section('title', 'Home')
 @push('styles')
 <link rel="stylesheet" href="{{ asset('style/index.css') }}?v={{ time() }}">
+<style>
+/* Inject critical CSS to bypass external cache */
+.team-glass-card {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 360px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.team-glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(253, 122, 42, 0.2);
+}
+.team-img-full {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.team-glass-card:hover .team-img-full {
+    transform: scale(1.05);
+}
+.team-info-overlay {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    padding: 15px;
+    text-align: right;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+.team-info-overlay .team-name {
+    font-weight: 700;
+    color: #1a1a1a;
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+}
+.team-info-overlay .team-role {
+    font-size: 0.85rem;
+    color: #fd7a2a;
+    font-weight: 600;
+}
+.news-card {
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+}
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+.news-img-wrapper {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+}
+.news-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.news-card:hover .news-img-wrapper img {
+    transform: scale(1.08);
+}
+.btn-news-link {
+    color: #fd7a2a;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+.btn-news-link:hover {
+    color: #d15a13;
+    letter-spacing: 0.5px;
+}
+.testimoni-quote {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 4 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease;
+}
+.testimoni-quote.expanded {
+    -webkit-line-clamp: none !important;
+}
+.btn-read-more {
+    font-size: 0.75rem !important;
+}
+.btn-read-more:focus {
+    box-shadow: none !important;
+}
+.btn-read-more:hover {
+    text-decoration: underline !important;
+}
+</style>
 @endpush
 @section('content')
 
@@ -133,7 +238,9 @@
 
         @php
             // Isolate Koordinator
-            $koordinator = $teams->firstWhere('position', 'Koordinator') ?? $teams->firstWhere('position', 'koordinator');
+            $koordinator = $teams->first(function($team) {
+                return strtolower(trim($team->position)) === 'koordinator';
+            });
             $others = $teams->reject(function($t) use ($koordinator) {
                 return $koordinator && $t->id === $koordinator->id;
             });
@@ -142,8 +249,8 @@
         @if($koordinator)
         <div class="row justify-content-center mb-4">
             <div class="col-12 col-md-6 col-lg-3">
-                <div class="team-glass-card" style="height: 360px; position: relative; border-radius: 20px; overflow: hidden;">
-                    <img src="{{ $koordinator->photo ? asset('storage/' . $koordinator->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $koordinator->name }}" class="team-img-full" style="width: 100%; height: 100%; object-fit: cover;">
+                <div class="team-glass-card">
+                    <img src="{{ $koordinator->photo ? asset('storage/' . $koordinator->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $koordinator->name }}" class="team-img-full">
                     <div class="team-info-overlay text-center">
                         <div class="team-name">{{ $koordinator->name }}</div>
                         <div class="team-role">{{ $koordinator->position }}</div>
@@ -156,8 +263,8 @@
         <div class="row g-4 justify-content-center">
             @forelse ($others as $team)
             <div class="col-12 col-md-6 col-lg-3">
-                <div class="team-glass-card" style="height: 360px; position: relative; border-radius: 20px; overflow: hidden;">
-                    <img src="{{ $team->photo ? asset('storage/' . $team->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $team->name }}" class="team-img-full" style="width: 100%; height: 100%; object-fit: cover;">
+                <div class="team-glass-card">
+                    <img src="{{ $team->photo ? asset('storage/' . $team->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $team->name }}" class="team-img-full">
                     <div class="team-info-overlay text-center">
                         <div class="team-name">{{ $team->name }}</div>
                         <div class="team-role">{{ $team->position }}</div>
@@ -242,8 +349,8 @@
             @forelse($latestBerita as $berita)
             <div class="col-md-4">
                 <div class="news-card h-100 d-flex flex-column">
-                    <div class="news-img-wrapper" style="height: 220px; position: relative; overflow: hidden;">
-                        <img src="{{ $berita->berita_utama_image ? asset('storage/' . $berita->berita_utama_image) : asset('assets/placeholder.jpg') }}" alt="{{ $berita->berita_utama_title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="news-img-wrapper">
+                        <img src="{{ $berita->berita_utama_image ? asset('storage/' . $berita->berita_utama_image) : asset('assets/placeholder.jpg') }}" alt="{{ $berita->berita_utama_title }}">
                     </div>
                     <div class="p-4 d-flex flex-column flex-grow-1">
                         <div class="text-muted small mb-2 d-flex align-items-center fw-medium">
