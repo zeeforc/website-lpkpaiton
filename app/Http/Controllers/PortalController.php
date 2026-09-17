@@ -812,10 +812,10 @@ class PortalController extends Controller
     public function downloadTemplate()
     {
         $template = ClearanceTemplate::where('is_active', true)->latest()->first();
-        if (!$template || !\Illuminate\Support\Facades\Storage::disk('public')->exists($template->file_path)) {
+        if (!$template || !\Illuminate\Support\Facades\Storage::disk('local')->exists($template->file_path)) {
             return back()->with('error', 'Format surat pernyataan belum tersedia.');
         }
 
-        return \Illuminate\Support\Facades\Storage::disk('public')->download($template->file_path);
+        return \Illuminate\Support\Facades\Storage::disk('local')->download($template->file_path);
     }
 }
