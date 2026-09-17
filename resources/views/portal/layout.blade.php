@@ -324,6 +324,7 @@
                     <a href="{{ route('portal.biodata') }}" class="bottombar-link {{ request()->routeIs('portal.biodata') ? 'active' : '' }}"><i class="fa-solid fa-house"></i></a>
                     <a href="{{ route('portal.informasi') }}" class="bottombar-link {{ request()->routeIs('portal.informasi') ? 'active' : '' }}"><i class="fa-regular fa-compass"></i></a>
                     <a href="{{ route('portal.absensi') }}" class="bottombar-link {{ request()->routeIs('portal.absensi') ? 'active' : '' }}"><i class="fa-regular fa-calendar-check"></i></a>
+                    <a href="{{ route('portal.izin') }}" class="bottombar-link {{ request()->routeIs('portal.izin*') ? 'active' : '' }}"><i class="fa-solid fa-file-signature"></i></a>
                     <a href="{{ route('portal.laporan') }}" class="bottombar-link {{ request()->routeIs('portal.laporan') ? 'active' : '' }}"><i class="fa-regular fa-folder-open"></i></a>
                 @endif
                 
