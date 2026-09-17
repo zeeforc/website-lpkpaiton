@@ -142,6 +142,9 @@ Route::prefix('portal')->name('portal.')->group(function () {
         
         Route::get('/laporan', [\App\Http\Controllers\PortalController::class, 'laporan'])->name('laporan');
         Route::post('/laporan', [\App\Http\Controllers\PortalController::class, 'storeLaporan'])->name('laporan.store');
+
+        Route::get('/bebas-tanggungan', [\App\Http\Controllers\PortalController::class, 'bebasTanggungan'])->name('bebas-tanggungan');
+        Route::post('/bebas-tanggungan', [\App\Http\Controllers\PortalController::class, 'storeBebasTanggungan'])->name('bebas-tanggungan.store');
     });
 });
 

@@ -305,6 +305,7 @@
                     <a href="{{ route('portal.absensi') }}" class="sidebar-link {{ request()->routeIs('portal.absensi*') ? 'active' : '' }}" title="Absensi"><i class="fa-regular fa-calendar-check"></i></a>
                     <a href="{{ route('portal.izin') }}" class="sidebar-link {{ request()->routeIs('portal.izin*') ? 'active' : '' }}" title="Perizinan"><i class="fa-solid fa-file-signature"></i></a>
                     <a href="{{ route('portal.laporan') }}" class="sidebar-link {{ request()->routeIs('portal.laporan') ? 'active' : '' }}" title="Pengajuan Laporan"><i class="fa-regular fa-folder-open"></i></a>
+                    <a href="{{ route('portal.bebas-tanggungan') }}" class="sidebar-link {{ request()->routeIs('portal.bebas-tanggungan*') ? 'active' : '' }}" title="Bebas Tanggungan"><i class="fa-solid fa-file-shield"></i></a>
                 @endif
                 
                 <form action="{{ route('portal.logout') }}" method="POST" class="mt-auto m-0 p-0" onsubmit="event.preventDefault(); confirmLogout(this);">
@@ -326,6 +327,7 @@
                     <a href="{{ route('portal.absensi') }}" class="bottombar-link {{ request()->routeIs('portal.absensi') ? 'active' : '' }}"><i class="fa-regular fa-calendar-check"></i></a>
                     <a href="{{ route('portal.izin') }}" class="bottombar-link {{ request()->routeIs('portal.izin*') ? 'active' : '' }}"><i class="fa-solid fa-file-signature"></i></a>
                     <a href="{{ route('portal.laporan') }}" class="bottombar-link {{ request()->routeIs('portal.laporan') ? 'active' : '' }}"><i class="fa-regular fa-folder-open"></i></a>
+                    <a href="{{ route('portal.bebas-tanggungan') }}" class="bottombar-link {{ request()->routeIs('portal.bebas-tanggungan*') ? 'active' : '' }}"><i class="fa-solid fa-file-shield"></i></a>
                 @endif
                 
                 <form action="{{ route('portal.logout') }}" method="POST" class="m-0 p-0" onsubmit="event.preventDefault(); confirmLogout(this);">

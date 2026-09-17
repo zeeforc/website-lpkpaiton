@@ -57,4 +57,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(ReportSubmission::class);
     }
+
+    public function clearanceSubmissions()
+    {
+        return $this->hasMany(ClearanceSubmission::class);
+    }
 }

@@ -10,6 +10,8 @@ use App\Models\ReportSubmission;
 use App\Models\Application;
 use App\Models\LeaveRequest;
 use App\Models\Holiday;
+use App\Models\ClearanceTemplate;
+use App\Models\ClearanceSubmission;
 use Carbon\Carbon;
 
 class PortalController extends Controller
@@ -422,6 +424,41 @@ class PortalController extends Controller
         ]);
         
         return back()->with('success', 'Laporan berhasil diajukan dan sedang menunggu verifikasi admin.');
+    }
+
+    public function bebasTanggungan()
+    {
+        $user = Auth::user();
+        if ($user->role === 'guru_pondok') {
+            return redirect()->route('portal.guru.absensi-rombongan');
+        } elseif (in_array($user->role, ['karyawan_paving', 'instruktur_lpk'])) {
+            return redirect()->route('portal.absensi.check-in');
+        }
+
+        $template = ClearanceTemplate::where('is_active', true)->latest()->first();
+        $submission = ClearanceSubmission::where('user_id', $user->id)->latest()->first();
+
+        return view('portal.bebas-tanggungan', compact('template', 'submission'));
+    }
+
+    public function storeBebasTanggungan(Request $request)
+    {
+        $request->validate([
+            'file_path' => 'required|file|mimes:pdf,jpeg,jpg,png|max:2048',
+            'is_verified' => 'accepted',
+        ]);
+
+        $path = $request->file('file_path')->store('clearances', 'public');
+
+        ClearanceSubmission::updateOrCreate(
+            ['user_id' => Auth::id()],
+            [
+                'file_path' => $path,
+                'status' => 'pending',
+            ]
+        );
+
+        return back()->with('success', 'Form bebas tanggungan berhasil diunggah dan sedang menunggu verifikasi.');
     }
 
     public function faceRegistration()
