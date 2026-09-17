@@ -106,4 +106,51 @@
         </form>
     </div>
 </div>
+
+@include('components.simulation-guide')
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    
+    form.addEventListener('submit', function(e) {
+        const rules = [
+            { id: 'dokumen_ktp', name: 'Fotokopi KTP / Kartu Pelajar', maxSize: 2 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] },
+            { id: 'dokumen_foto', name: 'Pas Foto', maxSize: 2 * 1024 * 1024, types: ['image/jpeg', 'image/jpg', 'image/png'] },
+            { id: 'dokumen_skck', name: 'Surat Kelakuan Baik', maxSize: 2 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] },
+            { id: 'dokumen_sehat', name: 'Surat Keterangan Sehat', maxSize: 2 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] },
+            { id: 'dokumen_portofolio', name: 'Portofolio', maxSize: 5 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] }
+        ];
+
+        for (let rule of rules) {
+            const input = document.getElementById(rule.id);
+            if (input && input.files.length > 0) {
+                const file = input.files[0];
+                if (!rule.types.includes(file.type)) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Format File Tidak Sesuai',
+                        text: `Format file "${file.name}" pada kolom ${rule.name} tidak diizinkan. Harap sesuaikan dengan format yang diminta.`,
+                        confirmButtonColor: '#fd7a2a'
+                    });
+                    return;
+                }
+                if (file.size > rule.maxSize) {
+                    e.preventDefault();
+                    const sizeMB = rule.maxSize / (1024 * 1024);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ukuran File Terlalu Besar',
+                        text: `Ukuran file "${file.name}" pada kolom ${rule.name} melebihi batas maksimal ${sizeMB} MB.`,
+                        confirmButtonColor: '#fd7a2a'
+                    });
+                    return;
+                }
+            }
+        }
+    });
+});
+</script>
 @endsection

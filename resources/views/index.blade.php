@@ -1,7 +1,7 @@
 @extends('layout')
 @section('title', 'Home')
 @push('styles')
-<link rel="stylesheet" href="{{ asset('style/index.css') }}">
+<link rel="stylesheet" href="{{ asset('style/index.css') }}?v={{ time() }}">
 @endpush
 @section('content')
 
@@ -29,11 +29,14 @@
                     <a href="#kontak" class="btn btn-gradient"> Hubungi Kami </a>
                 </div>
                 
-                <!-- <div class="mt-4 pt-2">
-                    <div class="d-inline-flex align-items-center px-3 py-2 rounded-pill" style="background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.6);">
-                        <span class="text-dark small fw-medium">✨ Telah dipercaya dan dikunjungi oleh lebih dari <strong>{{ $visitorCount }}</strong> orang</span>
+                <div class="mt-4 pt-3 overflow-hidden">
+                    <div class="d-inline-flex align-items-center px-4 py-2 visitor-badge-anim" style="background: rgba(253, 122, 42, 0.1); border-left: 4px solid #fd7a2a; border-radius: 4px;">
+                        <i data-feather="users" class="me-2" style="color: #fd7a2a; width: 18px; height: 18px;"></i>
+                        <span class="text-dark small fw-medium">
+                            Dipercaya & dikunjungi oleh <strong style="color: #fd7a2a;">{{ $visitorCount }}</strong> orang
+                        </span>
                     </div>
-                </div> -->
+                </div>
             </div>
 
             <div class="col-lg-6">
@@ -128,20 +131,43 @@
             </p>
         </div>
 
-        <div class="row g-4 justify-content-center">
-            @forelse ($teams as $team)
-            <div class="col-6 col-md-3 col-lg-3">
-                <div class="team-card">
-                    <div class="team-avatar">
-                        <img src="{{ $team->photo ? Storage::url($team->photo) : asset('assets/team-image/default.jpg') }}"
-                            alt="{{ $team->name }}">
+        @php
+            // Isolate Koordinator
+            $koordinator = $teams->firstWhere('position', 'Koordinator') ?? $teams->firstWhere('position', 'koordinator');
+            $others = $teams->reject(function($t) use ($koordinator) {
+                return $koordinator && $t->id === $koordinator->id;
+            });
+        @endphp
+
+        @if($koordinator)
+        <div class="row justify-content-center mb-4">
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="team-glass-card">
+                    <img src="{{ $koordinator->photo ? asset('storage/' . $koordinator->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $koordinator->name }}" class="team-img-full">
+                    <div class="team-info-overlay text-center">
+                        <div class="team-name">{{ $koordinator->name }}</div>
+                        <div class="team-role">{{ $koordinator->position }}</div>
                     </div>
-                    <div class="team-name text-dark">{{ $team->name }}</div>
-                    <div class="team-role small text-dark">{{ $team->position }}</div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        <div class="row g-4 justify-content-center">
+            @forelse ($others as $team)
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="team-glass-card">
+                    <img src="{{ $team->photo ? asset('storage/' . $team->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $team->name }}" class="team-img-full">
+                    <div class="team-info-overlay text-center">
+                        <div class="team-name">{{ $team->name }}</div>
+                        <div class="team-role">{{ $team->position }}</div>
+                    </div>
                 </div>
             </div>
             @empty
-            <p class="text-center">Belum ada data team.</p>
+                @if(!$koordinator)
+                    <p class="text-center text-muted">Belum ada data team.</p>
+                @endif
             @endforelse
         </div>
     </div>
@@ -199,7 +225,7 @@
 </section>
 
 <!-- Berita Terbaru -->
-<!-- <section id="berita" class="section-padding">
+<section id="berita" class="section-padding">
     <div class="container">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5">
             <div class="mb-4 mb-md-0">
@@ -215,24 +241,26 @@
         <div class="row g-4">
             @forelse($latestBerita as $berita)
             <div class="col-md-4">
-                <div class="glass-card h-100 p-0 overflow-hidden d-flex flex-column">
-                    <img src="{{ Storage::url($berita->image) }}" class="card-img-top" alt="{{ $berita->title }}" style="height: 200px; object-fit: cover;">
+                <div class="news-card h-100 d-flex flex-column">
+                    <div class="news-img-wrapper">
+                        <img src="{{ $berita->berita_utama_image ? asset('storage/' . $berita->berita_utama_image) : asset('assets/placeholder.jpg') }}" alt="{{ $berita->berita_utama_title }}">
+                    </div>
                     <div class="p-4 d-flex flex-column flex-grow-1">
-                        <div class="text-muted small mb-2 d-flex align-items-center">
-                            <i data-feather="calendar" class="me-2" style="width: 14px; height: 14px;"></i> 
-                            {{ $berita->created_at->format('d M Y') }}
+                        <div class="text-muted small mb-2 d-flex align-items-center fw-medium">
+                            <i data-feather="calendar" class="me-2" style="width: 14px; height: 14px; color: #fd7a2a;"></i> 
+                            {{ \Carbon\Carbon::parse($berita->tgl_berita ?? $berita->created_at)->format('d M Y') }}
                         </div>
-                        <h5 class="h6 fw-bold mb-3">{{ Str::limit($berita->title, 50) }}</h5>
-                        <p class="small text-dark mb-4 flex-grow-1">{{ Str::limit(strip_tags($berita->content), 100) }}</p>
-                        <a href="{{ route('berita.show', $berita->slug) }}" class="text-primary text-decoration-none small fw-bold mt-auto d-flex align-items-center">
-                            Baca Selengkapnya <i data-feather="arrow-right" class="ms-1" style="width: 14px; height: 14px;"></i>
+                        <h5 class="h6 fw-bold mb-3 text-dark lh-base">{{ Str::limit($berita->berita_utama_title, 55) }}</h5>
+                        <p class="small text-secondary mb-4 flex-grow-1" style="line-height: 1.6;">{{ Str::limit(strip_tags($berita->berita_utama_desk), 100) }}</p>
+                        <a href="{{ route('berita.show', $berita->slug) }}" class="btn-news-link mt-auto d-inline-flex align-items-center">
+                            Baca Selengkapnya <i data-feather="arrow-right" class="ms-1" style="width: 16px; height: 16px;"></i>
                         </a>
                     </div>
                 </div>
             </div>
             @empty
             <div class="col-12 text-center py-5">
-                <p class="text-dark small">Belum ada berita terbaru saat ini.</p>
+                <p class="text-muted small">Belum ada berita terbaru saat ini.</p>
             </div>
             @endforelse
         </div>
@@ -240,10 +268,10 @@
             <a href="{{ route('berita.index') }}" class="btn btn-outline-dark btn-sm rounded-pill w-100">Lihat Semua Berita</a>
         </div>
     </div>
-</section> -->
+</section>
 
 <!-- Testimoni Alumni -->
-<!-- <section id="testimoni" class="section-padding">
+<section id="testimoni" class="section-padding">
     <div class="container">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5">
             <div class="mb-4 mb-md-0">
@@ -259,85 +287,46 @@
                 </div>
             </div>
         </div>
-        
-        <div class="row g-4 justify-content-center">
+        <div class="row g-4">
+            @forelse($testimonis as $testimoni)
             <div class="col-md-4">
-                <div class="card h-100 border-0 p-4 p-lg-5" style="background-color: #f7f8fa; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
-                    <div class="d-flex justify-content-between align-items-center mb-5">
-                        <img src="{{ asset('images/default-avatar.png') }}" class="rounded-circle shadow-sm" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #fff;" alt="Alumni">
-                        <div class="border rounded-pill px-3 py-2 bg-white d-flex align-items-center shadow-sm">
-                            <i data-feather="briefcase" class="me-2" style="width: 14px; height: 14px; color: #fd7a2a;"></i>
-                            <span class="small fw-bold text-dark" style="font-size: 11px; letter-spacing: 0.5px;">PT. POMI</span>
+                <div class="glass-card h-100 p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <div class="d-flex align-items-center">
+                            @if($testimoni->photo)
+                                <img src="{{ asset('storage/' . $testimoni->photo) }}?v={{ time() }}" alt="{{ $testimoni->name }}" class="rounded-circle me-3" style="width: 48px; height: 48px; object-fit: cover;">
+                            @else
+                                <div class="bg-primary bg-opacity-10 rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                    <i data-feather="user" class="text-primary"></i>
+                                </div>
+                            @endif
+                            <div class="small fw-semibold text-primary px-3 py-1 rounded-pill" style="background: rgba(253, 122, 42, 0.1); border: 1px solid rgba(253, 122, 42, 0.2); color: #fd7a2a !important;">
+                                <i data-feather="briefcase" style="width: 12px; height: 12px; margin-right: 4px;"></i> 
+                                {{ $testimoni->company }}
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="mb-4" style="color: #5c85d6; opacity: 0.9;">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+                    <i data-feather="message-square" class="text-primary opacity-25 mb-3" style="width: 32px; height: 32px; color: #fd7a2a !important;"></i>
+                    <div class="testimoni-quote-container mb-4">
+                        <p class="small text-dark lh-lg testimoni-quote" style="font-weight: 500; margin-bottom: 0;">
+                            "{{ $testimoni->quote }}"
+                        </p>
+                        <button class="btn btn-link p-0 text-decoration-none small fw-bold text-primary btn-read-more" style="display: none; color: #fd7a2a !important;" onclick="toggleQuote(this)">Baca selengkapnya</button>
                     </div>
                     
-                    <h4 class="fw-medium text-dark mb-5" style="font-size: 1.35rem; line-height: 1.5; letter-spacing: -0.5px;">
-                        Pelatihan di LPK Paiton sangat terstruktur. Instrukturnya sabar dan fasilitas memadai. Berkat ini saya langsung kerja.
-                    </h4>
-                    
                     <div class="mt-auto border-start border-2 ps-3" style="border-color: #dee2e6 !important;">
-                        <div class="fw-bold text-dark" style="font-size: 0.95rem;">Budi Santoso</div>
-                        <div class="text-muted mt-1" style="font-size: 0.75rem;">Welder, PT. POMI</div>
-                        <div class="text-muted" style="font-size: 0.7rem;">Probolinggo, Jawa Timur</div>
+                        <div class="fw-bold text-dark" style="font-size: 0.95rem;">{{ $testimoni->name }}</div>
+                        <div class="text-muted mt-1" style="font-size: 0.75rem;">{{ $testimoni->role }}</div>
+                        <div class="text-muted" style="font-size: 0.7rem;">{{ $testimoni->company }}</div>
                     </div>
                 </div>
             </div>
-            
-            <div class="col-md-4">
-                <div class="card h-100 border-0 p-4 p-lg-5" style="background-color: #f7f8fa; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
-                    <div class="d-flex justify-content-between align-items-center mb-5">
-                        <img src="{{ asset('images/default-avatar.png') }}" class="rounded-circle shadow-sm" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #fff;" alt="Alumni">
-                        <div class="border rounded-pill px-3 py-2 bg-white d-flex align-items-center shadow-sm">
-                            <i data-feather="settings" class="me-2" style="width: 14px; height: 14px; color: #fd7a2a;"></i>
-                            <span class="small fw-bold text-dark" style="font-size: 11px; letter-spacing: 0.5px;">PT. YTL JATIM</span>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4" style="color: #5c85d6; opacity: 0.9;">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
-                    </div>
-                    
-                    <h4 class="fw-medium text-dark mb-5" style="font-size: 1.35rem; line-height: 1.5; letter-spacing: -0.5px;">
-                        Materi yang diajarkan sangat relevan dengan industri saat ini. LPK Paiton benar-benar jembatan terbaik menuju karir.
-                    </h4>
-                    
-                    <div class="mt-auto border-start border-2 ps-3" style="border-color: #dee2e6 !important;">
-                        <div class="fw-bold text-dark" style="font-size: 0.95rem;">Ahmad Rifai</div>
-                        <div class="text-muted mt-1" style="font-size: 0.75rem;">Teknisi Listrik, PT. YTL</div>
-                        <div class="text-muted" style="font-size: 0.7rem;">Paiton, Jawa Timur</div>
-                    </div>
-                </div>
+            @empty
+            <div class="col-12 text-center py-5">
+                <p class="text-muted small">Belum ada testimoni saat ini.</p>
             </div>
-
-            <div class="col-md-4">
-                <div class="card h-100 border-0 p-4 p-lg-5" style="background-color: #f7f8fa; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
-                    <div class="d-flex justify-content-between align-items-center mb-5">
-                        <img src="{{ asset('images/default-avatar.png') }}" class="rounded-circle shadow-sm" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #fff;" alt="Alumni">
-                        <div class="border rounded-pill px-3 py-2 bg-white d-flex align-items-center shadow-sm">
-                            <i data-feather="tool" class="me-2" style="width: 14px; height: 14px; color: #fd7a2a;"></i>
-                            <span class="small fw-bold text-dark" style="font-size: 11px; letter-spacing: 0.5px;">PT. SASA INTI</span>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4" style="color: #5c85d6; opacity: 0.9;">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
-                    </div>
-                    
-                    <h4 class="fw-medium text-dark mb-5" style="font-size: 1.35rem; line-height: 1.5; letter-spacing: -0.5px;">
-                        Pengalaman belajar di sini sangat mengubah mindset saya. Kedisiplinan dan skill teknis ditempa dengan standar perusahaan.
-                    </h4>
-                    
-                    <div class="mt-auto border-start border-2 ps-3" style="border-color: #dee2e6 !important;">
-                        <div class="fw-bold text-dark" style="font-size: 0.95rem;">Siti Aminah</div>
-                        <div class="text-muted mt-1" style="font-size: 0.75rem;">Maintenance, PT. Sasa Inti</div>
-                        <div class="text-muted" style="font-size: 0.7rem;">Gending, Jawa Timur</div>
-                    </div>
-                </div>
-            </div>
+            @endforelse
         </div>
         
         <div class="d-flex d-md-none gap-2 justify-content-center mt-5">
@@ -349,7 +338,7 @@
             </div>
         </div>
     </div>
-</section> -->
+</section>
 
 
 <!-- Alamat Kantor -->
@@ -517,5 +506,31 @@
         </div>
     </div>
 </section>
+
+<script>
+    // Testimoni Read More Logic
+    window.addEventListener('load', function() {
+        const quotes = document.querySelectorAll('.testimoni-quote');
+        quotes.forEach(quote => {
+            if (quote.scrollHeight > quote.clientHeight + 2) {
+                const btn = quote.nextElementSibling;
+                if (btn && btn.classList.contains('btn-read-more')) {
+                    btn.style.display = 'inline-block';
+                }
+            }
+        });
+    });
+
+    function toggleQuote(btn) {
+        const quoteText = btn.previousElementSibling;
+        if (quoteText.classList.contains('expanded')) {
+            quoteText.classList.remove('expanded');
+            btn.textContent = 'Baca selengkapnya';
+        } else {
+            quoteText.classList.add('expanded');
+            btn.textContent = 'Tutup';
+        }
+    }
+</script>
 
 @endsection

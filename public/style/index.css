@@ -251,6 +251,110 @@ body {
     border: 2px solid #ffffff; /* Garis putih tegas agar kontras dengan map */
 }
 
+.map-overlay-action:hover .btn {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(253, 122, 42, 0.4);
+}
+
+/* Team Glass Card Redesign */
+.team-glass-card {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 360px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(253, 122, 42, 0.2);
+}
+
+.team-img-full {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.team-glass-card:hover .team-img-full {
+    transform: scale(1.05);
+}
+
+.team-info-overlay {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    padding: 15px;
+    text-align: right;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.team-info-overlay .team-name {
+    font-weight: 700;
+    color: #1a1a1a;
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+}
+
+.team-info-overlay .team-role {
+    font-size: 0.85rem;
+    color: #fd7a2a;
+    font-weight: 600;
+}
+
+/* News Card Redesign */
+.news-card {
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.news-img-wrapper {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+}
+
+.news-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.news-card:hover .news-img-wrapper img {
+    transform: scale(1.08);
+}
+
+.btn-news-link {
+    color: #fd7a2a;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.btn-news-link:hover {
+    color: #d15a13;
+    letter-spacing: 0.5px;
+}
+
 /* PIN GOOGLE MAP STYLE */
 
 /* PIN GOOGLE MAP STYLE */
@@ -365,4 +469,39 @@ body {
     .contact-card {
         padding: 1.75rem;
     }
+}
+
+/* Testimoni Read More */
+.testimoni-quote {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 4 !important;
+    /*! autoprefixer: ignore next */
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease;
+}
+.testimoni-quote.expanded {
+    -webkit-line-clamp: none !important;
+}
+.btn-read-more {
+    font-size: 0.75rem !important; /* Smaller text */
+}
+.btn-read-more:focus {
+    box-shadow: none !important; /* Remove blue border */
+}
+.btn-read-more:hover {
+    text-decoration: underline !important;
+}
+
+/* Visitor Badge Animation */
+@keyframes slideInOutLeft {
+    0% { transform: translateX(-150%); opacity: 0; }
+    5% { transform: translateX(0); opacity: 1; }
+    80% { transform: translateX(0); opacity: 1; }
+    85% { transform: translateX(-150%); opacity: 0; }
+    100% { transform: translateX(-150%); opacity: 0; }
+}
+
+.visitor-badge-anim {
+    animation: slideInOutLeft 25s infinite ease-in-out;
 }

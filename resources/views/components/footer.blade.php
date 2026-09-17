@@ -25,10 +25,14 @@
             </div>
         </div>
 
-        <div class="footer-border text-center"></div>
-        <small class="text-secondary text-light text-center d-block mt-3">
-            © Copyright LPK Paiton Selaras
-        </small>
+        <div class="footer-border"></div>
     </div>
+    
+    <div class="footer-bottom">
+        <div class="container text-center">
+            <small class="text-light">
+                © Copyright LPK Paiton Selaras
+            </small>
+        </div>
     </div>
 </footer>

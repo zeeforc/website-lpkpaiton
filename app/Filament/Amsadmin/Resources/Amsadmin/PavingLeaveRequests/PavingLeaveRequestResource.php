@@ -20,7 +20,7 @@ class PavingLeaveRequestResource extends Resource
 {
     protected static ?string $model = LeaveRequest::class;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-envelope-open';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelopeOpen;
 
 
     protected static ?string $recordTitleAttribute = 'reason';

@@ -15,6 +15,7 @@ class TeamsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->reorderable('sort_order')
             ->columns([
                 ImageColumn::make('photo')
                     ->label('Foto Instruktur')

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Team extends Model
 {
-    protected $fillable = ['name', 'position', 'photo'];
+    protected $fillable = ['name', 'position', 'photo', 'sort_order'];
     
     protected static function booted(): void
     {

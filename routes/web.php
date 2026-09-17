@@ -10,7 +10,9 @@ use App\Models\DokumenSyaratPkl;
 use App\Models\Galery;
 use App\Models\Home;
 use App\Models\Team;
+use App\Models\Testimoni;
 use App\Models\Vimi;
+use App\Models\Visitor;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -28,28 +30,43 @@ Route::get('/', function () {
 
     $teams = cache()->remember('home_teams', now()->addMinutes(5), function () {
         return Team::select('id', 'name', 'position', 'photo')
+            ->orderBy('sort_order')
             ->orderBy('id')
             ->get();
     });
 
-    $visitorSetting = \App\Models\Setting::firstOrCreate(
-        ['key' => 'visitor_count'],
-        ['value' => '1250', 'name' => 'Jumlah Pengunjung']
-    );
+    // Simpan data pengunjung unik berdasarkan IP dan tanggal
+    $ipAddress = request()->ip();
+    $today = now()->toDateString();
+    $sessionId = session()->getId();
 
-    if (!session()->has('visited')) {
-        $val = (int) $visitorSetting->value;
-        $visitorSetting->update(['value' => $val + 1]);
-        session()->put('visited', true);
+    try {
+        Visitor::firstOrCreate(
+            ['session_id' => $sessionId, 'visited_date' => $today],
+            ['ip_address' => $ipAddress]
+        );
+    } catch (\Exception $e) {
+        // Abaikan jika duplicate key error
     }
 
-    $visitorCount = number_format((int)$visitorSetting->value, 0, ',', '.');
+    // Ambil total pengunjung dari tabel Visitor
+    $visitorCountModel = Visitor::count();
+    
+    // Fallback: Jika tabel Visitor kosong, mulai dari angka dasar 1250 ditambah data baru
+    $baseVisitor = 1250;
+    $totalVisitor = $baseVisitor + $visitorCountModel;
+    
+    $visitorCount = number_format($totalVisitor, 0, ',', '.');
 
     $latestBerita = cache()->remember('home_latest_berita', now()->addMinutes(10), function () {
         return \App\Models\BeritaUtama::latest('created_at')->take(3)->get();
     });
 
-    return view('index', compact('home', 'vimi', 'teams', 'visitorCount', 'latestBerita'));
+    $testimonis = cache()->remember('home_testimonis', now()->addMinutes(5), function () {
+        return Testimoni::where('is_active', true)->latest('id')->get();
+    });
+
+    return view('index', compact('home', 'vimi', 'teams', 'visitorCount', 'latestBerita', 'testimonis'));
 })->name('home');
 
 Route::get('/index', function () {

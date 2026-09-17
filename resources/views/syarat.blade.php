@@ -85,7 +85,7 @@
                             <div class="step-content">
                                 <p class="step-text-title">Melengkapi Data</p>
                                 <p class="step-text-body">
-                                    Isi dan lengkapi data profil siswa/mahasiswa, asal instansi, dan periode magang. Silakan tunggu proses peninjauan selesai. Anda dapat melihat status proses melalui halaman cek status.
+                                    Isi dan lengkapi data profil siswa/mahasiswa, asal instansi, dan periode internship. Silakan tunggu proses peninjauan selesai. Anda dapat melihat status proses melalui halaman cek status.
                                 </p>
                             </div>
                         </div>
@@ -101,7 +101,7 @@
                             <div class="step-content">
                                 <p class="step-text-title">Mengirimkan Berkas</p>
                                 <p class="step-text-body">
-                                    Jika sudah di setujui maka akan mendapatkan email pemberitahuan. Selanjutnya anda bisa kirimkan berkas pengantar dan proposal sesuai ketentuan di halaman pendaftaran LPK Paiton Selaras.
+                                    Jika telah lolos maka akan mendapatkan email pemberitahuan. Selanjutnya anda bisa melengkapi dokumen pengantar sesuai ketentuan di halaman pendaftaran LPK Paiton Selaras.
                                 </p>
                             </div>
                         </div>

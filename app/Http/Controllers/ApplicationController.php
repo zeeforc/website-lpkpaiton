@@ -15,11 +15,19 @@ class ApplicationController extends Controller
 {
     public function create()
     {
-        return view('application-form');
+        $activeQuota = Application::getActiveQuotaCount();
+        $isFull = $activeQuota >= 35;
+        $predictedOpenMonth = Application::getPredictedOpenMonth();
+
+        return view('application-form', compact('isFull', 'predictedOpenMonth'));
     }
 
     public function store(Request $request)
     {
+        if (Application::getActiveQuotaCount() >= 35) {
+            return redirect()->back()->withErrors(['error' => 'Pendaftaran ditutup karena kuota penuh.']);
+        }
+
         $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'instansi' => 'required|string|max:255',
@@ -28,13 +36,15 @@ class ApplicationController extends Controller
             'no_hp' => 'required|string|max:50',
             'pengajuan' => 'required|string',
             'periode_gelombang' => 'required|string',
-            'lama_durasi_bulan' => 'required|integer|min:1',
+            'lama_durasi_bulan' => 'required|integer|min:2|max:6',
             'fokus_studi' => 'required|string',
             'email_balasan' => 'required|email|max:255|unique:users,email',
             'documents' => 'required|array',
-            'documents.*' => 'required|file|mimes:pdf|max:10240',
+            'documents.*' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ], [
             'email_balasan.unique' => 'Email ini sudah pernah digunakan untuk mendaftar. Silakan gunakan email lain.',
+            'documents.*.mimes' => 'Format file dokumen harus berupa PDF, JPG, atau PNG.',
+            'documents.*.max' => 'Ukuran file dokumen maksimal adalah 5MB per file.',
         ]);
 
         try {
@@ -108,11 +118,17 @@ class ApplicationController extends Controller
         }
 
         $request->validate([
-            'dokumen_ktp' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'dokumen_foto' => 'required|file|mimes:jpg,jpeg,png|max:5120',
-            'dokumen_skck' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'dokumen_sehat' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'dokumen_portofolio' => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'dokumen_ktp' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'dokumen_foto' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            'dokumen_skck' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'dokumen_sehat' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'dokumen_portofolio' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ], [
+            'dokumen_ktp.max' => 'Ukuran fotocopy KTP maksimal 2MB.',
+            'dokumen_foto.max' => 'Ukuran pas foto maksimal 2MB.',
+            'dokumen_skck.max' => 'Ukuran Surat Kelakuan Baik maksimal 2MB.',
+            'dokumen_sehat.max' => 'Ukuran Surat Keterangan Sehat maksimal 2MB.',
+            'dokumen_portofolio.max' => 'Ukuran Portofolio maksimal 5MB.',
         ]);
 
         try {

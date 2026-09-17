@@ -4,6 +4,8 @@ namespace App\Filament\Amsadmin\Resources\Applications\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class ApplicationForm
@@ -41,6 +43,13 @@ class ApplicationForm
                 TextInput::make('status')
                     ->required()
                     ->default('pending'),
+                DatePicker::make('start_date')
+                    ->label('Tanggal Mulai PKL'),
+                DatePicker::make('end_date')
+                    ->label('Tanggal Selesai PKL'),
+                Toggle::make('is_jalur_khusus')
+                    ->label('Jalur Khusus (Tidak terhitung kuota)')
+                    ->default(false),
             ]);
     }
 }

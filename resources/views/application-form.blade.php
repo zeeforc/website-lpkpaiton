@@ -64,17 +64,30 @@
             </div>
         @endif
 
+        @if($isFull)
+            <div class="alert alert-warning p-4 border-warning mt-4 text-center">
+                <h4 class="alert-heading fw-bold mb-3"><i data-feather="alert-circle" class="me-2"></i>Pendaftaran Ditutup</h4>
+                <p>Mohon maaf, kuota peserta Praktik Kerja Lapangan (PKL) saat ini telah penuh.</p>
+                <hr>
+                <p class="mb-0 fw-bold">Pendaftaran diperkirakan akan dibuka kembali pada bulan: <span class="text-primary">{{ $predictedOpenMonth }}</span>.</p>
+                <p class="mt-3 mb-0 small text-muted">Silakan kunjungi halaman ini lagi pada bulan tersebut.</p>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="/" class="btn btn-outline-secondary px-4 py-2">Kembali ke Beranda</a>
+            </div>
+        @else
         <form action="{{ route('application.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="mb-4">
-                <label for="nama_lengkap" class="form-label">NAMA LENGKAP <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" required value="{{ old('nama_lengkap') }}">
+                <label for="nama_lengkap" class="form-label">NAMA LENGKAP (Kapitalisasi)<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" placeholder="Nama Lengkap" required value="{{ old('nama_lengkap') }}">
             </div>
 
             <div class="mb-4">
-                <label for="instansi" class="form-label">INSTANSI / PERGURUAN TINGGI <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="instansi" name="instansi" required value="{{ old('instansi') }}">
+                <label for="instansi" class="form-label">INSTANSI / PERGURUAN TINGGI (Kapitalisasi)<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="instansi" name="instansi" placeholder="Sekolah / Perguruan Tinggi" required value="{{ old('instansi') }}">
             </div>
 
             <div class="mb-4">
@@ -91,12 +104,12 @@
 
             <div class="mb-4">
                 <label for="jurusan" class="form-label">JURUSAN/BIDANG STUDI <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="jurusan" name="jurusan" required value="{{ old('jurusan') }}">
+                <input type="text" class="form-control" id="jurusan" name="jurusan" placeholder="Jurusan" required value="{{ old('jurusan') }}">
             </div>
 
             <div class="mb-4">
                 <label for="no_hp" class="form-label">NO HANDPHONE ( Whatsapp ) <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="no_hp" name="no_hp" required value="{{ old('no_hp') }}">
+                <input type="text" class="form-control" id="no_hp" name="no_hp" placeholder="No Handphone" required value="{{ old('no_hp') }}">
             </div>
 
             <div class="mb-4">
@@ -116,32 +129,22 @@
             </div>
 
             <div class="mb-4">
-                <label class="form-label">PERIODE GELOMBANG <span class="text-danger">*</span></label>
-                @php 
-                    $currentMonth = (int) date('n');
-                    $currentYear = (int) date('Y');
-                    
-                    $yearG1 = $currentMonth >= 1 ? $currentYear + 1 : $currentYear;
-                    $yearG2 = $currentMonth >= 4 ? $currentYear + 1 : $currentYear;
-                    $yearG3 = $currentMonth >= 7 ? $currentYear + 1 : $currentYear;
-                    $yearG4 = $currentMonth >= 10 ? $currentYear + 1 : $currentYear;
-                @endphp
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="periode_gelombang" id="gelombang1" value="GELOMBANG 1 : 1 JANUARI {{ $yearG1 }}" required {{ old('periode_gelombang') == 'GELOMBANG 1 : 1 JANUARI '.$yearG1 ? 'checked' : '' }}>
-                    <label class="form-check-label" for="gelombang1">GELOMBANG 1 : 1 JANUARI {{ $yearG1 }}</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="periode_gelombang" id="gelombang2" value="GELOMBANG 2 : 1 APRIL {{ $yearG2 }}" {{ old('periode_gelombang') == 'GELOMBANG 2 : 1 APRIL '.$yearG2 ? 'checked' : '' }}>
-                    <label class="form-check-label" for="gelombang2">GELOMBANG 2 : 1 APRIL {{ $yearG2 }}</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="periode_gelombang" id="gelombang3" value="GELOMBANG 3 : 1 JULI {{ $yearG3 }}" {{ old('periode_gelombang') == 'GELOMBANG 3 : 1 JULI '.$yearG3 ? 'checked' : '' }}>
-                    <label class="form-check-label" for="gelombang3">GELOMBANG 3 : 1 JULI {{ $yearG3 }}</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="periode_gelombang" id="gelombang4" value="GELOMBANG 4 : 1 OKTOBER {{ $yearG4 }}" {{ old('periode_gelombang') == 'GELOMBANG 4 : 1 OKTOBER '.$yearG4 ? 'checked' : '' }}>
-                    <label class="form-check-label" for="gelombang4">GELOMBANG 4 : 1 OKTOBER {{ $yearG4 }}</label>
-                </div>
+                <label for="periode_gelombang" class="form-label">PERIODE MULAI PKL (BULAN) <span class="text-danger">*</span></label>
+                <select class="form-select" id="periode_gelombang" name="periode_gelombang" required>
+                    <option value="" disabled {{ old('periode_gelombang') ? '' : 'selected' }}>-- Pilih Bulan --</option>
+                    <option value="Januari" {{ old('periode_gelombang') == 'Januari' ? 'selected' : '' }}>Januari</option>
+                    <option value="Februari" {{ old('periode_gelombang') == 'Februari' ? 'selected' : '' }}>Februari</option>
+                    <option value="Maret" {{ old('periode_gelombang') == 'Maret' ? 'selected' : '' }}>Maret</option>
+                    <option value="April" {{ old('periode_gelombang') == 'April' ? 'selected' : '' }}>April</option>
+                    <option value="Mei" {{ old('periode_gelombang') == 'Mei' ? 'selected' : '' }}>Mei</option>
+                    <option value="Juni" {{ old('periode_gelombang') == 'Juni' ? 'selected' : '' }}>Juni</option>
+                    <option value="Juli" {{ old('periode_gelombang') == 'Juli' ? 'selected' : '' }}>Juli</option>
+                    <option value="Agustus" {{ old('periode_gelombang') == 'Agustus' ? 'selected' : '' }}>Agustus</option>
+                    <option value="September" {{ old('periode_gelombang') == 'September' ? 'selected' : '' }}>September</option>
+                    <option value="Oktober" {{ old('periode_gelombang') == 'Oktober' ? 'selected' : '' }}>Oktober</option>
+                    <option value="November" {{ old('periode_gelombang') == 'November' ? 'selected' : '' }}>November</option>
+                    <option value="Desember" {{ old('periode_gelombang') == 'Desember' ? 'selected' : '' }}>Desember</option>
+                </select>
             </div>
 
             <div class="mb-4">
@@ -170,7 +173,8 @@
 
             <div class="mb-4">
                 <label for="lama_durasi_bulan" class="form-label">LAMA DURASI (BULAN) <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" id="lama_durasi_bulan" name="lama_durasi_bulan" placeholder="Jawaban Anda" required value="{{ old('lama_durasi_bulan') }}">
+                <div class="form-text text-muted mb-2">Minimal 2 bulan, maksimal 6 bulan.</div>
+                <input type="number" class="form-control" id="lama_durasi_bulan" name="lama_durasi_bulan" placeholder="Contoh: 3" required min="2" max="6" value="{{ old('lama_durasi_bulan') }}">
             </div>
 
             <div class="mb-4">
@@ -186,9 +190,9 @@
             </div>
 
             <div class="mb-4 p-4 border rounded bg-light">
-                <label for="documents" class="form-label fw-bold">UNGGAH SURAT PENGANTAR RESMI & PROPOSAL PRAKTIK KERJA LAPANGAN ANDA <span class="text-danger">*</span></label>
-                <div class="form-text text-muted mb-3">Sesuai Alur Pendaftaran, Anda wajib melampirkan Surat Pengantar dan Proposal. Maks 10 MB per file (PDF).</div>
-                <input class="form-control" type="file" id="documents" name="documents[]" multiple accept=".pdf" required>
+                <label for="documents" class="form-label fw-bold">UNGGAH SURAT PENGANTAR SEKOLAH/KAMPUS <span class="text-danger">*</span></label>
+                <div class="form-text text-muted mb-3">Lampirkan Surat Pengantar dari Sekolah/Kampus. Maksimal 5 MB per file (PDF/JPG/PNG).</div>
+                <input class="form-control" type="file" id="documents" name="documents[]" multiple accept=".pdf,.jpg,.jpeg,.png" required>
             </div>
 
             <div class="d-flex justify-content-between align-items-center mt-5">
@@ -196,11 +200,16 @@
                 <button type="submit" class="btn btn-submit">Kirim</button>
             </div>
         </form>
+        @endif
     </div>
 </div>
 
+@include('components.simulation-guide')
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Sepatu Safety Logic
     const radioA = document.querySelectorAll('input[name="sepatu_safety_a"]');
     const radioB = document.querySelectorAll('input[name="sepatu_safety_b"]');
     const containerB = document.getElementById('sepatu_safety_b_container');
@@ -225,7 +234,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (valA === 'Tidak' && valB === 'Tidak') {
             e.preventDefault();
-            alert('Maaf, untuk mengikuti Praktik Kerja Lapangan di LPK Paiton Selaras, Anda diwajibkan untuk memiliki atau bersedia membeli sepatu safety demi keamanan kerja Anda.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Tidak Memenuhi Syarat',
+                text: 'Maaf, untuk mengikuti Praktik Kerja Lapangan di LPK Paiton Selaras, Anda diwajibkan untuk memiliki atau bersedia membeli sepatu safety demi keamanan kerja Anda.',
+                confirmButtonColor: '#fd7a2a'
+            });
+            return;
+        }
+
+        // File validation
+        const fileInput = document.getElementById('documents');
+        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+        const maxSize = 5 * 1024 * 1024; // 5MB
+
+        if (fileInput.files.length > 0) {
+            for (let i = 0; i < fileInput.files.length; i++) {
+                const file = fileInput.files[i];
+                if (!allowedTypes.includes(file.type)) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Format File Tidak Sesuai',
+                        text: `File "${file.name}" memiliki format yang tidak diizinkan. Harap gunakan format PDF, JPG, atau PNG.`,
+                        confirmButtonColor: '#fd7a2a'
+                    });
+                    return;
+                }
+                if (file.size > maxSize) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ukuran File Terlalu Besar',
+                        text: `Ukuran file "${file.name}" melebihi batas maksimal 5 MB.`,
+                        confirmButtonColor: '#fd7a2a'
+                    });
+                    return;
+                }
+            }
         }
     });
 });
