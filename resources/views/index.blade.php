@@ -1,7 +1,7 @@
 @extends('layout')
 @section('title', 'Home')
 @push('styles')
-<link rel="stylesheet" href="{{ asset('style/index-v2.css') }}?v={{ time() }}">
+<link rel="stylesheet" href="{{ asset('style/index.css') }}?v={{ time() }}">
 @endpush
 @section('content')
 
