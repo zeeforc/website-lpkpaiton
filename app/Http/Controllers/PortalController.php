@@ -401,12 +401,18 @@ class PortalController extends Controller
         $application = Application::where('user_id', $user->id)->first();
         $profile = $user->studentProfile;
         $certificates = \App\Models\Certificate::where('user_id', $user->id)->latest()->get();
+        $clearance = ClearanceSubmission::where('user_id', $user->id)->latest()->first();
         
-        return view('portal.laporan', compact('laporan', 'application', 'profile', 'certificates'));
+        return view('portal.laporan', compact('laporan', 'application', 'profile', 'certificates', 'clearance'));
     }
 
     public function storeLaporan(Request $request)
     {
+        $clearance = ClearanceSubmission::where('user_id', Auth::id())->latest()->first();
+        if (!$clearance || $clearance->status !== 'disetujui') {
+            return back()->with('error', 'Anda tidak dapat mengajukan laporan karena status Bebas Tanggungan Anda belum disetujui.');
+        }
+
         $request->validate([
             'title' => 'required|string|max:255',
             'notes' => 'nullable|string',

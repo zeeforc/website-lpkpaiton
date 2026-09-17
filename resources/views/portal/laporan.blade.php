@@ -211,7 +211,20 @@
                 <h6 class="fw-bold text-dark m-0">Form Pengajuan Laporan</h6>
             </div>
             <div class="card-body-custom">
-                @if($laporan && $laporan->status == 'pending')
+                @if(!$clearance || $clearance->status !== 'disetujui')
+                    <div class="alert alert-danger mb-0">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="fa-solid fa-triangle-exclamation fs-5"></i>
+                            <strong class="m-0">Perhatian!</strong>
+                        </div>
+                        Persetujuan laporan PKL membutuhkan <strong>Surat Pernyataan Bebas Tanggungan</strong> yang telah disetujui. Silakan unggah form bebas tanggungan terlebih dahulu atau tunggu persetujuan dari admin.
+                        <div class="mt-3">
+                            <a href="{{ route('portal.bebas-tanggungan') }}" class="btn btn-sm btn-danger fw-medium">
+                                Cek Status Bebas Tanggungan
+                            </a>
+                        </div>
+                    </div>
+                @elseif($laporan && $laporan->status == 'pending')
                     <div class="alert alert-warning">
                         Pengajuan Anda sedang diproses. Anda tidak dapat membuat pengajuan baru saat ini.
                     </div>
