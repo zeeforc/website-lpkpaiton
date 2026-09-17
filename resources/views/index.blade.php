@@ -142,8 +142,8 @@
         @if($koordinator)
         <div class="row justify-content-center mb-4">
             <div class="col-12 col-md-6 col-lg-3">
-                <div class="team-glass-card">
-                    <img src="{{ $koordinator->photo ? asset('storage/' . $koordinator->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $koordinator->name }}" class="team-img-full">
+                <div class="team-glass-card" style="height: 360px; position: relative; border-radius: 20px; overflow: hidden;">
+                    <img src="{{ $koordinator->photo ? asset('storage/' . $koordinator->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $koordinator->name }}" class="team-img-full" style="width: 100%; height: 100%; object-fit: cover;">
                     <div class="team-info-overlay text-center">
                         <div class="team-name">{{ $koordinator->name }}</div>
                         <div class="team-role">{{ $koordinator->position }}</div>
@@ -156,8 +156,8 @@
         <div class="row g-4 justify-content-center">
             @forelse ($others as $team)
             <div class="col-12 col-md-6 col-lg-3">
-                <div class="team-glass-card">
-                    <img src="{{ $team->photo ? asset('storage/' . $team->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $team->name }}" class="team-img-full">
+                <div class="team-glass-card" style="height: 360px; position: relative; border-radius: 20px; overflow: hidden;">
+                    <img src="{{ $team->photo ? asset('storage/' . $team->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $team->name }}" class="team-img-full" style="width: 100%; height: 100%; object-fit: cover;">
                     <div class="team-info-overlay text-center">
                         <div class="team-name">{{ $team->name }}</div>
                         <div class="team-role">{{ $team->position }}</div>
@@ -242,8 +242,8 @@
             @forelse($latestBerita as $berita)
             <div class="col-md-4">
                 <div class="news-card h-100 d-flex flex-column">
-                    <div class="news-img-wrapper">
-                        <img src="{{ $berita->berita_utama_image ? asset('storage/' . $berita->berita_utama_image) : asset('assets/placeholder.jpg') }}" alt="{{ $berita->berita_utama_title }}">
+                    <div class="news-img-wrapper" style="height: 220px; position: relative; overflow: hidden;">
+                        <img src="{{ $berita->berita_utama_image ? asset('storage/' . $berita->berita_utama_image) : asset('assets/placeholder.jpg') }}" alt="{{ $berita->berita_utama_title }}" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <div class="p-4 d-flex flex-column flex-grow-1">
                         <div class="text-muted small mb-2 d-flex align-items-center fw-medium">
