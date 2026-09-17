@@ -14,8 +14,8 @@
     <script src="https://unpkg.com/feather-icons"></script>
 
 
-    <link rel="stylesheet" href="{{ asset('style/navbar.css') }}" />
-    <link rel="stylesheet" href="{{ asset('style/footer.css') }}" />
+    <link rel="stylesheet" href="{{ asset('style/navbar-v2.css') }}" />
+    <link rel="stylesheet" href="{{ asset('style/footer-v2.css') }}" />
     <link rel="icon" type="image/png" href="{{ asset('assets/logo/logo.png') }}">
     <link rel="shortcut icon" href="{{ asset('assets/logo/logo.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('assets/logo/logo.png') }}">
