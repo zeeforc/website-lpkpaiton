@@ -145,6 +145,7 @@ Route::prefix('portal')->name('portal.')->group(function () {
 
         Route::get('/bebas-tanggungan', [\App\Http\Controllers\PortalController::class, 'bebasTanggungan'])->name('bebas-tanggungan');
         Route::post('/bebas-tanggungan', [\App\Http\Controllers\PortalController::class, 'storeBebasTanggungan'])->name('bebas-tanggungan.store');
+        Route::get('/bebas-tanggungan/download-template', [\App\Http\Controllers\PortalController::class, 'downloadTemplate'])->name('bebas-tanggungan.download-template');
     });
 });
 

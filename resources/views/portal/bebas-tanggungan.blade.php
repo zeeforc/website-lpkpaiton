@@ -104,7 +104,7 @@
                         <i class="fa-regular fa-file-pdf download-icon"></i>
                         <h6 class="fw-bold text-dark mb-1">Unduh Format Surat Pernyataan</h6>
                         <p class="text-secondary small mb-3">Silakan unduh, isi, dan tandatangani surat pernyataan berikut sebelum mengunggahnya kembali ke sistem.</p>
-                        <a href="{{ asset('storage/' . $template->file_path) }}" target="_blank" class="btn btn-outline-primary btn-sm px-4 fw-medium">
+                        <a href="{{ route('portal.bebas-tanggungan.download-template') }}" class="btn btn-outline-primary btn-sm px-4 fw-medium">
                             <i class="fa-solid fa-download me-2"></i> Unduh Format
                         </a>
                     </div>
