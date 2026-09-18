@@ -14,7 +14,10 @@
 .alumni-role { color: #fd7a2a; font-weight: 600; font-size: 0.9rem; margin-bottom: 0; }
 .alumni-content { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; position: relative; }
 .alumni-company-badge { display: inline-flex; align-items: center; padding: 0.4rem 0.8rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 50px; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 1rem; width: fit-content; }
-.alumni-quote { color: #334155; font-size: 0.95rem; line-height: 1.6; margin-bottom: 0; flex-grow: 1; font-weight: 500; }
+.alumni-quote { color: #334155; font-size: 0.95rem; line-height: 1.6; margin-bottom: 0; font-weight: 500; display: -webkit-box !important; -webkit-line-clamp: 4 !important; /*! autoprefixer: ignore next */ -webkit-box-orient: vertical !important; overflow: hidden !important; transition: all 0.3s ease; }
+.alumni-quote.expanded { -webkit-line-clamp: none !important; }
+.alumni-read-more { font-size: 0.85rem; color: #fd7a2a; font-weight: 500; cursor: pointer; display: none; margin-top: 0.5rem; transition: color 0.2s ease; }
+.alumni-read-more:hover { color: #e06318; text-decoration: underline; }
 .alumni-quote-icon { position: absolute; right: 1.5rem; top: 1.5rem; color: #f1f5f9; width: 40px; height: 40px; z-index: 0; }
 
 .team-glass-card {
@@ -432,10 +435,11 @@
                             {{ $testimoni->company }}
                         </div>
                         
-                        <div class="position-relative" style="z-index: 2;">
+                        <div class="position-relative flex-grow-1 d-flex flex-column" style="z-index: 2;">
                             <p class="alumni-quote">
                                 "{{ $testimoni->quote }}"
                             </p>
+                            <span class="alumni-read-more mt-auto pt-2" onclick="toggleQuote(this)">Baca selengkapnya &rarr;</span>
                         </div>
                     </div>
                 </div>
@@ -619,24 +623,25 @@
 <script>
     // Testimoni Read More Logic
     window.addEventListener('load', function() {
-        const quotes = document.querySelectorAll('.testimoni-quote');
+        const quotes = document.querySelectorAll('.alumni-quote');
         quotes.forEach(quote => {
             if (quote.scrollHeight > quote.clientHeight + 2) {
                 const btn = quote.nextElementSibling;
-                if (btn && btn.classList.contains('btn-read-more')) {
+                if (btn && btn.classList.contains('alumni-read-more')) {
                     btn.style.display = 'inline-block';
                 }
             }
         });
+    });
 
     function toggleQuote(btn) {
         const quoteText = btn.previousElementSibling;
         if (quoteText.classList.contains('expanded')) {
             quoteText.classList.remove('expanded');
-            btn.textContent = 'Baca selengkapnya \u2192';
+            btn.innerHTML = 'Baca selengkapnya &rarr;';
         } else {
             quoteText.classList.add('expanded');
-            btn.textContent = 'Tutup';
+            btn.innerHTML = 'Tutup';
         }
     }
 </script>
