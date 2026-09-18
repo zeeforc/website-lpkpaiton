@@ -493,6 +493,65 @@ body {
     text-decoration: underline !important;
 }
 
+/* Testimoni Carousel Design */
+.testimoni-card-wrapper {
+    border-radius: 24px;
+    background-color: #ffffff;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+.testimoni-left-pane {
+    width: 100%;
+    min-height: 350px;
+}
+@media (min-width: 768px) {
+    .testimoni-left-pane {
+        max-width: 380px;
+        min-height: 420px;
+    }
+}
+.testimoni-shape-blue {
+    position: absolute;
+    width: 85%;
+    height: 85%;
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    border-radius: 40px;
+    transform: rotate(-5deg);
+    z-index: 2;
+    box-shadow: 0 15px 30px rgba(59, 130, 246, 0.3);
+}
+.testimoni-person-img {
+    position: relative;
+    z-index: 3;
+    max-width: 95%;
+    max-height: 115%; /* Allow it to protrude slightly */
+    object-fit: contain;
+    margin-top: -30px;
+    pointer-events: none;
+}
+.decor-triangle {
+    position: absolute;
+    top: 25px;
+    left: 20px;
+    width: 45px;
+    height: 45px;
+    background: transparent;
+    border: 6px solid #ffedd5;
+    border-radius: 12px;
+    transform: rotate(-15deg);
+    z-index: 1;
+}
+.decor-blob {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+    width: 65px;
+    height: 65px;
+    background: #e0e7ff;
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    z-index: 1;
+}
+
 /* Visitor Badge Animation */
 @keyframes slideInOutLeft {
     0% { transform: translateX(-150%); opacity: 0; }

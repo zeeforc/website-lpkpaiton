@@ -378,71 +378,90 @@
 </section>
 
 <!-- Testimoni Alumni -->
-<section id="testimoni" class="section-padding">
+<section id="testimoni" class="section-padding" style="background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);">
     <div class="container">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5">
             <div class="mb-4 mb-md-0">
-                <p class="text-uppercase fw-bold text-muted mb-3" style="letter-spacing: 2px; font-size: 0.75rem;">Testimoni Alumni</p>
+                <div class="d-flex align-items-center mb-3">
+                    <div style="width: 30px; height: 3px; background-color: #3b82f6; margin-right: 10px;"></div>
+                    <p class="text-uppercase fw-bold text-muted mb-0" style="letter-spacing: 2px; font-size: 0.75rem;">Testimoni Alumni</p>
+                </div>
                 <h2 class="display-6 fw-bold mb-0 text-dark" style="letter-spacing: -1px;">Apa Kata <span style="color: #fd7a2a;">Alumni</span> Kami</h2>
             </div>
             <div class="d-none d-md-flex gap-2">
-                <div class="d-flex align-items-center justify-content-center rounded-circle border border-dark hover-primary" style="width: 48px; height: 48px; cursor: pointer; transition: all 0.3s;">
-                    <i data-feather="arrow-left" style="width: 20px; height: 20px;"></i>
-                </div>
-                <div class="d-flex align-items-center justify-content-center rounded-circle bg-dark text-white" style="width: 48px; height: 48px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                <button type="button" class="d-flex align-items-center justify-content-center rounded-circle border border-dark bg-transparent" style="width: 48px; height: 48px; cursor: pointer; transition: all 0.3s;" data-bs-target="#testimoniCarousel" data-bs-slide="prev">
+                    <i data-feather="arrow-left" style="width: 20px; height: 20px; color: #1e293b;"></i>
+                </button>
+                <button type="button" class="d-flex align-items-center justify-content-center rounded-circle bg-dark text-white border-0" style="width: 48px; height: 48px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" data-bs-target="#testimoniCarousel" data-bs-slide="next">
                     <i data-feather="arrow-right" style="width: 20px; height: 20px;"></i>
-                </div>
+                </button>
             </div>
         </div>
-        <div class="row g-4">
-            @forelse($testimonis as $testimoni)
-            <div class="col-md-4">
-                <div class="glass-card h-100 p-4">
-                    <div class="d-flex justify-content-between align-items-start mb-4">
-                        <div class="d-flex align-items-center">
+
+        <div id="testimoniCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner" style="overflow: visible;">
+                @forelse($testimonis as $index => $testimoni)
+                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                    <div class="testimoni-card-wrapper d-flex flex-column flex-md-row mx-auto" style="max-width: 1000px;">
+                        <!-- Left Pane: Image & Decors -->
+                        <div class="testimoni-left-pane position-relative d-flex align-items-center justify-content-center">
+                            <div class="decor-triangle"></div>
+                            <div class="decor-blob"></div>
+                            <div class="testimoni-shape-blue"></div>
                             @if($testimoni->photo)
-                                <img src="{{ asset('storage/' . $testimoni->photo) }}?v={{ time() }}" alt="{{ $testimoni->name }}" class="rounded-circle me-3" style="width: 48px; height: 48px; object-fit: cover;">
+                                <img src="{{ asset('storage/' . $testimoni->photo) }}?v={{ time() }}" alt="{{ $testimoni->name }}" class="testimoni-person-img">
                             @else
-                                <div class="bg-primary bg-opacity-10 rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                                    <i data-feather="user" class="text-primary"></i>
+                                <div class="position-relative bg-white rounded-circle d-flex align-items-center justify-content-center shadow" style="z-index: 3; width: 120px; height: 120px;">
+                                    <i data-feather="user" style="width: 60px; height: 60px; color: #3b82f6;"></i>
                                 </div>
                             @endif
-                            <div class="small fw-semibold text-primary px-3 py-1 rounded-pill" style="background: rgba(253, 122, 42, 0.1); border: 1px solid rgba(253, 122, 42, 0.2); color: #fd7a2a !important;">
-                                <i data-feather="briefcase" style="width: 12px; height: 12px; margin-right: 4px;"></i> 
-                                {{ $testimoni->company }}
+                        </div>
+
+                        <!-- Right Pane: Content -->
+                        <div class="testimoni-right-pane p-4 p-md-5 d-flex flex-column justify-content-center position-relative flex-grow-1">
+                            <!-- Large Quote Icon bg -->
+                            <div class="position-absolute d-none d-md-block" style="top: 40px; right: 40px; color: #e2e8f0;">
+                                <svg width="100" height="100" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M14.017 18L16.411 11.976C15.044 11.976 13.989 10.921 13.989 9.554C13.989 8.187 15.044 7.132 16.411 7.132C17.778 7.132 18.833 8.187 18.833 9.554C18.833 11.611 17.585 15.257 15.467 18H14.017ZM6.017 18L8.411 11.976C7.044 11.976 5.989 10.921 5.989 9.554C5.989 8.187 7.044 7.132 8.411 7.132C9.778 7.132 10.833 8.187 10.833 9.554C10.833 11.611 9.585 15.257 7.467 18H6.017Z"/>
+                                </svg>
+                            </div>
+
+                            <div class="mb-4 d-inline-block position-relative" style="z-index: 2;">
+                                <span class="d-inline-flex align-items-center px-3 py-2 rounded-pill" style="background: #fff8f1; color: #fd7a2a; font-size: 0.85rem; font-weight: 600; border: 1px solid #ffedd5;">
+                                    <i data-feather="briefcase" class="me-2" style="width: 14px; height: 14px;"></i> 
+                                    {{ $testimoni->company }}
+                                </span>
+                            </div>
+
+                            <div class="testimoni-quote-container mb-4 position-relative" style="z-index: 2;">
+                                <p class="fs-5 text-dark lh-base testimoni-quote" style="font-weight: 500;">
+                                    "{{ $testimoni->quote }}"
+                                </p>
+                                <button class="btn btn-link p-0 text-decoration-none fw-bold btn-read-more" style="display: none; color: #fd7a2a !important; font-size: 0.9rem !important;" onclick="toggleQuote(this)">Baca selengkapnya &rarr;</button>
+                            </div>
+
+                            <div class="mt-2 pt-3 border-start ps-3" style="border-width: 3px !important; border-color: #bfdbfe !important; z-index: 2;">
+                                <h5 class="fw-bold text-dark mb-1">{{ $testimoni->name }}</h5>
+                                <div class="text-secondary small fw-medium">{{ $testimoni->role }} <br> {{ $testimoni->company }}</div>
                             </div>
                         </div>
                     </div>
-                    
-                    <i data-feather="message-square" class="text-primary opacity-25 mb-3" style="width: 32px; height: 32px; color: #fd7a2a !important;"></i>
-                    <div class="testimoni-quote-container mb-4">
-                        <p class="small text-dark lh-lg testimoni-quote" style="font-weight: 500; margin-bottom: 0;">
-                            "{{ $testimoni->quote }}"
-                        </p>
-                        <button class="btn btn-link p-0 text-decoration-none small fw-bold text-primary btn-read-more" style="display: none; color: #fd7a2a !important;" onclick="toggleQuote(this)">Baca selengkapnya</button>
-                    </div>
-                    
-                    <div class="mt-auto border-start border-2 ps-3" style="border-color: #dee2e6 !important;">
-                        <div class="fw-bold text-dark" style="font-size: 0.95rem;">{{ $testimoni->name }}</div>
-                        <div class="text-muted mt-1" style="font-size: 0.75rem;">{{ $testimoni->role }}</div>
-                        <div class="text-muted" style="font-size: 0.7rem;">{{ $testimoni->company }}</div>
-                    </div>
                 </div>
+                @empty
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted small">Belum ada testimoni saat ini.</p>
+                </div>
+                @endforelse
             </div>
-            @empty
-            <div class="col-12 text-center py-5">
-                <p class="text-muted small">Belum ada testimoni saat ini.</p>
-            </div>
-            @endforelse
         </div>
         
         <div class="d-flex d-md-none gap-2 justify-content-center mt-5">
-            <div class="d-flex align-items-center justify-content-center rounded-circle border border-dark" style="width: 48px; height: 48px; cursor: pointer;">
+            <button type="button" class="d-flex align-items-center justify-content-center rounded-circle border border-dark bg-transparent" style="width: 48px; height: 48px; cursor: pointer;" data-bs-target="#testimoniCarousel" data-bs-slide="prev">
                 <i data-feather="arrow-left" style="width: 20px; height: 20px;"></i>
-            </div>
-            <div class="d-flex align-items-center justify-content-center rounded-circle bg-dark text-white" style="width: 48px; height: 48px; cursor: pointer;">
+            </button>
+            <button type="button" class="d-flex align-items-center justify-content-center rounded-circle bg-dark text-white border-0" style="width: 48px; height: 48px; cursor: pointer;" data-bs-target="#testimoniCarousel" data-bs-slide="next">
                 <i data-feather="arrow-right" style="width: 20px; height: 20px;"></i>
-            </div>
+            </button>
         </div>
     </div>
 </section>
