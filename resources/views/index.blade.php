@@ -130,7 +130,7 @@
 <section id="hero" class="hero-section">
     <div class="container p-2">
         <div class="row align-items-center gy-4">
-            <div class="col-lg-6">
+            <div class="col-lg-6" data-aos="fade-right">
                 <p class="hero-badge text-dark mt-4">
                     Lembaga Pelatihan Kerja Paiton Selaras
                 </p>
@@ -160,7 +160,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-6">
+            <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
                 <div class="hero-image-wrapper">
                     <img src="{{ $home && $home->bg_image ? asset('storage/' . $home->bg_image) : asset('assets/mekanik-org.webp') }}"
                         alt="Pelatihan kerja Paiton Selaras" class="hero-image" />
@@ -174,7 +174,7 @@
 <section class="section-padding">
     <div class="container">
         <div class="row g-4 align-items-stretch">
-            <div class="col-lg-6">
+            <div class="col-lg-6" data-aos="fade-up">
                 <div class="glass-card h-100 visi-misi-card">
                     <div class="visi-tabs">
                         <span class="active" data-tab="visi">Visi</span>
@@ -192,7 +192,7 @@
                     </p>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="150">
                 <div class="glass-card h-100 p-0 overflow-hidden">
                     <!-- Ganti src sesuai foto kantor -->
                     <img src="{{asset('assets/map.webp')}}" alt="Kantor LPK Paiton Selaras" class="hero-image" />
@@ -209,7 +209,7 @@
 <section id="tentang" class="section-padding">
     <div class="container">
         <div class="row g-4 align-items-start">
-            <div class="col-lg-4">
+            <div class="col-lg-4" data-aos="fade-right">
                 <div class="mb-4">
                     <p class="text-uppercase fw-bold text-muted mb-3" style="letter-spacing: 2px; font-size: 0.75rem;">Profil Lembaga</p>
                     <h2 class="display-6 fw-bold mb-0 text-dark" style="letter-spacing: -1px;">Tentang <span style="color: #fd7a2a;">LPK</span> Kami</h2>
@@ -221,7 +221,7 @@
                     keterampilan.
                 </p>
             </div>
-            <div class="col-lg-8">
+            <div class="col-lg-8" data-aos="fade-left" data-aos-delay="150">
                 <div class="glass-card">
                     <p class="small text-dark mb-0">
                         LPK Paiton Selaras menyelenggarakan pelatihan kerja di bidang
@@ -264,7 +264,7 @@
 
         @if($koordinator)
         <div class="row justify-content-center mb-4">
-            <div class="col-12 col-md-6 col-lg-3">
+            <div class="col-12 col-md-6 col-lg-3" data-aos="fade-up">
                 <div class="team-glass-card">
                     <img src="{{ $koordinator->photo ? asset('storage/' . $koordinator->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $koordinator->name }}" class="team-img-full">
                     <div class="team-info-overlay text-center">
@@ -278,7 +278,7 @@
 
         <div class="row g-4 justify-content-center">
             @forelse ($others as $team)
-            <div class="col-12 col-md-6 col-lg-3">
+            <div class="col-12 col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}">
                 <div class="team-glass-card">
                     <img src="{{ $team->photo ? asset('storage/' . $team->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $team->name }}" class="team-img-full">
                     <div class="team-info-overlay text-center">
@@ -308,7 +308,7 @@
         </div>
         <div class="row g-4 justify-content-center">
             <!-- Welding -->
-            <div class="col-md-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
                 <div class="glass-card h-100 text-center py-4">
                     <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-auto mb-3" style="width: 64px; height: 64px; color: #fd7a2a;">
                         <i data-feather="tool"></i>
@@ -320,7 +320,7 @@
                 </div>
             </div>
             <!-- Mesin -->
-            <div class="col-md-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
                 <div class="glass-card h-100 text-center py-4">
                     <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-auto mb-3" style="width: 64px; height: 64px; color: #fd7a2a;">
                         <i data-feather="settings"></i>
@@ -332,7 +332,7 @@
                 </div>
             </div>
             <!-- Listrik -->
-            <div class="col-md-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
                 <div class="glass-card h-100 text-center py-4">
                     <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-auto mb-3" style="width: 64px; height: 64px; color: #fd7a2a;">
                         <i data-feather="zap"></i>
@@ -363,7 +363,7 @@
 
         <div class="row g-4">
             @forelse($latestBerita as $berita)
-            <div class="col-md-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}">
                 <div class="news-card h-100 d-flex flex-column">
                     <div class="news-img-wrapper">
                         <img src="{{ $berita->berita_utama_image ? asset('storage/' . $berita->berita_utama_image) : asset('assets/placeholder.jpg') }}" alt="{{ $berita->berita_utama_title }}">
@@ -408,7 +408,7 @@
 
         <div class="row g-4 justify-content-center align-items-start">
             @forelse($testimonis as $testimoni)
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}">
                 <div class="alumni-card">
                     <div class="alumni-photo-wrapper">
                         @if($testimoni->photo)

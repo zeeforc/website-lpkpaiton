@@ -19,6 +19,8 @@
     <link rel="icon" type="image/png" href="{{ asset('assets/logo/logo.png?v=2') }}">
     <link rel="shortcut icon" href="{{ asset('assets/logo/logo.png?v=2') }}">
     <link rel="apple-touch-icon" href="{{ asset('assets/logo/logo.png?v=2') }}">
+    <!-- AOS Animation CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     @stack('styles')
     @stack('script')
@@ -40,14 +42,19 @@
     <script src="{{ asset('javascript/script.js') }}"></script>
     <script src="{{ asset('javascript/berita.js') }}"></script>
     <script src="{{ asset('javascript/galeri.js') }}"></script>
-    {{-- <script src="javascript/berita.js"></script>
-    <script src="javascript/galeri.js"></script> --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
     </script>
+    <!-- AOS Animation JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <script>
         feather.replace();
+        AOS.init({
+            once: true, // whether animation should happen only once - while scrolling down
+            duration: 800, // values from 0 to 3000, with step 50ms
+            offset: 50, // offset (in px) from the original trigger point
+        });
     </script>
 </body>
 
