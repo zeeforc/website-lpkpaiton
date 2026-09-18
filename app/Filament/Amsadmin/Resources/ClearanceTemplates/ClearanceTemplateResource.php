@@ -19,6 +19,8 @@ class ClearanceTemplateResource extends Resource
     protected static ?string $model = ClearanceTemplate::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel = 'Templat Surat Bebas Tanggungan';
+    protected static string | \UnitEnum | null $navigationGroup = 'Siswa';
 
     public static function form(Schema $schema): Schema
     {

@@ -19,6 +19,8 @@ class ClearanceSubmissionResource extends Resource
     protected static ?string $model = ClearanceSubmission::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel = 'Pengajuan Surat Bebas Tanggungan';
+    protected static string | \UnitEnum | null $navigationGroup = 'Siswa';
 
     public static function form(Schema $schema): Schema
     {
