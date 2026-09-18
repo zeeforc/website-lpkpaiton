@@ -14,9 +14,9 @@
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#2563eb">
-    <link rel="icon" type="image/png" href="{{ asset('assets/logo/logo.png') }}">
-    <link rel="shortcut icon" href="{{ asset('assets/logo/logo.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('assets/logo/logo.png') }}">
+    <link rel="icon" type="image/webp" href="{{ asset('assets/logo/lpk.webp?v=2') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/logo/lpk.webp?v=2') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/logo/lpk.webp?v=2') }}">
     
     <style>
         body {
