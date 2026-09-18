@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{{ asset('style/index.css') }}?v={{ time() }}">
 <style>
 /* Inject critical CSS to bypass external cache */
-.alumni-card { border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%; display: flex; flex-direction: column; border: 1px solid rgba(0,0,0,0.03); }
+.alumni-card { border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; border: 1px solid rgba(0,0,0,0.03); }
 .alumni-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(253, 122, 42, 0.15); }
 .alumni-photo-wrapper { position: relative; height: 260px; width: 100%; overflow: hidden; }
 .alumni-photo { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
@@ -406,7 +406,7 @@
             </div>
         </div>
 
-        <div class="row g-4 justify-content-center">
+        <div class="row g-4 justify-content-center align-items-start">
             @forelse($testimonis as $testimoni)
             <div class="col-md-6 col-lg-4">
                 <div class="alumni-card">
@@ -439,7 +439,7 @@
                             <p class="alumni-quote">
                                 "{{ $testimoni->quote }}"
                             </p>
-                            <span class="alumni-read-more mt-auto pt-2" onclick="toggleQuote(this)">Baca selengkapnya &rarr;</span>
+                            <span class="alumni-read-more pt-2" onclick="toggleQuote(this)">Baca selengkapnya &rarr;</span>
                         </div>
                     </div>
                 </div>
