@@ -20,6 +20,8 @@ class TestimoniForm
                 TextInput::make('company'),
                 FileUpload::make('photo')
                     ->image()
+                    ->imageEditor()
+                    ->imageCropAspectRatio('1:1')
                     ->disk('public')
                     ->directory('testimoni-photos'),
                 Textarea::make('quote')
