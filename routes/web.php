@@ -167,7 +167,7 @@ Route::get('/amsadmin/export-attendances', function (\Illuminate\Http\Request $r
             return (int) \Carbon\Carbon::parse($item->date)->format('j');
         });
         
-    $users = \App\Models\User::where('role', '!=', 'karyawan_paving')->get();
+    $users = \App\Models\User::where('role', 'siswa')->get();
     
     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     $spreadsheet->removeSheetByIndex(0); // Remove default sheet
