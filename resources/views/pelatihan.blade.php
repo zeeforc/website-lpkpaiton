@@ -8,7 +8,7 @@
 <section class="hero-section">
     <div class="container hero-inner">
         <div class="row align-items-center gy-4">
-            <div class="col-lg-6">
+            <div class="col-lg-6" data-aos="fade-right">
                 <h1 class="hero-title mb-4 text-light">
                     <span>Pelatihan</span>
                     <span>Berbasis</span>
@@ -23,7 +23,7 @@
                     <button class="btn-orange text-light">Selengkapnya</button>
                 </a>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
                 <div class="hero-illustration-wrap">
                     <div class="hero-illustration-card">
                         <!-- ganti dengan ilustrasi sesuai desain -->
@@ -40,7 +40,7 @@
 
         @foreach ($pelatihans as $pelatihan)
         <div class="row align-items-center gy-4 mb-5">
-            <div class="col-lg-6">
+            <div class="col-lg-6" data-aos="{{ $loop->iteration % 2 == 0 ? 'fade-left' : 'fade-right' }}">
                 <div class="curriculum-card bg-transparent border-0">
                     <div class="curriculum-subtitle text-dark">Pelatihan</div>
 
@@ -67,7 +67,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-6">
+            <div class="col-lg-6" data-aos="{{ $loop->iteration % 2 == 0 ? 'fade-right' : 'fade-left' }}">
                 <div class="curriculum-image-card overlay-orange text-light">
                     <img src="{{ asset('storage/' . $pelatihan->image_pelatihan) }}"
                         alt="{{ $pelatihan->nama_pelatihan }}" />

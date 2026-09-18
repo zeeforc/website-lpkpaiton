@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 <section class="hero-section">
     <div class="container hero-inner">
         <div class="row align-items-center gy-4">
-            <div class="col-lg-6">
+            <div class="col-lg-6" data-aos="fade-right">
                 <h1 class="hero-title mb-4 text-light">
                     <span>Kurikulum</span>
                     <span>Yang Kita</span>
@@ -27,7 +27,7 @@ use Illuminate\Support\Str;
                     <button class="btn btn-orange mt-3 text-light">Selengkapnya</button>
                 </a>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
                 <div class="hero-illustration-wrap">
                     <div class="hero-illustration-card">
                         <!-- ganti dengan ilustrasi sesuai desain -->
@@ -44,7 +44,7 @@ use Illuminate\Support\Str;
     <div class="container curriculum-section">
         <div class="row align-items-center gy-4 {{ $loop->iteration % 2 == 0 ? 'flex-lg-row-reverse' : '' }}">
 
-            <div class="col-lg-6">
+            <div class="col-lg-6" data-aos="{{ $loop->iteration % 2 == 0 ? 'fade-left' : 'fade-right' }}">
                 <div class="curriculum-card bg-transparent border-0">
                     <div class="curriculum-subtitle">Kurikulum {{ $loop->iteration }}</div>
                     <div class="curriculum-title text-white">
@@ -75,7 +75,7 @@ use Illuminate\Support\Str;
                 </div>
             </div>
 
-            <div class="col-lg-6">
+            <div class="col-lg-6" data-aos="{{ $loop->iteration % 2 == 0 ? 'fade-right' : 'fade-left' }}">
                 <div
                     class="curriculum-image-card-2 {{ $loop->iteration % 2 == 0 ? 'overlay-blue' : 'overlay-orange' }}">
                     <img src="{{ $kurikulum->image_url }}" alt="{{ $kurikulum->kurikulum_title }}">

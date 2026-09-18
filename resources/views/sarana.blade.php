@@ -10,7 +10,7 @@
         <div class="hero-overlay-top"></div>
         <div class="container hero-inner">
             <div class="row align-items-center">
-                <div class="col-lg-6">
+                <div class="col-lg-6" data-aos="fade-right">
                     <h1 class="hero-title text-light">
                         Sarana &<br />
                         Prasarana
@@ -25,7 +25,7 @@
                     </a>
                 </div>
 
-                <div class="col-lg-6">
+                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
                     <div class="hero-illustration-wrap">
                         <div class="hero-illustration-card">
                             <img src="assets/icon/sarana-icon.webp" alt="Ilustrasi mekanik" />
@@ -38,12 +38,12 @@
 
     <section class="section-detail section-sarana" id="sarana">
         <div class="container">
-            <div class="mb-4 text-center">
+            <div class="mb-4 text-center" data-aos="fade-up">
                 <p class="text-uppercase fw-bold text-muted mb-3" style="letter-spacing: 2px; font-size: 0.75rem;">Fasilitas Utama</p>
                 <h2 class="display-6 fw-bold mb-3 text-dark" style="letter-spacing: -1px;">Detail <span style="color: #fd7a2a;">Sarana</span></h2>
             </div>
 
-            <p class="section-body text-dark">
+            <p class="section-body text-dark" data-aos="fade-up" data-aos-delay="100">
                 {{ $saranaDesk }}
             </p>
         </div>
@@ -55,7 +55,7 @@
                 @php
                 $firstSlide = $prasaranaData->first();
                 @endphp
-                <div class="col-lg-5">
+                <div class="col-lg-5" data-aos="fade-right">
                     <div class="mb-4">
                         <p class="text-uppercase fw-bold text-muted mb-3" style="letter-spacing: 2px; font-size: 0.75rem;">Fasilitas Pendukung</p>
                         <h2 class="display-6 fw-bold mb-3 text-dark" style="letter-spacing: -1px;">Detail <span style="color: #fd7a2a;" id="prasaranaHeading">Prasarana</span></h2>
@@ -74,7 +74,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-7">
+                <div class="col-lg-7" data-aos="fade-left" data-aos-delay="200">
                     <div class="glass-slider">
                         <div class="glass-card">
                             <img id="prasaranaImage" src="{{ $firstSlide['image'] ?? asset('assets/placeholder.jpg') }}"

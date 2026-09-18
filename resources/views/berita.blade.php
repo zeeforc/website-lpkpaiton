@@ -10,7 +10,7 @@
         <div class="hero-overlay-top"></div>
         <div class="container hero-inner">
             <div class="row align-items-center gy-4">
-                <div class="col-lg-4">
+                <div class="col-lg-4" data-aos="fade-right">
                     <h1 class="hero-title text-light">
                         Berita LPK<br />
                         Paiton<br />
@@ -20,7 +20,7 @@
                         <button class="btn-cta my-4 text-light">Selengkapnya</button>
                     </a>
                 </div>
-                <div class="col-lg-8">
+                <div class="col-lg-8" data-aos="fade-left" data-aos-delay="200">
                     <div class="hero-illustration-wrap">
                         <div class="hero-slider">
                             <div class="hero-slide active">
@@ -99,7 +99,7 @@
             <div class="row align-items-center gy-5">
 
                 {{-- LEFT: Text --}}
-                <div class="col-lg-5">
+                <div class="col-lg-5" data-aos="fade-right">
                     <div class="mb-4">
                         <p class="text-uppercase fw-bold text-muted mb-3" style="letter-spacing: 2px; font-size: 0.75rem;">Data Peserta</p>
                         <h2 class="display-6 fw-bold mb-3 text-dark" style="letter-spacing: -1px;">Peserta <span style="color: #fd7a2a;">PKL</span></h2>
@@ -114,7 +114,7 @@
                 </div>
 
                 {{-- RIGHT: Stats Card --}}
-                <div class="col-lg-7">
+                <div class="col-lg-7" data-aos="fade-left" data-aos-delay="150">
                     <div class="pkl-stats-card">
                         <h6 class="pkl-stats-card-title">Ringkasan Data Peserta PKL</h6>
 
@@ -216,7 +216,7 @@
                 .pkl-chart-select:focus { border-color: #fd7a2a; box-shadow: 0 0 0 2px rgba(253,122,42,0.15); }
             </style>
             <div class="row mt-4">
-                <div class="col-12">
+                <div class="col-12" data-aos="fade-up">
                     <div class="pkl-chart-outer">
                         <div class="pkl-chart-outer-header">
                             <h5 class="pkl-chart-outer-title">Statistik Peserta PKL</h5>
@@ -255,7 +255,7 @@
     <section class="section-news-latest" id="news">
         <div class="container">
             <div class="row align-items-center gy-4">
-                <div class="col-lg-4 d-flex flex-column align-item-start justify-content-start">
+                <div class="col-lg-4 d-flex flex-column align-item-start justify-content-start" data-aos="fade-right">
                     <div class="latest-text-block d-flex flex-column justify-content-start">
                         <div class="mb-4">
                             <p class="text-uppercase fw-bold text-muted mb-3" style="letter-spacing: 2px; font-size: 0.75rem;">Informasi Terkini</p>
@@ -277,7 +277,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-8">
+                <div class="col-lg-8" data-aos="fade-left" data-aos-delay="150">
                     @if($latest && !empty($latest->slug))
                     <a href="{{ route('berita.show', ['beritaUtama' => $latest->slug]) }}" class="latest-card-link">
                         <div class="glass-card-latest">
@@ -308,7 +308,7 @@
     <section class="section-news-list">
         <div class="container position-relative">
             <div class="row align-items-center gy-4">
-                <div class="col-lg-4">
+                <div class="col-lg-4" data-aos="fade-right">
                     <div class="other-news-text mb-4">
                         <p class="text-uppercase fw-bold text-muted mb-3" style="letter-spacing: 2px; font-size: 0.75rem;">Informasi Lainnya</p>
                         <h2 class="display-6 fw-bold mb-3 text-dark" style="letter-spacing: -1px;">Berita <span style="color: #fd7a2a;">Lainnya</span></h2>
@@ -320,14 +320,14 @@
                     </div>
                 </div>
 
-                <div class="col-lg-8">
+                <div class="col-lg-8" data-aos="fade-left" data-aos-delay="150">
                     <div class="glass-panel">
                         <div class="news-list-scroll" id="newsListScroll">
                             <div class="row g-3 mb-3">
                                 @forelse($others as $berita)
                                 @continue(empty($berita->slug))
 
-                                <div class="col-sm-6">
+                                <div class="col-sm-6" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 50 }}">
                                     <a href="{{ route('berita.show', ['beritaUtama' => $berita->slug]) }}"
                                         class="news-preview">
                                         <div class="news-thumb">

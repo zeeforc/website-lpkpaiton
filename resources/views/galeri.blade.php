@@ -9,7 +9,7 @@
         <div class="hero-overlay-top"></div>
         <div class="container hero-inner">
             <div class="row align-items-center gy-4">
-                <div class="col-lg-6">
+                <div class="col-lg-6" data-aos="fade-right">
                     <h1 class="hero-title text-light">
                         Galeri LPK<br />
                         Paiton<br />
@@ -19,7 +19,7 @@
                         <button class="btn-cta my-4">Selengkapnya</button>
                     </a>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
                     <div class="hero-illustration-wrap">
                         <div class="hero-illustration-card">
                             <img src="{{ asset('assets/icon/icon-galeri.webp') }}" alt="Ikon Galeri"
@@ -34,7 +34,7 @@
     <section class="section-gallery" id="gallery">
         <div class="container gallery-inner">
             <div class="row align-items-center gy-4">
-                <div class="col-lg-5">
+                <div class="col-lg-5" data-aos="fade-right">
                     <div class="mb-4">
                         <p class="text-uppercase fw-bold text-muted mb-3" style="letter-spacing: 2px; font-size: 0.75rem;">Dokumentasi</p>
                         <h2 class="display-6 fw-bold mb-3 text-dark" style="letter-spacing: -1px;">Kegiatan <span style="color: #fd7a2a;">LPK</span></h2>
@@ -46,7 +46,7 @@
                     </p>
                 </div>
 
-                <div class="col-lg-7">
+                <div class="col-lg-7" data-aos="fade-left" data-aos-delay="150">
                     <div class="glass-card">
                         <div class="gallery-stack" id="galleryStack">
                             {{-- View menjadi sangat bersih, tidak ada lagi proses ekstraksi (flatMap) PHP di sini --}}

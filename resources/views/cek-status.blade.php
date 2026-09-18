@@ -40,7 +40,7 @@
 
 @section('content')
 <div class="container py-5">
-    <div class="form-container">
+    <div class="form-container" data-aos="fade-up">
         <div class="form-header">
             <h2 style="color: #0b5ed7; font-weight: 700;">CEK STATUS PENDAFTARAN</h2>
             <p class="text-muted">Masukkan email yang Anda gunakan saat mendaftar.</p>

@@ -8,7 +8,7 @@
 <section class="hero-gallery">
     <div class="container">
         <div class="row align-items-center gy-5">
-            <div class="col-lg-6">
+            <div class="col-lg-6" data-aos="fade-right">
                 <h1 class="hero-title mb-4 text-light">
                     Panduan
                     <br />
@@ -22,7 +22,7 @@
                     <button class="btn-orange">Selengkapnya</button>
                 </a>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
                 <div class="hero-illustration-wrap">
                     <div class="hero-illustration-card">
                         <img src="{{ asset('assets/icon/alur.webp') }}" alt="Ilustrasi mekanik" />
@@ -44,7 +44,7 @@
 
             <div class="row">
                 {{-- LEFT: Content --}}
-                <div class="col-lg-6 steps-left">
+                <div class="col-lg-6 steps-left" data-aos="fade-right">
                     {{-- Subtitle pill --}}
                     <span class="steps-pill">Tahapan</span>
 
@@ -57,7 +57,7 @@
                     <div class="step-list">
 
                         {{-- Step 01 --}}
-                        <div class="step-item step-active">
+                        <div class="step-item step-active" data-aos="fade-up" data-aos-delay="100">
                             <div class="step-left-col">
                                 <div class="step-badge">01</div>
                                 <div class="step-connector"></div>
@@ -74,7 +74,7 @@
                         </div>
 
                         {{-- Step 02 --}}
-                        <div class="step-item">
+                        <div class="step-item" data-aos="fade-up" data-aos-delay="200">
                             <div class="step-left-col">
                                 <div class="step-badge">02</div>
                                 <div class="step-connector"></div>
@@ -91,7 +91,7 @@
                         </div>
 
                         {{-- Step 03 --}}
-                        <div class="step-item">
+                        <div class="step-item" data-aos="fade-up" data-aos-delay="300">
                             <div class="step-left-col">
                                 <div class="step-badge">03</div>
                             </div>
@@ -121,7 +121,7 @@
                 </div>
 
                 {{-- RIGHT: Illustration --}}
-                <div class="col-lg-6 steps-right">
+                <div class="col-lg-6 steps-right" data-aos="fade-left" data-aos-delay="150">
                     {{-- Dot pattern --}}
                     <div class="dot-pattern"></div>
 
