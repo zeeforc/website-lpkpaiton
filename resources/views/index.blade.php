@@ -384,7 +384,7 @@
             <div class="mb-4 mb-md-0">
                 <div class="d-flex align-items-center mb-3">
                     <div style="width: 30px; height: 3px; background-color: #3b82f6; margin-right: 10px;"></div>
-                    <p class="text-uppercase fw-bold text-muted mb-0" style="letter-spacing: 2px; font-size: 0.75rem;">Testimoni Alumni</p>
+                    <p class="text-uppercase fw-bold text-muted mb-0" style="letter-spacing: 2px; font-size: 0.75rem;">Profile Alumni</p>
                 </div>
                 <h2 class="display-6 fw-bold mb-0 text-dark" style="letter-spacing: -1px;">Apa Kata <span style="color: #fd7a2a;">Alumni</span> Kami</h2>
             </div>
