@@ -402,19 +402,21 @@
             <div class="carousel-inner" style="overflow: visible;">
                 @forelse($testimonis as $index => $testimoni)
                 <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                    <div class="testimoni-card-wrapper d-flex flex-column flex-md-row mx-auto" style="max-width: 1000px;">
+                    <div class="testimoni-card-wrapper d-flex flex-column flex-md-row align-items-center mx-auto" style="max-width: 1000px;">
                         <!-- Left Pane: Image & Decors -->
-                        <div class="testimoni-left-pane position-relative d-flex align-items-center justify-content-center">
+                        <div class="testimoni-left-pane">
+                            <div class="decor-outline"></div>
                             <div class="decor-triangle"></div>
                             <div class="decor-blob"></div>
-                            <div class="testimoni-shape-blue"></div>
-                            @if($testimoni->photo)
-                                <img src="{{ asset('storage/' . $testimoni->photo) }}?v={{ time() }}" alt="{{ $testimoni->name }}" class="testimoni-person-img">
-                            @else
-                                <div class="position-relative bg-white rounded-circle d-flex align-items-center justify-content-center shadow" style="z-index: 3; width: 120px; height: 120px;">
-                                    <i data-feather="user" style="width: 60px; height: 60px; color: #3b82f6;"></i>
-                                </div>
-                            @endif
+                            <div class="testimoni-shape-blue">
+                                @if($testimoni->photo)
+                                    <img src="{{ asset('storage/' . $testimoni->photo) }}?v={{ time() }}" alt="{{ $testimoni->name }}" class="testimoni-person-img">
+                                @else
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(255,255,255,0.2); transform: rotate(12deg);">
+                                        <i data-feather="user" style="width: 60px; height: 60px; color: #fff;"></i>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
 
                         <!-- Right Pane: Content -->

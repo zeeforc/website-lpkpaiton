@@ -495,61 +495,100 @@ body {
 
 /* Testimoni Carousel Design */
 .testimoni-card-wrapper {
-    border-radius: 24px;
-    background-color: #ffffff;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.8);
+    /* Container is transparent, panes have the background */
+    margin: 2rem 0;
 }
 .testimoni-left-pane {
-    width: 100%;
-    min-height: 350px;
+    width: 280px;
+    height: 340px;
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
 }
 @media (min-width: 768px) {
     .testimoni-left-pane {
-        max-width: 380px;
-        min-height: 420px;
+        margin-right: -50px; /* Overlap with right pane */
+        margin-left: 20px;
     }
 }
+@media (max-width: 767.98px) {
+    .testimoni-left-pane {
+        margin: 0 auto -40px auto; /* Overlap bottom on mobile */
+    }
+    .testimoni-right-pane {
+        padding-top: 60px !important;
+    }
+}
+
+.decor-outline {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 2px solid #cbd5e1;
+    border-radius: 40px;
+    transform: rotate(-12deg) translate(15px, 15px);
+    z-index: 1;
+}
+
 .testimoni-shape-blue {
     position: absolute;
-    width: 85%;
-    height: 85%;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(135deg, #60a5fa, #3b82f6);
     border-radius: 40px;
-    transform: rotate(-5deg);
+    transform: rotate(-12deg);
     z-index: 2;
-    box-shadow: 0 15px 30px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 15px 30px rgba(59, 130, 246, 0.25);
+    overflow: hidden; /* Clips the image to the rotated shape */
 }
+
 .testimoni-person-img {
-    position: relative;
-    z-index: 3;
-    max-width: 95%;
-    max-height: 115%; /* Allow it to protrude slightly */
-    object-fit: contain;
-    margin-top: -30px;
-    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: rotate(12deg) scale(1.25); /* Counter-rotate and scale to fill corners */
+    transition: transform 0.5s ease;
 }
+
+.testimoni-shape-blue:hover .testimoni-person-img {
+    transform: rotate(12deg) scale(1.35);
+}
+
 .decor-triangle {
     position: absolute;
-    top: 25px;
-    left: 20px;
-    width: 45px;
-    height: 45px;
+    top: -10px;
+    left: -20px;
+    width: 50px;
+    height: 50px;
     background: transparent;
-    border: 6px solid #ffedd5;
-    border-radius: 12px;
+    border: 7px solid #fed7aa;
+    border-radius: 14px;
     transform: rotate(-15deg);
-    z-index: 1;
+    z-index: 3;
 }
 .decor-blob {
     position: absolute;
-    bottom: 25px;
-    right: 25px;
-    width: 65px;
-    height: 65px;
-    background: #e0e7ff;
+    bottom: -15px;
+    right: -15px;
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #c7d2fe, #a5b4fc);
     border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    z-index: 3;
+    opacity: 0.8;
+}
+
+.testimoni-right-pane {
+    background-color: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.03);
     z-index: 1;
+}
+@media (min-width: 768px) {
+    .testimoni-right-pane {
+        padding-left: 80px !important;
+    }
 }
 
 /* Visitor Badge Animation */
