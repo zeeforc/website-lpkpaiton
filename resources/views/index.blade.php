@@ -195,7 +195,7 @@
             <div class="col-lg-6" data-aos="fade-up" data-aos-delay="150">
                 <div class="glass-card h-100 p-0 overflow-hidden">
                     <!-- Ganti src sesuai foto kantor -->
-                    <img src="{{asset('assets/map.webp')}}" alt="Kantor LPK Paiton Selaras" class="hero-image" />
+                    <img src="{{asset('assets/map.webp')}}" alt="Kantor LPK Paiton Selaras" class="hero-image" loading="lazy" />
                     <div class="p-3 text-center small text-dark">
                         Kantor Lembaga Pelatihan Kerja Paiton Selaras
                     </div>
@@ -266,7 +266,7 @@
         <div class="row justify-content-center mb-4">
             <div class="col-12 col-md-6 col-lg-3" data-aos="fade-up">
                 <div class="team-glass-card">
-                    <img src="{{ $koordinator->photo ? asset('storage/' . $koordinator->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $koordinator->name }}" class="team-img-full">
+                    <img src="{{ $koordinator->photo ? asset('storage/' . $koordinator->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $koordinator->name }}" class="team-img-full" loading="lazy">
                     <div class="team-info-overlay text-center">
                         <div class="team-name">{{ $koordinator->name }}</div>
                         <div class="team-role">{{ $koordinator->position }}</div>
@@ -280,7 +280,7 @@
             @forelse ($others as $team)
             <div class="col-12 col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}">
                 <div class="team-glass-card">
-                    <img src="{{ $team->photo ? asset('storage/' . $team->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $team->name }}" class="team-img-full">
+                    <img src="{{ $team->photo ? asset('storage/' . $team->photo) : asset('assets/team-image/default.jpg') }}" alt="{{ $team->name }}" class="team-img-full" loading="lazy">
                     <div class="team-info-overlay text-center">
                         <div class="team-name">{{ $team->name }}</div>
                         <div class="team-role">{{ $team->position }}</div>
@@ -366,7 +366,7 @@
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}">
                 <div class="news-card h-100 d-flex flex-column">
                     <div class="news-img-wrapper">
-                        <img src="{{ $berita->berita_utama_image ? asset('storage/' . $berita->berita_utama_image) : asset('assets/placeholder.jpg') }}" alt="{{ $berita->berita_utama_title }}">
+                        <img src="{{ $berita->berita_utama_image ? asset('storage/' . $berita->berita_utama_image) : asset('assets/placeholder.jpg') }}" alt="{{ $berita->berita_utama_title }}" loading="lazy">
                     </div>
                     <div class="p-4 d-flex flex-column flex-grow-1">
                         <div class="text-muted small mb-2 d-flex align-items-center fw-medium">
@@ -412,7 +412,7 @@
                 <div class="alumni-card">
                     <div class="alumni-photo-wrapper">
                         @if($testimoni->photo)
-                            <img src="{{ asset('storage/' . $testimoni->photo) }}?v={{ time() }}" alt="{{ $testimoni->name }}" class="alumni-photo">
+                            <img src="{{ asset('storage/' . $testimoni->photo) }}?v={{ time() }}" alt="{{ $testimoni->name }}" class="alumni-photo" loading="lazy">
                         @else
                             <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: #e2e8f0;">
                                 <i data-feather="user" style="width: 60px; height: 60px; color: #94a3b8;"></i>
