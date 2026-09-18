@@ -647,13 +647,37 @@
                 }
             }
         });
+
+        // Initialize Carousel Manually just in case data-bs attributes fail outside the container
+        const testimoniCarouselElement = document.getElementById('testimoniCarousel');
+        if (testimoniCarouselElement && typeof bootstrap !== 'undefined') {
+            const carousel = new bootstrap.Carousel(testimoniCarouselElement, {
+                interval: 5000, // Slide every 5 seconds
+                wrap: true
+            });
+
+            // Bind Next/Prev buttons explicitly
+            document.querySelectorAll('[data-bs-slide="next"]').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    carousel.next();
+                });
+            });
+
+            document.querySelectorAll('[data-bs-slide="prev"]').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    carousel.prev();
+                });
+            });
+        }
     });
 
     function toggleQuote(btn) {
         const quoteText = btn.previousElementSibling;
         if (quoteText.classList.contains('expanded')) {
             quoteText.classList.remove('expanded');
-            btn.textContent = 'Baca selengkapnya';
+            btn.textContent = 'Baca selengkapnya \u2192';
         } else {
             quoteText.classList.add('expanded');
             btn.textContent = 'Tutup';

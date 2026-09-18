@@ -45,7 +45,6 @@ body {
     padding-bottom: 2rem;
 }
 .hero-gradient-text strong {
-    /* background: linear-gradient(120deg, #fc7b2b, #f4ad3b); */
     background: linear-gradient(120deg, rgb(253, 122, 42), rgba(241, 100, 12));
     background-clip: text;
     -webkit-background-clip: text;
@@ -54,14 +53,12 @@ body {
 
 .hero-image-wrapper {
     position: relative;
-    /* border-radius: var(--radius-xl); */
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: end;
     height: 100%;
     width: 100%;
-    /* padding-top: 6rem; */
 }
 
 .hero-image-wrapper::before {
@@ -495,7 +492,6 @@ body {
 
 /* Testimoni Carousel Design */
 .testimoni-card-wrapper {
-    /* Container is transparent, panes have the background */
     margin: 2rem 0;
 }
 .testimoni-left-pane {
