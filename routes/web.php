@@ -146,6 +146,10 @@ Route::prefix('portal')->name('portal.')->group(function () {
         Route::get('/bebas-tanggungan', [\App\Http\Controllers\PortalController::class, 'bebasTanggungan'])->name('bebas-tanggungan');
         Route::post('/bebas-tanggungan', [\App\Http\Controllers\PortalController::class, 'storeBebasTanggungan'])->name('bebas-tanggungan.store');
         Route::get('/bebas-tanggungan/download-template', [\App\Http\Controllers\PortalController::class, 'downloadTemplate'])->name('bebas-tanggungan.download-template');
+        
+        Route::get('/informasi/tata-tertib/download', [\App\Http\Controllers\PortalController::class, 'downloadTataTertib'])->name('informasi.download-tata-tertib');
+        Route::get('/informasi/sop-pkl/download', [\App\Http\Controllers\PortalController::class, 'downloadSopPkl'])->name('informasi.download-sop');
+        Route::get('/laporan/sertifikat/{id}/download', [\App\Http\Controllers\PortalController::class, 'downloadSertifikat'])->name('laporan.download-sertifikat');
     });
 });
 

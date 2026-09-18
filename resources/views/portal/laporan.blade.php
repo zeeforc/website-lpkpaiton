@@ -337,7 +337,7 @@
                                     <small class="text-secondary">Diterbitkan: {{ $cert->created_at->format('d M Y') }}</small>
                                 </div>
                             </div>
-                            <a href="{{ asset('storage/' . $cert->file_path) }}" target="_blank" class="btn btn-success btn-sm rounded-pill px-3">
+                            <a href="{{ route('portal.laporan.download-sertifikat', $cert->id) }}" class="btn btn-success btn-sm rounded-pill px-3">
                                 <i class="fa-solid fa-download me-1"></i> Unduh
                             </a>
                         </div>

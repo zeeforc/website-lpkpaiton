@@ -824,4 +824,35 @@ class PortalController extends Controller
 
         return \Illuminate\Support\Facades\Storage::disk('local')->download($template->file_path);
     }
+
+    public function downloadTataTertib()
+    {
+        $setting = \App\Models\Setting::where('key', 'tata_tertib')->first();
+        if (!$setting || !\Illuminate\Support\Facades\Storage::disk('public')->exists($setting->value)) {
+            return back()->with('error', 'File Tata Tertib belum tersedia.');
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('public')->download($setting->value, 'Tata_Tertib_LPK_Paiton_Selaras.pdf');
+    }
+
+    public function downloadSopPkl()
+    {
+        $setting = \App\Models\Setting::where('key', 'sop_pkl')->first();
+        if (!$setting || !\Illuminate\Support\Facades\Storage::disk('public')->exists($setting->value)) {
+            return back()->with('error', 'File SOP PKL belum tersedia.');
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('public')->download($setting->value, 'SOP_PKL_LPK_Paiton_Selaras.pdf');
+    }
+
+    public function downloadSertifikat($id)
+    {
+        $certificate = \App\Models\Certificate::where('id', $id)->where('user_id', \Illuminate\Support\Facades\Auth::id())->firstOrFail();
+        if (!\Illuminate\Support\Facades\Storage::disk('public')->exists($certificate->file_path)) {
+            return back()->with('error', 'File Sertifikat tidak ditemukan.');
+        }
+
+        $extension = pathinfo($certificate->file_path, PATHINFO_EXTENSION);
+        return \Illuminate\Support\Facades\Storage::disk('public')->download($certificate->file_path, 'Sertifikat_PKL_' . \Illuminate\Support\Facades\Auth::user()->name . '.' . $extension);
+    }
 }

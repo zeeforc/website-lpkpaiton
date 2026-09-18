@@ -149,7 +149,7 @@
             </div>
             
             @if(isset($tataTertib) && $tataTertib->value)
-            <a href="{{ asset('storage/' . $tataTertib->value) }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill fw-medium px-4">
+            <a href="{{ route('portal.informasi.download-tata-tertib') }}" class="btn btn-outline-primary btn-sm rounded-pill fw-medium px-4">
                 <i class="fa-solid fa-download me-2"></i> Lihat / Unduh Tata Tertib
             </a>
             @else
@@ -302,7 +302,7 @@
             </div>
             
             @if(isset($sopPkl) && $sopPkl->value)
-            <a href="{{ asset('storage/' . $sopPkl->value) }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill fw-medium px-4">
+            <a href="{{ route('portal.informasi.download-sop') }}" class="btn btn-outline-primary btn-sm rounded-pill fw-medium px-4">
                 <i class="fa-solid fa-download me-2"></i> Lihat / Unduh SOP
             </a>
             @else
