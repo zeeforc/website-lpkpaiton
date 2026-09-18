@@ -11,10 +11,10 @@ class ApplicationInfolist
     {
         return $schema
             ->components([
-                \Filament\Infolists\Components\Section::make('Informasi Pribadi & Akademik')
+                \Filament\Schemas\Components\Section::make('Informasi Pribadi & Akademik')
                     ->description('Detail pendaftar dan informasi instansi pendidikan.')
                     ->schema([
-                        \Filament\Infolists\Components\Grid::make(2)->schema([
+                        \Filament\Schemas\Components\Grid::make(2)->schema([
                             \Filament\Infolists\Components\TextEntry::make('nama_lengkap')->label('Nama Lengkap')
                                 ->icon('heroicon-m-user'),
                             \Filament\Infolists\Components\TextEntry::make('no_hp')->label('No Handphone')
@@ -30,10 +30,10 @@ class ApplicationInfolist
                         ])
                     ])->collapsible(),
 
-                \Filament\Infolists\Components\Section::make('Detail Pengajuan')
+                \Filament\Schemas\Components\Section::make('Detail Pengajuan')
                     ->description('Informasi terkait rencana pelaksanaan PKL.')
                     ->schema([
-                        \Filament\Infolists\Components\Grid::make(2)->schema([
+                        \Filament\Schemas\Components\Grid::make(2)->schema([
                             \Filament\Infolists\Components\TextEntry::make('pengajuan')->label('Pengajuan')
                                 ->badge()
                                 ->color('info'),
@@ -53,7 +53,7 @@ class ApplicationInfolist
                         ])
                     ])->collapsible(),
                 
-                \Filament\Infolists\Components\Section::make('Dokumen Persyaratan')
+                \Filament\Schemas\Components\Section::make('Dokumen Persyaratan')
                     ->description('Surat pengantar resmi dan proposal PKL yang dilampirkan.')
                     ->schema([
                         \Filament\Infolists\Components\RepeatableEntry::make('documents')
