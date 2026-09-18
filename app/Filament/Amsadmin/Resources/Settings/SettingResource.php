@@ -26,7 +26,7 @@ class SettingResource extends Resource
 
     public static function canCreate(): bool
     {
-        return false;
+        return true;
     }
 
     public static function form(Schema $schema): Schema
@@ -50,6 +50,7 @@ class SettingResource extends Resource
     {
         return [
             'index' => ListSettings::route('/'),
+            'create' => CreateSetting::route('/create'),
             'edit' => EditSetting::route('/{record}/edit'),
         ];
     }

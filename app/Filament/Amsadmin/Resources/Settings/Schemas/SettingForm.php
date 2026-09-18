@@ -15,9 +15,9 @@ class SettingForm
             ->components([
                 TextInput::make('key')
                     ->required()
-                    ->disabled(),
+                    ->disabled(fn (string $operation): bool => $operation === 'edit'),
                 TextInput::make('name')
-                    ->disabled(),
+                    ->disabled(fn (string $operation): bool => $operation === 'edit'),
                 Textarea::make('value')
                     ->columnSpanFull()
                     ->visible(fn (callable $get) => $get('type') !== 'file'),
