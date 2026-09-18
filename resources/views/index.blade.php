@@ -4,6 +4,18 @@
 <link rel="stylesheet" href="{{ asset('style/index.css') }}?v={{ time() }}">
 <style>
 /* Inject critical CSS to bypass external cache */
+.testimoni-card-wrapper { margin: 2rem 0; }
+.testimoni-left-pane { width: 280px; height: 340px; position: relative; z-index: 2; flex-shrink: 0; }
+@media (min-width: 768px) { .testimoni-left-pane { margin-right: -50px; margin-left: 20px; } .testimoni-right-pane { padding-left: 80px !important; } }
+@media (max-width: 767.98px) { .testimoni-left-pane { margin: 0 auto -40px auto; } .testimoni-right-pane { padding-top: 60px !important; } }
+.decor-outline { position: absolute; width: 100%; height: 100%; border: 2px solid #cbd5e1; border-radius: 40px; transform: rotate(-12deg) translate(15px, 15px); z-index: 1; }
+.testimoni-shape-blue { position: absolute; width: 100%; height: 100%; background: linear-gradient(135deg, #60a5fa, #3b82f6); border-radius: 40px; transform: rotate(-12deg); z-index: 2; box-shadow: 0 15px 30px rgba(59, 130, 246, 0.25); overflow: hidden; }
+.testimoni-person-img { width: 100%; height: 100%; object-fit: cover; transform: rotate(12deg) scale(1.25); transition: transform 0.5s ease; }
+.testimoni-shape-blue:hover .testimoni-person-img { transform: rotate(12deg) scale(1.35); }
+.decor-triangle { position: absolute; top: -10px; left: -20px; width: 50px; height: 50px; background: transparent; border: 7px solid #fed7aa; border-radius: 14px; transform: rotate(-15deg); z-index: 3; }
+.decor-blob { position: absolute; bottom: -15px; right: -15px; width: 70px; height: 70px; background: linear-gradient(135deg, #c7d2fe, #a5b4fc); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; z-index: 3; opacity: 0.8; }
+.testimoni-right-pane { background-color: #ffffff; border-radius: 24px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04); border: 1px solid rgba(0, 0, 0, 0.03); z-index: 1; }
+
 .team-glass-card {
     position: relative;
     border-radius: 20px;
@@ -403,7 +415,7 @@
                 @forelse($testimonis as $index => $testimoni)
                 <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                     <div class="testimoni-card-wrapper d-flex flex-column flex-md-row align-items-center mx-auto" style="max-width: 1000px;">
-                        <!-- Left Pane: Image & Decors -->
+                        
                         <div class="testimoni-left-pane">
                             <div class="decor-outline"></div>
                             <div class="decor-triangle"></div>
@@ -419,9 +431,9 @@
                             </div>
                         </div>
 
-                        <!-- Right Pane: Content -->
+                        
                         <div class="testimoni-right-pane p-4 p-md-5 d-flex flex-column justify-content-center position-relative flex-grow-1">
-                            <!-- Large Quote Icon bg -->
+                            
                             <div class="position-absolute d-none d-md-block" style="top: 40px; right: 40px; color: #e2e8f0;">
                                 <svg width="100" height="100" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M14.017 18L16.411 11.976C15.044 11.976 13.989 10.921 13.989 9.554C13.989 8.187 15.044 7.132 16.411 7.132C17.778 7.132 18.833 8.187 18.833 9.554C18.833 11.611 17.585 15.257 15.467 18H14.017ZM6.017 18L8.411 11.976C7.044 11.976 5.989 10.921 5.989 9.554C5.989 8.187 7.044 7.132 8.411 7.132C9.778 7.132 10.833 8.187 10.833 9.554C10.833 11.611 9.585 15.257 7.467 18H6.017Z"/>
