@@ -4,17 +4,18 @@
 <link rel="stylesheet" href="{{ asset('style/index.css') }}?v={{ time() }}">
 <style>
 /* Inject critical CSS to bypass external cache */
-.testimoni-card-wrapper { margin: 2rem 0; }
-.testimoni-left-pane { width: 280px; height: 340px; position: relative; z-index: 2; flex-shrink: 0; }
-@media (min-width: 768px) { .testimoni-left-pane { margin-right: -50px; margin-left: 20px; } .testimoni-right-pane { padding-left: 80px !important; } }
-@media (max-width: 767.98px) { .testimoni-left-pane { margin: 0 auto -40px auto; } .testimoni-right-pane { padding-top: 60px !important; } }
-.decor-outline { position: absolute; width: 100%; height: 100%; border: 2px solid #cbd5e1; border-radius: 40px; transform: rotate(-12deg) translate(15px, 15px); z-index: 1; }
-.testimoni-shape-blue { position: absolute; width: 100%; height: 100%; background: linear-gradient(135deg, #60a5fa, #3b82f6); border-radius: 40px; transform: rotate(-12deg); z-index: 2; box-shadow: 0 15px 30px rgba(59, 130, 246, 0.25); overflow: hidden; }
-.testimoni-person-img { width: 100%; height: 100%; object-fit: cover; transform: rotate(12deg) scale(1.25); transition: transform 0.5s ease; }
-.testimoni-shape-blue:hover .testimoni-person-img { transform: rotate(12deg) scale(1.35); }
-.decor-triangle { position: absolute; top: -10px; left: -20px; width: 50px; height: 50px; background: transparent; border: 7px solid #fed7aa; border-radius: 14px; transform: rotate(-15deg); z-index: 3; }
-.decor-blob { position: absolute; bottom: -15px; right: -15px; width: 70px; height: 70px; background: linear-gradient(135deg, #c7d2fe, #a5b4fc); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; z-index: 3; opacity: 0.8; }
-.testimoni-right-pane { background-color: #ffffff; border-radius: 24px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04); border: 1px solid rgba(0, 0, 0, 0.03); z-index: 1; }
+.alumni-card { border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%; display: flex; flex-direction: column; border: 1px solid rgba(0,0,0,0.03); }
+.alumni-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(253, 122, 42, 0.15); }
+.alumni-photo-wrapper { position: relative; height: 260px; width: 100%; overflow: hidden; }
+.alumni-photo { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.alumni-card:hover .alumni-photo { transform: scale(1.05); }
+.alumni-gradient { position: absolute; bottom: 0; left: 0; width: 100%; height: 70%; background: linear-gradient(to top, rgba(11, 26, 51, 0.95) 0%, rgba(11, 26, 51, 0) 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 1.5rem; z-index: 1; }
+.alumni-name { color: #fff; font-weight: 700; font-size: 1.25rem; margin-bottom: 0.2rem; }
+.alumni-role { color: #fd7a2a; font-weight: 600; font-size: 0.9rem; margin-bottom: 0; }
+.alumni-content { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; position: relative; }
+.alumni-company-badge { display: inline-flex; align-items: center; padding: 0.4rem 0.8rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 50px; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 1rem; width: fit-content; }
+.alumni-quote { color: #334155; font-size: 0.95rem; line-height: 1.6; margin-bottom: 0; flex-grow: 1; font-weight: 500; }
+.alumni-quote-icon { position: absolute; right: 1.5rem; top: 1.5rem; color: #f1f5f9; width: 40px; height: 40px; z-index: 0; }
 
 .team-glass-card {
     position: relative;
@@ -400,82 +401,50 @@
                 </div>
                 <h2 class="display-6 fw-bold mb-0 text-dark" style="letter-spacing: -1px;">Apa Kata <span style="color: #fd7a2a;">Alumni</span> Kami</h2>
             </div>
-            <div class="d-none d-md-flex gap-2">
-                <button type="button" class="d-flex align-items-center justify-content-center rounded-circle border border-dark bg-transparent" style="width: 48px; height: 48px; cursor: pointer; transition: all 0.3s;" data-bs-target="#testimoniCarousel" data-bs-slide="prev">
-                    <i data-feather="arrow-left" style="width: 20px; height: 20px; color: #1e293b;"></i>
-                </button>
-                <button type="button" class="d-flex align-items-center justify-content-center rounded-circle bg-dark text-white border-0" style="width: 48px; height: 48px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" data-bs-target="#testimoniCarousel" data-bs-slide="next">
-                    <i data-feather="arrow-right" style="width: 20px; height: 20px;"></i>
-                </button>
-            </div>
         </div>
 
-        <div id="testimoniCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner" style="overflow: visible;">
-                @forelse($testimonis as $index => $testimoni)
-                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                    <div class="testimoni-card-wrapper d-flex flex-column flex-md-row align-items-center mx-auto" style="max-width: 1000px;">
-                        
-                        <div class="testimoni-left-pane">
-                            <div class="decor-outline"></div>
-                            <div class="decor-triangle"></div>
-                            <div class="decor-blob"></div>
-                            <div class="testimoni-shape-blue">
-                                @if($testimoni->photo)
-                                    <img src="{{ asset('storage/' . $testimoni->photo) }}?v={{ time() }}" alt="{{ $testimoni->name }}" class="testimoni-person-img">
-                                @else
-                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(255,255,255,0.2); transform: rotate(12deg);">
-                                        <i data-feather="user" style="width: 60px; height: 60px; color: #fff;"></i>
-                                    </div>
-                                @endif
+        <div class="row g-4 justify-content-center">
+            @forelse($testimonis as $testimoni)
+            <div class="col-md-6 col-lg-4">
+                <div class="alumni-card">
+                    <div class="alumni-photo-wrapper">
+                        @if($testimoni->photo)
+                            <img src="{{ asset('storage/' . $testimoni->photo) }}?v={{ time() }}" alt="{{ $testimoni->name }}" class="alumni-photo">
+                        @else
+                            <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: #e2e8f0;">
+                                <i data-feather="user" style="width: 60px; height: 60px; color: #94a3b8;"></i>
                             </div>
+                        @endif
+                        
+                        <div class="alumni-gradient">
+                            <h5 class="alumni-name">{{ $testimoni->name }}</h5>
+                            <p class="alumni-role">{{ $testimoni->role }}</p>
                         </div>
+                    </div>
+                    
+                    <div class="alumni-content">
+                        <svg class="alumni-quote-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.017 18L16.411 11.976C15.044 11.976 13.989 10.921 13.989 9.554C13.989 8.187 15.044 7.132 16.411 7.132C17.778 7.132 18.833 8.187 18.833 9.554C18.833 11.611 17.585 15.257 15.467 18H14.017ZM6.017 18L8.411 11.976C7.044 11.976 5.989 10.921 5.989 9.554C5.989 8.187 7.044 7.132 8.411 7.132C9.778 7.132 10.833 8.187 10.833 9.554C10.833 11.611 9.585 15.257 7.467 18H6.017Z"/>
+                        </svg>
 
+                        <div class="alumni-company-badge position-relative" style="z-index: 2;">
+                            <i data-feather="briefcase" class="me-2" style="width: 14px; height: 14px;"></i> 
+                            {{ $testimoni->company }}
+                        </div>
                         
-                        <div class="testimoni-right-pane p-4 p-md-5 d-flex flex-column justify-content-center position-relative flex-grow-1">
-                            
-                            <div class="position-absolute d-none d-md-block" style="top: 40px; right: 40px; color: #e2e8f0;">
-                                <svg width="100" height="100" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M14.017 18L16.411 11.976C15.044 11.976 13.989 10.921 13.989 9.554C13.989 8.187 15.044 7.132 16.411 7.132C17.778 7.132 18.833 8.187 18.833 9.554C18.833 11.611 17.585 15.257 15.467 18H14.017ZM6.017 18L8.411 11.976C7.044 11.976 5.989 10.921 5.989 9.554C5.989 8.187 7.044 7.132 8.411 7.132C9.778 7.132 10.833 8.187 10.833 9.554C10.833 11.611 9.585 15.257 7.467 18H6.017Z"/>
-                                </svg>
-                            </div>
-
-                            <div class="mb-4 d-inline-block position-relative" style="z-index: 2;">
-                                <span class="d-inline-flex align-items-center px-3 py-2 rounded-pill" style="background: #fff8f1; color: #fd7a2a; font-size: 0.85rem; font-weight: 600; border: 1px solid #ffedd5;">
-                                    <i data-feather="briefcase" class="me-2" style="width: 14px; height: 14px;"></i> 
-                                    {{ $testimoni->company }}
-                                </span>
-                            </div>
-
-                            <div class="testimoni-quote-container mb-4 position-relative" style="z-index: 2;">
-                                <p class="fs-5 text-dark lh-base testimoni-quote" style="font-weight: 500;">
-                                    "{{ $testimoni->quote }}"
-                                </p>
-                                <button class="btn btn-link p-0 text-decoration-none fw-bold btn-read-more" style="display: none; color: #fd7a2a !important; font-size: 0.9rem !important;" onclick="toggleQuote(this)">Baca selengkapnya &rarr;</button>
-                            </div>
-
-                            <div class="mt-2 pt-3 border-start ps-3" style="border-width: 3px !important; border-color: #bfdbfe !important; z-index: 2;">
-                                <h5 class="fw-bold text-dark mb-1">{{ $testimoni->name }}</h5>
-                                <div class="text-secondary small fw-medium">{{ $testimoni->role }} <br> {{ $testimoni->company }}</div>
-                            </div>
+                        <div class="position-relative" style="z-index: 2;">
+                            <p class="alumni-quote">
+                                "{{ $testimoni->quote }}"
+                            </p>
                         </div>
                     </div>
                 </div>
-                @empty
-                <div class="col-12 text-center py-5">
-                    <p class="text-muted small">Belum ada testimoni saat ini.</p>
-                </div>
-                @endforelse
             </div>
-        </div>
-        
-        <div class="d-flex d-md-none gap-2 justify-content-center mt-5">
-            <button type="button" class="d-flex align-items-center justify-content-center rounded-circle border border-dark bg-transparent" style="width: 48px; height: 48px; cursor: pointer;" data-bs-target="#testimoniCarousel" data-bs-slide="prev">
-                <i data-feather="arrow-left" style="width: 20px; height: 20px;"></i>
-            </button>
-            <button type="button" class="d-flex align-items-center justify-content-center rounded-circle bg-dark text-white border-0" style="width: 48px; height: 48px; cursor: pointer;" data-bs-target="#testimoniCarousel" data-bs-slide="next">
-                <i data-feather="arrow-right" style="width: 20px; height: 20px;"></i>
-            </button>
+            @empty
+            <div class="col-12 text-center py-5">
+                <p class="text-muted small">Belum ada profile alumni saat ini.</p>
+            </div>
+            @endforelse
         </div>
     </div>
 </section>
@@ -659,31 +628,6 @@
                 }
             }
         });
-
-        // Initialize Carousel Manually just in case data-bs attributes fail outside the container
-        const testimoniCarouselElement = document.getElementById('testimoniCarousel');
-        if (testimoniCarouselElement && typeof bootstrap !== 'undefined') {
-            const carousel = new bootstrap.Carousel(testimoniCarouselElement, {
-                interval: 5000, // Slide every 5 seconds
-                wrap: true
-            });
-
-            // Bind Next/Prev buttons explicitly
-            document.querySelectorAll('[data-bs-slide="next"]').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    carousel.next();
-                });
-            });
-
-            document.querySelectorAll('[data-bs-slide="prev"]').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    carousel.prev();
-                });
-            });
-        }
-    });
 
     function toggleQuote(btn) {
         const quoteText = btn.previousElementSibling;
