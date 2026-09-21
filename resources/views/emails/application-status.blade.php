@@ -5,17 +5,21 @@ Halo **{{ $application->nama_lengkap }}**,
 
 Terima kasih telah mendaftar pada program LPK Paiton Selaras. Berikut adalah update mengenai status pendaftaran Anda:
 
-@if($application->status === 'permohonan_diterima')
-Permohonan pendaftaran Anda telah diterima. Silakan unggah dokumen persyaratan (KTP, Pas Foto, SKCK, Surat Sehat, dan dokumen pendukung lainnya).
+@php
+    $hasRevision = $application->documents->where('status', 'Revisi')->isNotEmpty();
+@endphp
 
-<x-mail::button :url="URL::signedRoute('application.upload', ['application' => $application->id])">
-Unggah Dokumen
-</x-mail::button>
-@elseif($application->status === 'revisi_dokumen' || $application->documents->where('status', 'Revisi')->isNotEmpty())
+@if($application->status === 'revisi_dokumen' || $hasRevision)
 Beberapa dokumen persyaratan Anda perlu diperbaiki. Silakan cek catatan dari tim kami dan unggah ulang dokumen yang sesuai.
 
 <x-mail::button :url="URL::signedRoute('application.upload', ['application' => $application->id])">
 Perbaiki Dokumen
+</x-mail::button>
+@elseif($application->status === 'permohonan_diterima')
+Permohonan pendaftaran Anda telah diterima. Silakan unggah dokumen persyaratan (KTP, Pas Foto, SKCK, Surat Sehat, dan dokumen pendukung lainnya).
+
+<x-mail::button :url="URL::signedRoute('application.upload', ['application' => $application->id])">
+Unggah Dokumen
 </x-mail::button>
 @elseif($application->status === 'document_review')
 Dokumen yang Anda unggah sedang dalam proses peninjauan. Kami akan memberitahu Anda setelah peninjauan selesai.
