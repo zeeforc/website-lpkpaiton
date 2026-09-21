@@ -137,6 +137,7 @@ Route::prefix('portal')->name('portal.')->group(function () {
         
         Route::get('/izin', [\App\Http\Controllers\PortalController::class, 'izin'])->name('izin');
         Route::post('/izin', [\App\Http\Controllers\PortalController::class, 'storeIzin'])->name('izin.store');
+        Route::delete('/izin/{id}', [\App\Http\Controllers\PortalController::class, 'cancelIzin'])->name('izin.cancel');
         
         Route::get('/face-registration', [\App\Http\Controllers\PortalController::class, 'faceRegistration'])->name('face-registration');
         Route::post('/face-registration', [\App\Http\Controllers\PortalController::class, 'storeFaceDescriptor'])->name('face-registration.store');

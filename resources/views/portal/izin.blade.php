@@ -98,12 +98,18 @@
                         <th>Bukti</th>
                         <th>Status</th>
                         <th>Catatan Admin</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($leaveRequests as $leave)
                     <tr>
-                        <td>{{ \Carbon\Carbon::parse($leave->date)->format('d M Y') }}</td>
+                        <td>
+                            {{ \Carbon\Carbon::parse($leave->date)->format('d M Y') }}
+                            @if($leave->end_date && $leave->end_date !== $leave->date)
+                                <br><small class="text-muted">s/d {{ \Carbon\Carbon::parse($leave->end_date)->format('d M Y') }}</small>
+                            @endif
+                        </td>
                         <td><span class="badge bg-secondary">{{ ucfirst($leave->type) }}</span></td>
                         <td>{{ \Illuminate\Support\Str::limit($leave->reason, 30) }}</td>
                         <td>
@@ -123,10 +129,23 @@
                             @endif
                         </td>
                         <td class="text-secondary">{{ $leave->admin_notes ?? '-' }}</td>
+                        <td>
+                            @if($leave->status == 'pending')
+                                <form action="{{ route('portal.izin.cancel', $leave->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pengajuan izin ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Batalkan Pengajuan">
+                                        <i class="fa-solid fa-xmark"></i> Batal
+                                    </button>
+                                </form>
+                            @else
+                                -
+                            @endif
+                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="text-center text-secondary py-3">Belum ada riwayat pengajuan perizinan.</td>
+                        <td colspan="7" class="text-center text-secondary py-3">Belum ada riwayat pengajuan perizinan.</td>
                     </tr>
                     @endforelse
                 </tbody>

@@ -775,7 +775,9 @@ class PortalController extends Controller
                           $q->where('date', '<=', $request->date)
                             ->where('end_date', '>=', $endDate);
                       });
-            })->first();
+            })
+            ->where('status', '!=', 'rejected')
+            ->first();
             
         if ($existing) {
             return back()->with('error', 'Anda sudah pernah mengajukan perizinan yang bersinggungan dengan rentang tanggal tersebut.');
@@ -794,6 +796,25 @@ class PortalController extends Controller
         ]);
         
         return back()->with('success', 'Perizinan berhasil diajukan. Silakan tunggu konfirmasi admin.');
+    }
+
+    public function cancelIzin($id)
+    {
+        $user = Auth::user();
+        $leaveRequest = LeaveRequest::where('id', $id)->where('user_id', $user->id)->firstOrFail();
+
+        if ($leaveRequest->status !== 'pending') {
+            return back()->with('error', 'Hanya perizinan dengan status menunggu (pending) yang dapat dibatalkan.');
+        }
+
+        // Delete attachment if exists
+        if ($leaveRequest->attachment_path) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($leaveRequest->attachment_path);
+        }
+
+        $leaveRequest->delete();
+
+        return back()->with('success', 'Pengajuan perizinan berhasil dibatalkan.');
     }
 
     public function absensiRombongan()
