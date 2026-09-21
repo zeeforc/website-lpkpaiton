@@ -47,7 +47,7 @@ class ViewApplication extends ViewRecord
                         ->success()
                         ->send();
                 })
-                ->visible(fn () => $this->record->status === 'document_review'),
+                ->visible(fn () => in_array($this->record->status, ['permohonan_diterima', 'document_review', 'revisi_dokumen', 'pending'])),
 
             Actions\Action::make('tolak')
                 ->label('Tolak / Revisi')

@@ -20,6 +20,32 @@ class ApplicationDocumentObserver
         if ($document->wasChanged(['status', 'keterangan'])) {
             $application = $document->application;
             
+            // Auto-accept if all required documents are Valid
+            if ($application->status !== 'accepted' && $application->status !== 'rejected') {
+                $requiredDocs = ['KTP/Kartu Pelajar', 'Pas Foto 4x6', 'SKCK', 'Surat Sehat'];
+                $allDocsValid = true;
+                
+                // Reload documents to get the latest status
+                $documents = $application->documents()->get();
+                
+                foreach ($requiredDocs as $reqDoc) {
+                    $doc = $documents->first(function($d) use ($reqDoc) {
+                        return str_starts_with($d->original_name, $reqDoc . ' -');
+                    });
+                    
+                    if (!$doc || $doc->status !== 'Valid') {
+                        $allDocsValid = false;
+                        break;
+                    }
+                }
+                
+                if ($allDocsValid) {
+                    Log::info("All required documents for application {$application->id} are Valid. Auto-accepting.");
+                    $application->update(['status' => 'accepted']);
+                    return; // The ApplicationObserver will handle the email sending for the 'accepted' status
+                }
+            }
+            
             // Prevent duplicate emails in the same request
             if (!in_array($application->id, self::$notifiedApplications)) {
                 
