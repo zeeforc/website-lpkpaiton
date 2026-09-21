@@ -6,6 +6,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
 use Filament\Schemas\Schema;
 
 class ApplicationForm
@@ -50,6 +53,37 @@ class ApplicationForm
                 Toggle::make('is_jalur_khusus')
                     ->label('Jalur Khusus (Tidak terhitung kuota)')
                     ->default(false),
+                    
+                Section::make('Validasi Dokumen')
+                    ->description('Tinjau dan berikan status serta catatan revisi pada dokumen pendaftar.')
+                    ->schema([
+                        Repeater::make('documents')
+                            ->relationship('documents')
+                            ->schema([
+                                TextInput::make('original_name')
+                                    ->label('Nama File')
+                                    ->disabled()
+                                    ->columnSpan(2),
+                                Select::make('status')
+                                    ->label('Status Validasi')
+                                    ->options([
+                                        'Menunggu Review' => 'Menunggu Review',
+                                        'Valid' => 'Valid',
+                                        'Revisi' => 'Revisi',
+                                    ])
+                                    ->required()
+                                    ->default('Menunggu Review')
+                                    ->columnSpan(1),
+                                Textarea::make('keterangan')
+                                    ->label('Catatan Revisi')
+                                    ->placeholder('Berikan keterangan bagian mana yang salah jika statusnya Revisi...')
+                                    ->columnSpan(3),
+                            ])
+                            ->columns(3)
+                            ->disableItemCreation()
+                            ->disableItemDeletion()
+                            ->disableItemMovement(),
+                    ])->collapsible(),
             ]);
     }
 }

@@ -184,6 +184,8 @@ class PortalController extends Controller
             $document->update([
                 'file_path' => $path,
                 'original_name' => $newOriginalName,
+                'status' => 'Menunggu Review',
+                'keterangan' => null,
             ]);
 
             return back()->with('success', 'Dokumen berhasil diunggah ulang.');
@@ -213,6 +215,7 @@ class PortalController extends Controller
                 'application_id' => $user->application->id,
                 'file_path' => $path,
                 'original_name' => $documentType . ' - ' . $file->getClientOriginalName(),
+                'status' => 'Menunggu Review',
             ]);
 
             return back()->with('success', 'Dokumen berhasil diunggah.');

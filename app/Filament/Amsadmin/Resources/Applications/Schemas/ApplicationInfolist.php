@@ -64,6 +64,18 @@ class ApplicationInfolist
                                     ->url(fn ($record) => asset('storage/' . $record->file_path))
                                     ->openUrlInNewTab()
                                     ->icon('heroicon-m-document-text'),
+                                \Filament\Infolists\Components\TextEntry::make('status')
+                                    ->label('Status Validasi')
+                                    ->badge()
+                                    ->color(fn (string $state): string => match ($state) {
+                                        'Valid' => 'success',
+                                        'Revisi' => 'danger',
+                                        default => 'warning',
+                                    }),
+                                \Filament\Infolists\Components\TextEntry::make('keterangan')
+                                    ->label('Catatan Revisi')
+                                    ->columnSpanFull()
+                                    ->visible(fn ($record) => !empty($record->keterangan)),
                             ])
                             ->grid(2)
                             ->columnSpanFull(),
