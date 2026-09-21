@@ -133,7 +133,7 @@
                 <h4 class="fw-bold">Tahap 1: Mengisi Formulir</h4>
                 <p class="text-secondary small">Isi data diri Anda pada formulir pendaftaran.</p>
                 <div class="alert alert-warning small border-warning">
-                    <strong>Penting:</strong> Gunakan email yang aktif. Satu email hanya bisa dipakai untuk satu kali pendaftaran dan tidak bisa diubah nanti.
+                    <strong>Penting:</strong> Gunakan email aktif. Alamat email hanya berlaku untuk satu kali pendaftaran dan Anda tidak dapat menggunakan email selain yang telah terdaftar.
                 </div>
             </div>
             
