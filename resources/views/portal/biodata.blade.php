@@ -327,4 +327,81 @@
         </div>
     </div>
 </form>
+
+@if(Auth::user()->role === 'siswa' && Auth::user()->application)
+<div class="row mt-4" id="dokumen-section">
+    <div class="col-12">
+        <div class="card-custom">
+            <div class="card-header-custom d-flex justify-content-between align-items-center">
+                <h5 class="card-title-custom mb-0"><i class="fa-solid fa-folder-open text-primary"></i> DOKUMEN KELENGKAPAN</h5>
+            </div>
+            <div class="card-body-custom p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nama Dokumen</th>
+                                <th class="text-end">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse(Auth::user()->application->documents as $doc)
+                            <tr>
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fa-solid fa-file-pdf text-danger fs-4"></i>
+                                        <div>
+                                            <div class="fw-semibold text-dark">{{ $doc->original_name }}</div>
+                                            <a href="{{ Storage::url($doc->file_path) }}" target="_blank" class="text-primary text-decoration-none" style="font-size: 0.85rem">Lihat File Saat Ini</a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle text-end">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#reuploadModal{{ $doc->id }}">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload Ulang
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Modal Reupload -->
+                            <div class="modal fade" id="reuploadModal{{ $doc->id }}" tabindex="-1" aria-labelledby="reuploadModalLabel{{ $doc->id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="reuploadModalLabel{{ $doc->id }}">Upload Ulang Dokumen</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{ route('portal.dokumen.reupload', $doc->id) }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="modal-body text-start">
+                                                <div class="alert alert-warning small mb-3">
+                                                    <strong>Peringatan:</strong> File dokumen lama Anda akan dihapus dan digantikan secara permanen dengan file baru ini.
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Pilih File Baru ({{ $doc->original_name }})</label>
+                                                    <input type="file" class="form-control" name="dokumen_baru" accept=".pdf,.jpg,.jpeg,.png" required>
+                                                    <div class="form-text">Format: PDF, JPG, PNG. Maksimal 5MB.</div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-primary">Simpan Dokumen</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            @empty
+                            <tr>
+                                <td colspan="2" class="text-center text-secondary py-4">Belum ada dokumen yang diunggah.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 @endsection

@@ -124,6 +124,7 @@ Route::prefix('portal')->name('portal.')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/biodata', [\App\Http\Controllers\PortalController::class, 'biodata'])->name('biodata');
         Route::post('/biodata', [\App\Http\Controllers\PortalController::class, 'updateBiodata'])->name('biodata.update');
+        Route::post('/dokumen/{document}/reupload', [\App\Http\Controllers\PortalController::class, 'reuploadDocument'])->name('dokumen.reupload');
         
         Route::get('/informasi', [\App\Http\Controllers\PortalController::class, 'informasi'])->name('informasi');
         Route::get('/absensi', [\App\Http\Controllers\PortalController::class, 'absensi'])->name('absensi');

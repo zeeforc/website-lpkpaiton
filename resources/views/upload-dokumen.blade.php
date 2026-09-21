@@ -100,6 +100,12 @@
                     </div>
                     <input class="form-control" type="file" id="dokumen_portofolio" name="dokumen_portofolio" accept=".pdf,.jpg,.jpeg,.png" required>
                 </div>
+
+                <div class="mb-4">
+                    <label for="dokumen_lainnya" class="form-label fw-bold">6. Dokumen Tambahan <span class="text-muted fw-normal">(Opsional)</span></label>
+                    <div class="form-text text-muted mb-2">Upload sertifikat/dokumen pendukung lainnya jika ada (PDF/JPG/PNG, Maks 5 MB).</div>
+                    <input class="form-control" type="file" id="dokumen_lainnya" name="dokumen_lainnya" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
             </div>
 
             <button type="submit" class="btn btn-submit">Upload Dokumen</button>
@@ -117,10 +123,11 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', function(e) {
         const rules = [
             { id: 'dokumen_ktp', name: 'Fotokopi KTP / Kartu Pelajar', maxSize: 2 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] },
-            { id: 'dokumen_foto', name: 'Pas Foto', maxSize: 2 * 1024 * 1024, types: ['image/jpeg', 'image/jpg', 'image/png'] },
-            { id: 'dokumen_skck', name: 'Surat Kelakuan Baik', maxSize: 2 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] },
+            { id: 'dokumen_foto', name: 'Pas Foto 4x6', maxSize: 2 * 1024 * 1024, types: ['image/jpeg', 'image/jpg', 'image/png'] },
+            { id: 'dokumen_skck', name: 'Surat Kelakuan Baik / SKCK', maxSize: 2 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] },
             { id: 'dokumen_sehat', name: 'Surat Keterangan Sehat', maxSize: 2 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] },
-            { id: 'dokumen_portofolio', name: 'Portofolio', maxSize: 5 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] }
+            { id: 'dokumen_portofolio', name: 'Portofolio', maxSize: 10 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] },
+            { id: 'dokumen_lainnya', name: 'Dokumen Tambahan', maxSize: 5 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] }
         ];
 
         for (let rule of rules) {

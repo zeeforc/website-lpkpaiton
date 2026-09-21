@@ -217,7 +217,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-outline-custom">Lihat Detail</button>
+                <a href="{{ route('portal.biodata') }}#dokumen-section" class="btn btn-outline-custom">Lihat Detail</a>
             </div>
 
             <!-- Laporan -->

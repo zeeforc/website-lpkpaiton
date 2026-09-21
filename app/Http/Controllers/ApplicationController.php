@@ -123,12 +123,14 @@ class ApplicationController extends Controller
             'dokumen_skck' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'dokumen_sehat' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'dokumen_portofolio' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'dokumen_lainnya' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ], [
             'dokumen_ktp.max' => 'Ukuran fotocopy KTP maksimal 2MB.',
             'dokumen_foto.max' => 'Ukuran pas foto maksimal 2MB.',
             'dokumen_skck.max' => 'Ukuran Surat Kelakuan Baik maksimal 2MB.',
             'dokumen_sehat.max' => 'Ukuran Surat Keterangan Sehat maksimal 2MB.',
             'dokumen_portofolio.max' => 'Ukuran Portofolio maksimal 5MB.',
+            'dokumen_lainnya.max' => 'Ukuran Dokumen Tambahan maksimal 5MB.',
         ]);
 
         try {
@@ -140,6 +142,7 @@ class ApplicationController extends Controller
                 'dokumen_skck' => 'SKCK',
                 'dokumen_sehat' => 'Surat Sehat',
                 'dokumen_portofolio' => 'Portofolio',
+                'dokumen_lainnya' => 'Dokumen Tambahan',
             ];
 
             foreach ($filesToUpload as $inputName => $documentType) {

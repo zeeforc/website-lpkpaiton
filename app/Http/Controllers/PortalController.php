@@ -12,7 +12,9 @@ use App\Models\LeaveRequest;
 use App\Models\Holiday;
 use App\Models\ClearanceTemplate;
 use App\Models\ClearanceSubmission;
+use App\Models\ApplicationDocument;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class PortalController extends Controller
 {
@@ -153,6 +155,41 @@ class PortalController extends Controller
         $profile->update($validated);
         
         return back()->with('success', 'Biodata berhasil diperbarui.');
+    }
+
+    public function reuploadDocument(Request $request, ApplicationDocument $document)
+    {
+        $user = Auth::user();
+        if (!$user->application || $user->application->id !== $document->application_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'dokumen_baru' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ]);
+
+        try {
+            if (Storage::disk('public')->exists($document->file_path)) {
+                Storage::disk('public')->delete($document->file_path);
+            }
+
+            $file = $request->file('dokumen_baru');
+            $path = $file->store('documents', 'public');
+
+            // Optionally, we can preserve the document type prefix (e.g. "KTP/Kartu Pelajar - ")
+            $originalNameParts = explode(' - ', $document->original_name);
+            $prefix = count($originalNameParts) > 1 ? $originalNameParts[0] . ' - ' : '';
+            $newOriginalName = $prefix . $file->getClientOriginalName();
+
+            $document->update([
+                'file_path' => $path,
+                'original_name' => $newOriginalName,
+            ]);
+
+            return back()->with('success', 'Dokumen berhasil diunggah ulang.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Gagal mengunggah ulang dokumen.']);
+        }
     }
 
     public function informasi()
