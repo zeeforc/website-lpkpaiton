@@ -759,14 +759,26 @@ class PortalController extends Controller
         $user = Auth::user();
         $request->validate([
             'date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:date',
             'type' => 'required|in:sakit,izin',
             'reason' => 'required|string',
             'attachment' => 'required|file|mimes:pdf,jpeg,png,jpg|max:2048',
         ]);
         
-        $existing = LeaveRequest::where('user_id', $user->id)->whereDate('date', $request->date)->first();
+        $endDate = $request->end_date ?? $request->date;
+        
+        $existing = LeaveRequest::where('user_id', $user->id)
+            ->where(function ($query) use ($request, $endDate) {
+                $query->whereBetween('date', [$request->date, $endDate])
+                      ->orWhereBetween('end_date', [$request->date, $endDate])
+                      ->orWhere(function ($q) use ($request, $endDate) {
+                          $q->where('date', '<=', $request->date)
+                            ->where('end_date', '>=', $endDate);
+                      });
+            })->first();
+            
         if ($existing) {
-            return back()->with('error', 'Anda sudah pernah mengajukan perizinan untuk tanggal tersebut.');
+            return back()->with('error', 'Anda sudah pernah mengajukan perizinan yang bersinggungan dengan rentang tanggal tersebut.');
         }
         
         $path = $request->file('attachment')->store('leave_attachments', 'public');
@@ -774,6 +786,7 @@ class PortalController extends Controller
         LeaveRequest::create([
             'user_id' => $user->id,
             'date' => $request->date,
+            'end_date' => $endDate,
             'type' => $request->type,
             'reason' => $request->reason,
             'attachment_path' => $path,

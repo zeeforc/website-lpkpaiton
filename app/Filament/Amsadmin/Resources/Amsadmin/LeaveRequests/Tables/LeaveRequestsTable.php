@@ -22,7 +22,14 @@ class LeaveRequestsTable
                     ->sortable(),
                 TextColumn::make('date')
                     ->label('Tanggal')
-                    ->date()
+                    ->formatStateUsing(function ($record) {
+                        $start = \Carbon\Carbon::parse($record->date)->format('d M Y');
+                        if ($record->end_date && $record->end_date !== $record->date) {
+                            $end = \Carbon\Carbon::parse($record->end_date)->format('d M Y');
+                            return "$start - $end";
+                        }
+                        return $start;
+                    })
                     ->sortable(),
                 TextColumn::make('type')
                     ->label('Tipe')

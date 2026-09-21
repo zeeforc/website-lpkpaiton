@@ -15,12 +15,22 @@
                 <form action="{{ route('portal.izin.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Tanggal Izin/Sakit <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" name="date" value="{{ old('date', date('Y-m-d')) }}" required>
-                        @error('date')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
-                        @enderror
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Dari Tanggal <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" name="date" value="{{ old('date', date('Y-m-d')) }}" required>
+                            @error('date')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Sampai Tanggal <span class="text-muted fw-normal">(opsional)</span></label>
+                            <input type="date" class="form-control" name="end_date" value="{{ old('end_date') }}">
+                            <div class="form-text small">Kosongkan jika hanya izin 1 hari.</div>
+                            @error('end_date')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
 
                     <div class="mb-3">

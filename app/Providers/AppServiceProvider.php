@@ -22,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
     {
         \App\Models\Application::observe(\App\Observers\ApplicationObserver::class);
         \App\Models\ApplicationDocument::observe(\App\Observers\ApplicationDocumentObserver::class);
+        \App\Models\LeaveRequest::observe(\App\Observers\LeaveRequestObserver::class);
         Paginator::useBootstrapFive();
     }
 }

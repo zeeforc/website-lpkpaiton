@@ -21,8 +21,12 @@ class LeaveRequestForm
                     ->searchable()
                     ->required(),
                 DatePicker::make('date')
-                    ->label('Tanggal Izin/Sakit')
+                    ->label('Tanggal Mulai Izin')
                     ->required(),
+                DatePicker::make('end_date')
+                    ->label('Tanggal Selesai Izin')
+                    ->helperText('Kosongkan jika hanya izin 1 hari')
+                    ->nullable(),
                 Select::make('type')
                     ->label('Tipe')
                     ->options([
