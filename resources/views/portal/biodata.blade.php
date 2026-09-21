@@ -342,4 +342,6 @@
     </div>
 </div>
 @endif
+
+@include('components.document-modals')
 @endsection

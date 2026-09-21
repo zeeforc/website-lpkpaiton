@@ -66,6 +66,7 @@
                 Berikut adalah status kelengkapan dokumen Anda. Jika ada dokumen yang berstatus <span class="badge bg-danger">Revisi</span>, silakan tekan tombol <strong>Upload Ulang</strong> untuk memperbaikinya.
             </div>
             @include('components.document-table')
+            @include('components.document-modals')
             <div class="mt-4 text-center">
                 <a href="{{ url('/cek-status') }}" class="btn btn-outline-secondary">Kembali ke Cek Status</a>
             </div>
