@@ -102,7 +102,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="dokumen_lainnya" class="form-label fw-bold">6. Dokumen Tambahan <span class="text-muted fw-normal">(Opsional)</span></label>
+                    <label for="dokumen_lainnya" class="form-label fw-bold">6. BPJS Kesehatan <span class="text-muted fw-normal">(Opsional)</span></label>
                     <div class="form-text text-muted mb-2">Upload sertifikat/dokumen pendukung lainnya jika ada (PDF/JPG/PNG, Maks 5 MB).</div>
                     <input class="form-control" type="file" id="dokumen_lainnya" name="dokumen_lainnya" accept=".pdf,.jpg,.jpeg,.png">
                 </div>
