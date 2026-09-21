@@ -62,7 +62,7 @@ Route::get('/', function () {
         return \App\Models\BeritaUtama::latest('created_at')->take(3)->get();
     });
 
-    $testimonis = cache()->remember('home_testimonis', now()->addMinutes(5), function () {
+    $testimonis = cache()->remember('home_testimonis_v2', now()->addMinutes(5), function () {
         return Testimoni::where('is_active', true)->latest('id')->get();
     });
 

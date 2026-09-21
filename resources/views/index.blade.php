@@ -404,11 +404,46 @@
                 </div>
                 <h2 class="display-6 fw-bold mb-0 text-dark" style="letter-spacing: -1px;">Apa Kata <span style="color: #fd7a2a;">Alumni</span> Kami</h2>
             </div>
+            <!-- Slider Controls -->
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center" id="prevTesti" style="width: 48px; height: 48px; border-color: #e2e8f0; color: #1e293b; background: white; transition: all 0.2s;" aria-label="Previous">
+                    <i data-feather="arrow-left"></i>
+                </button>
+                <button class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center" id="nextTesti" style="width: 48px; height: 48px; background: #0f172a; border: none; transition: all 0.2s;" aria-label="Next">
+                    <i data-feather="arrow-right"></i>
+                </button>
+            </div>
         </div>
 
-        <div class="row g-4 justify-content-center align-items-start">
+        <style>
+            #testimoniTrack {
+                scroll-behavior: smooth;
+                scrollbar-width: none; /* Firefox */
+                -ms-overflow-style: none; /* IE and Edge */
+                scroll-snap-type: x mandatory;
+            }
+            #testimoniTrack::-webkit-scrollbar {
+                display: none; /* Chrome, Safari and Opera */
+            }
+            .testimoni-slide {
+                flex: 0 0 100%;
+                scroll-snap-align: start;
+            }
+            @media (min-width: 768px) {
+                .testimoni-slide {
+                    flex: 0 0 calc(50% - 0.75rem); /* gap is 1.5rem (24px) / 2 */
+                }
+            }
+            @media (min-width: 992px) {
+                .testimoni-slide {
+                    flex: 0 0 calc(33.333% - 1rem); /* gap is 1.5rem / 1.5 */
+                }
+            }
+        </style>
+
+        <div class="d-flex flex-nowrap overflow-auto gap-4 pb-2" id="testimoniTrack">
             @forelse($testimonis as $testimoni)
-            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}">
+            <div class="testimoni-slide" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}">
                 <div class="alumni-card">
                     <div class="alumni-photo-wrapper">
                         @if($testimoni->photo)
@@ -644,6 +679,28 @@
             btn.innerHTML = 'Tutup';
         }
     }
+
+    // Carousel Slider Logic
+    document.addEventListener('DOMContentLoaded', function() {
+        const track = document.getElementById('testimoniTrack');
+        const btnNext = document.getElementById('nextTesti');
+        const btnPrev = document.getElementById('prevTesti');
+
+        if(track && btnNext && btnPrev) {
+            const getScrollAmount = () => {
+                const slide = track.querySelector('.testimoni-slide');
+                return slide ? slide.offsetWidth + 24 : 300; // 24px gap
+            };
+
+            btnNext.addEventListener('click', () => {
+                track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+            });
+
+            btnPrev.addEventListener('click', () => {
+                track.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+            });
+        }
+    });
 </script>
 
 @endsection
