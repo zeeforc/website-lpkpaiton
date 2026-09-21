@@ -192,6 +192,35 @@ class PortalController extends Controller
         }
     }
 
+    public function uploadMissingDocument(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user->application) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'document_type' => 'required|string|in:KTP/Kartu Pelajar,Pas Foto 4x6,SKCK,Surat Sehat,Portofolio,Dokumen Tambahan',
+            'dokumen_baru' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ]);
+
+        try {
+            $file = $request->file('dokumen_baru');
+            $path = $file->store('documents', 'public');
+            $documentType = $request->document_type;
+
+            ApplicationDocument::create([
+                'application_id' => $user->application->id,
+                'file_path' => $path,
+                'original_name' => $documentType . ' - ' . $file->getClientOriginalName(),
+            ]);
+
+            return back()->with('success', 'Dokumen berhasil diunggah.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Gagal mengunggah dokumen.']);
+        }
+    }
+
     public function informasi()
     {
         $user = Auth::user();
