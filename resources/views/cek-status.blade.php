@@ -75,60 +75,57 @@
                 <div class="mb-2">
                     <strong>Tanggal Mendaftar:</strong> {{ $application->created_at->format('d M Y') }}
                 </div>
+                @php
+                    $hasRevision = $application->documents->where('status', 'Revisi')->isNotEmpty();
+                @endphp
+                
                 <div class="mb-3">
                     <strong>Status Saat Ini:</strong> 
                     @if($application->status === 'pending')
-                        <span class="badge bg-secondary">Menunggu</span>
-                    @elseif($application->status === 'permohonan_diterima')
+                        <span class="badge bg-warning text-dark">Menunggu</span>
+                    @elseif($application->status === 'permohonan_diterima' && !$hasRevision)
                         <span class="badge bg-primary">Lolos Tahap Pengajuan</span>
                     @elseif($application->status === 'document_review')
-                        <span class="badge bg-warning text-dark">Review Dokumen Kelengkapan</span>
+                        <span class="badge bg-info">Review Dokumen</span>
                     @elseif($application->status === 'accepted')
-                        <span class="badge bg-success">Lolos Sepenuhnya</span>
+                        <span class="badge bg-success">Diterima</span>
                     @elseif($application->status === 'rejected')
                         <span class="badge bg-danger">Ditolak</span>
-                    @elseif($application->status === 'revisi_dokumen')
+                    @elseif($application->status === 'revisi_dokumen' || $hasRevision)
                         <span class="badge bg-danger">Revisi Dokumen</span>
                     @endif
                 </div>
 
-                @if($application->status === 'permohonan_diterima')
-                    <div class="alert alert-info mt-3">
-                        <strong>Langkah Selanjutnya:</strong><br>
-                        Selamat! Anda dinyatakan Lolos Tahap Pengajuan. Sesuai prosedur, silakan melengkapi berkas persyaratan pendaftaran (Fotokopi KTP, Pas Foto, SKCK, Surat Sehat).
+                @if($application->status === 'revisi_dokumen' || $hasRevision)
+                    <div class="alert alert-danger mt-3">
+                        Beberapa dokumen yang Anda unggah perlu diperbaiki. Silakan cek catatan revisi dari tim kami.
                         <div class="mt-3">
-                            <a href="{{ URL::signedRoute('application.upload', ['application' => $application->id]) }}" class="btn btn-primary btn-sm">
-                                Upload Berkas Kelengkapan Sekarang
+                            <a href="{{ URL::signedRoute('application.upload', ['application' => $application->id]) }}" class="btn btn-danger btn-sm">
+                                <i class="fa-solid fa-cloud-arrow-up me-1"></i> Perbaiki Dokumen
                             </a>
                         </div>
                     </div>
-                @elseif($application->status === 'revisi_dokumen')
-                    <div class="alert alert-danger mt-3">
-                        <strong>Perhatian: Ada Dokumen yang Perlu Direvisi!</strong><br>
-                        Beberapa dokumen yang Anda unggah sebelumnya dinyatakan kurang tepat atau tidak sesuai. Silakan klik tombol di bawah ini untuk melihat detail revisi dan mengunggah ulang dokumen yang benar.
+                @elseif($application->status === 'permohonan_diterima')
+                    <div class="alert alert-info mt-3">
+                        Tahap selanjutnya adalah mengunggah dokumen persyaratan pendaftaran (KTP, Pas Foto, SKCK, Surat Sehat, dan Portofolio jika ada).
                         <div class="mt-3">
-                            <a href="{{ URL::signedRoute('application.upload', ['application' => $application->id]) }}" class="btn btn-danger btn-sm">
-                                <i class="fa-solid fa-cloud-arrow-up me-1"></i> Perbaiki Dokumen Sekarang
+                            <a href="{{ URL::signedRoute('application.upload', ['application' => $application->id]) }}" class="btn btn-primary btn-sm">
+                                Unggah Dokumen
                             </a>
                         </div>
                     </div>
                 @elseif($application->status === 'accepted')
                     <div class="alert alert-success mt-3">
-                        <strong>Langkah Selanjutnya:</strong><br>
                         @if($application->tingkat_pendidikan === 'Mahasiswa')
-                            Selamat! Anda terdaftar sebagai peserta INTERNSHIP PROGRAM Lembaga Pelatihan Kerja Paiton Selaras. Silakan segera menghubungi Admin kami melalui pesan WhatsApp di nomor <strong>+62 811-3059-8801</strong> untuk koordinasi jadwal dan arahan proses interview selanjutnya.
+                            Tahap selanjutnya adalah wawancara. Silakan hubungi admin melalui WhatsApp di <strong>+62 811-3059-8801</strong> untuk mengatur jadwal wawancara Anda.
                         @else
-                            Selamat! Anda terdaftar sebagai peserta INTERNSHIP PROGRAM Lembaga Pelatihan Kerja Paiton Selaras. Jadwal mulai masuk otomatis mengikuti gelombang yang dipilih oleh pendaftar.
+                            Jadwal masuk Anda mengikuti periode gelombang pendaftaran yang telah dipilih.
                         @endif
-                        <br><br>
-                        Silakan periksa kotak masuk (inbox) email yang Anda gunakan saat mendaftar guna mendapatkan kredensial akses login ke portal peserta PKL.
                     </div>
-                @endif
-
-                @if($application->status === 'rejected' && $application->notes->count() > 0)
-                    <div class="alert alert-warning mt-3">
-                        <strong>Catatan Panitia:</strong><br>
-                        {{ $application->notes->latest()->first()->note }}
+                @elseif($application->status === 'rejected' && $application->notes->isNotEmpty())
+                    <div class="alert alert-danger mt-3">
+                        <strong>Catatan Penolakan:</strong><br>
+                        {{ $application->notes->first()->note }}
                     </div>
                 @endif
             </div>

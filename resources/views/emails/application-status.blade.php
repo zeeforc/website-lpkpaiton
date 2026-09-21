@@ -6,23 +6,26 @@ Halo **{{ $application->nama_lengkap }}**,
 Terima kasih telah mendaftar pada program LPK Paiton Selaras. Berikut adalah update mengenai status pendaftaran Anda:
 
 @if($application->status === 'permohonan_diterima')
-Permohonan awal Anda **Telah Diterima**. Langkah selanjutnya adalah melengkapi pendaftaran dengan mengunggah Dokumen Surat Pengantar Resmi & Proposal.
+Permohonan pendaftaran Anda telah diterima. Silakan unggah dokumen persyaratan (KTP, Pas Foto, SKCK, Surat Sehat, dan dokumen pendukung lainnya).
 
-Silakan klik tombol di bawah ini untuk mengunggah dokumen Anda:
 <x-mail::button :url="URL::signedRoute('application.upload', ['application' => $application->id])">
-Upload Dokumen
+Unggah Dokumen
+</x-mail::button>
+@elseif($application->status === 'revisi_dokumen' || $application->documents->where('status', 'Revisi')->isNotEmpty())
+Beberapa dokumen persyaratan Anda perlu diperbaiki. Silakan cek catatan dari tim kami dan unggah ulang dokumen yang sesuai.
+
+<x-mail::button :url="URL::signedRoute('application.upload', ['application' => $application->id])">
+Perbaiki Dokumen
 </x-mail::button>
 @elseif($application->status === 'document_review')
-Status pendaftaran Anda saat ini: **Review Dokumen**. 
-Dokumen yang Anda unggah sedang dalam proses peninjauan oleh tim kami. Harap menunggu informasi selanjutnya.
+Dokumen yang Anda unggah sedang dalam proses peninjauan. Kami akan memberitahu Anda setelah peninjauan selesai.
 @elseif($application->status === 'accepted')
-Selamat! Pendaftaran Anda **terdaftar sebagai peserta INTERNSHIP PROGRAM**
-Lembaga Pelatihan Kerja Paiton Selaras.
+Anda telah terdaftar sebagai peserta Internship Program di Lembaga Pelatihan Kerja Paiton Selaras.
 
 @if($application->tingkat_pendidikan === 'Mahasiswa')
-Sebagai mahasiswa, tahap selanjutnya adalah proses wawancara. Silakan segera menghubungi Admin kami melalui pesan WhatsApp di nomor **+62 811-3059-8801** untuk koordinasi jadwal dan arahan proses interview selanjutnya.
+Sebagai mahasiswa, tahap wawancara diwajibkan. Hubungi admin melalui WhatsApp di **+62 811-3059-8801** untuk mengatur jadwal wawancara.
 @else
-Jadwal mulai masuk otomatis mengikuti gelombang yang dipilih oleh pendaftar.
+Jadwal masuk Anda mengikuti periode gelombang yang telah dipilih.
 @endif
 
 ---
@@ -39,10 +42,10 @@ Login Portal Siswa PKL
 *(Harap simpan informasi login ini dengan baik dan jangan bagikan kepada siapa pun)*
 
 @elseif($application->status === 'rejected')
-Mohon maaf, pendaftaran Anda **Ditolak / Membutuhkan Revisi**.
+Pendaftaran Anda tidak dapat kami terima.
 
 @if(!empty($note))
-**Catatan dari Panitia:**
+**Catatan:**
 {{ $note }}
 @endif
 @endif
