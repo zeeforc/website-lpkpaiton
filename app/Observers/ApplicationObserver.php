@@ -14,7 +14,10 @@ class ApplicationObserver
         \Illuminate\Support\Facades\Log::info("Changes array: " . json_encode($application->getChanges()));
 
         if ($application->wasChanged('status')) {
-            \Illuminate\Support\Facades\Log::info("Status was changed to {$application->status}. Sending email...");
+            if (!in_array($application->id, \App\Observers\ApplicationDocumentObserver::$notifiedApplications)) {
+                \App\Observers\ApplicationDocumentObserver::$notifiedApplications[] = $application->id;
+                
+                \Illuminate\Support\Facades\Log::info("Status was changed to {$application->status}. Sending email...");
             $note = null;
             if ($application->status === 'rejected') {
                 $note = $application->notes()->latest()->first()?->note;
@@ -36,6 +39,7 @@ class ApplicationObserver
                 \Illuminate\Support\Facades\Log::info("Email successfully sent via SMTP to {$application->email_balasan}");
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::error("Failed to send email: " . $e->getMessage());
+            }
             }
         }
     }
