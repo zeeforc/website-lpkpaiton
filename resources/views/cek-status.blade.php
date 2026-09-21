@@ -86,7 +86,9 @@
                     @elseif($application->status === 'accepted')
                         <span class="badge bg-success">Lolos Sepenuhnya</span>
                     @elseif($application->status === 'rejected')
-                        <span class="badge bg-danger">Ditolak / Revisi</span>
+                        <span class="badge bg-danger">Ditolak</span>
+                    @elseif($application->status === 'revisi_dokumen')
+                        <span class="badge bg-danger">Revisi Dokumen</span>
                     @endif
                 </div>
 
@@ -97,6 +99,16 @@
                         <div class="mt-3">
                             <a href="{{ URL::signedRoute('application.upload', ['application' => $application->id]) }}" class="btn btn-primary btn-sm">
                                 Upload Berkas Kelengkapan Sekarang
+                            </a>
+                        </div>
+                    </div>
+                @elseif($application->status === 'revisi_dokumen')
+                    <div class="alert alert-danger mt-3">
+                        <strong>Perhatian: Ada Dokumen yang Perlu Direvisi!</strong><br>
+                        Beberapa dokumen yang Anda unggah sebelumnya dinyatakan kurang tepat atau tidak sesuai. Silakan klik tombol di bawah ini untuk melihat detail revisi dan mengunggah ulang dokumen yang benar.
+                        <div class="mt-3">
+                            <a href="{{ URL::signedRoute('application.upload', ['application' => $application->id]) }}" class="btn btn-danger btn-sm">
+                                <i class="fa-solid fa-cloud-arrow-up me-1"></i> Perbaiki Dokumen Sekarang
                             </a>
                         </div>
                     </div>

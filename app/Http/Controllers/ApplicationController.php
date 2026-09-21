@@ -100,7 +100,7 @@ class ApplicationController extends Controller
             abort(401, 'Link tidak valid atau sudah kadaluarsa.');
         }
 
-        if (! in_array($application->status, ['permohonan_diterima', 'accepted'])) {
+        if (! in_array($application->status, ['permohonan_diterima', 'accepted', 'revisi_dokumen'])) {
             return redirect('/cek-status')->with('error', 'Status aplikasi tidak mengizinkan unggah dokumen saat ini.');
         }
 
@@ -113,7 +113,7 @@ class ApplicationController extends Controller
             abort(401, 'Link tidak valid atau sudah kadaluarsa.');
         }
 
-        if (! in_array($application->status, ['permohonan_diterima', 'accepted'])) {
+        if (! in_array($application->status, ['permohonan_diterima', 'accepted', 'revisi_dokumen'])) {
             return redirect('/cek-status')->with('error', 'Status aplikasi tidak mengizinkan unggah dokumen saat ini.');
         }
 
@@ -186,5 +186,73 @@ class ApplicationController extends Controller
         }
         
         return view('cek-status', compact('application'));
+    }
+
+    public function reuploadDocumentExternal(Request $request, Application $application, ApplicationDocument $document)
+    {
+        if (! $request->hasValidSignature()) {
+            abort(401, 'Link tidak valid atau sudah kadaluarsa.');
+        }
+
+        if ($document->application_id !== $application->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'dokumen_baru' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ]);
+
+        try {
+            if (Storage::disk('public')->exists($document->file_path)) {
+                Storage::disk('public')->delete($document->file_path);
+            }
+
+            $file = $request->file('dokumen_baru');
+            $path = $file->store('applications/documents', 'public');
+
+            $originalNameParts = explode(' - ', $document->original_name);
+            $prefix = count($originalNameParts) > 1 ? $originalNameParts[0] . ' - ' : '';
+            $newOriginalName = $prefix . $file->getClientOriginalName();
+
+            $document->update([
+                'file_path' => $path,
+                'original_name' => $newOriginalName,
+                'status' => 'Menunggu Review',
+                'keterangan' => null,
+            ]);
+
+            return back()->with('success', 'Dokumen berhasil diunggah ulang.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Gagal mengunggah ulang dokumen.']);
+        }
+    }
+
+    public function uploadMissingDocumentExternal(Request $request, Application $application)
+    {
+        if (! $request->hasValidSignature()) {
+            abort(401, 'Link tidak valid atau sudah kadaluarsa.');
+        }
+
+        $request->validate([
+            'document_type' => 'required|string|in:KTP/Kartu Pelajar,Pas Foto 4x6,SKCK,Surat Sehat,Portofolio,Dokumen Tambahan',
+            'dokumen_baru' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ]);
+
+        try {
+            $file = $request->file('dokumen_baru');
+            $path = $file->store('applications/documents', 'public');
+            $documentType = $request->document_type;
+
+            ApplicationDocument::create([
+                'application_id' => $application->id,
+                'file_path' => $path,
+                'original_name' => $documentType . ' - ' . $file->getClientOriginalName(),
+                'status' => 'Menunggu Review',
+            ]);
+
+            return back()->with('success', 'Dokumen berhasil diunggah.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Gagal mengunggah dokumen.']);
+        }
     }
 }

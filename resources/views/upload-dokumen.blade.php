@@ -60,6 +60,17 @@
             $contohUrl = $contohPortofolioSetting && $contohPortofolioSetting->value ? Storage::disk('public')->url($contohPortofolioSetting->value) : asset('contoh_portofolio.pdf');
         @endphp
 
+        @if($application->documents()->count() > 0)
+            <div class="alert alert-warning mb-4">
+                <strong>Dokumen Anda Sedang/Telah Direview!</strong><br>
+                Berikut adalah status kelengkapan dokumen Anda. Jika ada dokumen yang berstatus <span class="badge bg-danger">Revisi</span>, silakan tekan tombol <strong>Upload Ulang</strong> untuk memperbaikinya.
+            </div>
+            @include('components.document-table')
+            <div class="mt-4 text-center">
+                <a href="{{ url('/cek-status') }}" class="btn btn-outline-secondary">Kembali ke Cek Status</a>
+            </div>
+        @else
+
         <form action="{{ URL::signedRoute('application.upload.store', ['application' => $application->id]) }}" method="POST" enctype="multipart/form-data">
             @csrf
             
@@ -110,6 +121,7 @@
 
             <button type="submit" class="btn btn-submit">Upload Dokumen</button>
         </form>
+        @endif
     </div>
 </div>
 

@@ -43,7 +43,15 @@ class ApplicationForm
                 TextInput::make('email_balasan')
                     ->email()
                     ->required(),
-                TextInput::make('status')
+                Select::make('status')
+                    ->options([
+                        'pending' => 'Menunggu (Pending)',
+                        'permohonan_diterima' => 'Permohonan Diterima',
+                        'document_review' => 'Review Dokumen',
+                        'revisi_dokumen' => 'Revisi Dokumen',
+                        'accepted' => 'Lolos Sepenuhnya (Accepted)',
+                        'rejected' => 'Ditolak (Rejected)',
+                    ])
                     ->required()
                     ->default('pending'),
                 DatePicker::make('start_date')
