@@ -79,7 +79,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="dokumen_skck" class="form-label fw-bold">3. Surat Kelakuan Baik (Dari Sekolah/Kampus) <span class="text-danger">*</span></label>
+                    <label for="dokumen_skck" class="form-label fw-bold">3. Surat Kelakuan Baik (Siswa) / SKCK (Mahasiswa)<span class="text-danger">*</span></label>
                     <div class="form-text text-muted mb-2">Upload surat kelakuan baik asli dari instansi pendidikan Anda (PDF/JPG/PNG, Maks 5 MB).</div>
                     <input class="form-control" type="file" id="dokumen_skck" name="dokumen_skck" accept=".pdf,.jpg,.jpeg,.png" required>
                 </div>
