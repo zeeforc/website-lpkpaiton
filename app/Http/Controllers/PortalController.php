@@ -160,7 +160,7 @@ class PortalController extends Controller
     public function reuploadDocument(Request $request, ApplicationDocument $document)
     {
         $user = Auth::user();
-        if (!$user->application || $user->application->id !== $document->application_id) {
+        if ($document->application->user_id !== $user->id) {
             abort(403, 'Unauthorized action.');
         }
 

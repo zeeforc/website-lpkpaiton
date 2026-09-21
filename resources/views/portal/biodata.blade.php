@@ -328,7 +328,7 @@
     </div>
 </form>
 
-@if(Auth::user()->role === 'siswa' && Auth::user()->application)
+@if(Auth::user()->role === 'siswa' && $application)
 <div class="row mt-4" id="dokumen-section">
     <div class="col-12">
         <div class="card-custom">
@@ -345,7 +345,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse(Auth::user()->application->documents as $doc)
+                            @forelse($application->documents as $doc)
                             <tr>
                                 <td class="align-middle">
                                     <div class="d-flex align-items-center gap-2">
