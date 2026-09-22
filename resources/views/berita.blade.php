@@ -43,8 +43,6 @@
                         <span class="marquee-dot">•</span>
                         <span>Pendaftaran Gelombang Baru Dibuka</span>
                         <span class="marquee-dot">•</span>
-                        <span>Program Pelatihan Terbaru</span>
-                        <span class="marquee-dot">•</span>
                     </div>
                     {{-- Set 2 (for seamless loop) --}}
                     <div class="marquee-text">
@@ -53,8 +51,6 @@
                         <span>Berita LPK Paiton Selaras</span>
                         <span class="marquee-dot">•</span>
                         <span>Pendaftaran Gelombang Baru Dibuka</span>
-                        <span class="marquee-dot">•</span>
-                        <span>Program Pelatihan Terbaru</span>
                         <span class="marquee-dot">•</span>
                     </div>
                 </div>

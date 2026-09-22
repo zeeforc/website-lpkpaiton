@@ -25,7 +25,7 @@
             <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
                 <div class="hero-illustration-wrap">
                     <div class="hero-illustration-card">
-                        <img src="{{ asset('assets/icon/alur.webp') }}" alt="Ilustrasi mekanik" />
+                        <img src="{{ asset('assets/icon/daftar.webp') }}" alt="Ilustrasi mekanik" />
                     </div>
                 </div>
             </div>
@@ -126,7 +126,7 @@
                     <div class="dot-pattern"></div>
 
                     <div class="steps-illustration-wrap">
-                        <img src="{{ asset('assets/icon/daftar.webp') }}" alt="Folder ilustrasi" class="steps-folder-img" />
+                        <img src="{{ asset('assets/icon/pendaftaran.webp') }}" alt="Folder ilustrasi" class="steps-folder-img" />
                         <div class="btn-daftar">
                             <a href="/pendaftaran" class="steps-cta-btn">
                                 Daftar Sekarang
