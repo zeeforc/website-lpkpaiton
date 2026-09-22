@@ -28,7 +28,7 @@
                 <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
                     <div class="hero-illustration-wrap">
                         <div class="hero-illustration-card">
-                            <img src="assets/icon/sarana-icon.webp" alt="Ilustrasi mekanik" />
+                            <img src="{{ asset('assets/img/3d/sarana.jpg') }}" alt="Ilustrasi Sarana 3D" style="border-radius: 30px; object-fit: cover;" />
                         </div>
                     </div>
                 </div>

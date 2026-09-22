@@ -25,7 +25,7 @@
             <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
                 <div class="hero-illustration-wrap">
                     <div class="hero-illustration-card">
-                        <img src="{{ asset('assets/icon/alur.webp') }}" alt="Ilustrasi mekanik" />
+                        <img src="{{ asset('assets/img/3d/kurikulum.jpg') }}" alt="Ilustrasi Pendaftaran 3D" style="border-radius: 30px; object-fit: cover; width: 100%;" />
                     </div>
                 </div>
             </div>
@@ -125,8 +125,8 @@
                     {{-- Dot pattern --}}
                     <div class="dot-pattern"></div>
 
-                    <div class="steps-illustration-wrap">
-                        <img src="{{ asset('assets/icon/daftar.webp') }}" alt="Folder ilustrasi" class="steps-folder-img" />
+                    <div class="steps-illustration-wrap" style="border-radius: 30px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
+                        <img src="{{ asset('assets/img/3d/kurikulum.jpg') }}" alt="Ilustrasi Pendaftaran 3D" class="steps-folder-img" style="border-radius: 30px; object-fit: cover; width: 100%;" />
                         <div class="btn-daftar">
                             <a href="/pendaftaran" class="steps-cta-btn">
                                 Daftar Sekarang

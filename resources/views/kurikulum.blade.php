@@ -30,8 +30,8 @@ use Illuminate\Support\Str;
             <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
                 <div class="hero-illustration-wrap">
                     <div class="hero-illustration-card">
-                        <!-- ganti dengan ilustrasi sesuai desain -->
-                        <img src="assets/icon/maskot.webp" alt="Ilustrasi mekanik" />
+                        <!-- Ilustrasi 3D kurikulum -->
+                        <img src="{{ asset('assets/img/3d/kurikulum.jpg') }}" alt="Ilustrasi mekanik dan listrik 3D" style="border-radius: 30px; object-fit: cover;" />
                     </div>
                 </div>
             </div>
@@ -76,13 +76,24 @@ use Illuminate\Support\Str;
             </div>
 
             <div class="col-lg-6" data-aos="{{ $loop->iteration % 2 == 0 ? 'fade-right' : 'fade-left' }}">
-                <div
-                    class="curriculum-image-card-2 {{ $loop->iteration % 2 == 0 ? 'overlay-blue' : 'overlay-orange' }}">
-                    <img src="{{ $kurikulum->image_url }}" alt="{{ $kurikulum->kurikulum_title }}">
-                    <div class="curriculum-image-label">
-                        {{ $kurikulum->kurikulum_title }}
+                <div class="curriculum-image-card-2 position-relative shadow-sm" style="border-radius: 2rem; overflow: hidden; height: 100%; min-height: 380px; transition: transform 0.3s ease;">
+                    <img src="{{ $kurikulum->image_url }}" alt="{{ $kurikulum->kurikulum_title }}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; transition: transform 0.5s ease;" class="hover-zoom">
+                    
+                    <!-- Subtle Gradient Overlay -->
+                    <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);"></div>
+                    
+                    <div class="curriculum-image-label position-absolute" style="bottom: 2rem; left: 2rem; right: 2rem;">
+                        <span class="badge {{ $loop->iteration % 2 == 0 ? 'bg-primary' : 'bg-warning text-dark' }} mb-2 px-3 py-2 rounded-pill" style="font-weight: 500;">Modul Praktik</span>
+                        <h3 class="text-white fw-bold mb-0" style="font-size: 1.8rem; text-shadow: 0 4px 15px rgba(0,0,0,0.3);">{{ $kurikulum->kurikulum_title }}</h3>
                     </div>
                 </div>
+
+                <style>
+                    .hover-zoom:hover { transform: scale(1.05); }
+                    .curriculum-image-card-2:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important; transform: translateY(-5px); }
+                    .curriculum-card { transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.8); background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.7)); }
+                    .curriculum-card:hover { transform: translateY(-5px); box-shadow: 0 25px 50px rgba(15,23,42,0.1); }
+                </style>
             </div>
 
         </div>
