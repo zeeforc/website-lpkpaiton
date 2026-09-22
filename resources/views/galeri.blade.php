@@ -22,8 +22,8 @@
                 <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
                     <div class="hero-illustration-wrap">
                         <div class="hero-illustration-card">
-                            <img src="{{ asset('assets/img/3d/galeri.jpg') }}" alt="Ilustrasi Galeri 3D"
-                                class="hero-illustration-img" style="border-radius: 30px; object-fit: cover;" />
+                            <img src="{{ asset('assets/icon/icon-galeri.webp') }}" alt="Ikon Galeri"
+                                class="hero-illustration-img" />
                         </div>
                     </div>
                 </div>
