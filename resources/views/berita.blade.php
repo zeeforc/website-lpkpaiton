@@ -24,7 +24,7 @@
                     <div class="hero-illustration-wrap">
                         <div class="hero-slider">
                             <div class="hero-slide active">
-                                <img src="{{ asset('assets/slider/slide1.webp') }}" alt="">
+                                <img src="{{ asset('assets/icon/icon-berita.webp') }}?v={{ time() }}" alt="">
                             </div>
                             <!-- <div class="hero-slide">
                                 <img src="{{ asset('assets/slider/slide2.webp') }}" alt="">
