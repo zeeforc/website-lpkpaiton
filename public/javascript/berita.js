@@ -43,7 +43,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // marquee running date
 document.addEventListener("DOMContentLoaded", function () {
-    const dateElement = document.getElementById("runningDate");
+    const dateElements = document.querySelectorAll(".runningDate");
+    if (dateElements.length === 0) return;
 
     function updateDate() {
         const now = new Date();
@@ -57,7 +58,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const formattedDate = now.toLocaleDateString("id-ID", options);
 
-        dateElement.textContent = formattedDate;
+        dateElements.forEach(el => {
+            el.textContent = formattedDate;
+        });
     }
 
     updateDate();

@@ -75,16 +75,18 @@ function renderPrasarana(index) {
 }
 
 // Event listener next / prev
-btnNext.addEventListener("click", () => {
-  currentIndex = (currentIndex + 1) % prasaranaData.length;
-  renderPrasarana(currentIndex);
-});
+if (btnNext && btnPrev) {
+  btnNext.addEventListener("click", () => {
+    currentIndex = (currentIndex + 1) % prasaranaData.length;
+    renderPrasarana(currentIndex);
+  });
 
-btnPrev.addEventListener("click", () => {
-  currentIndex =
-    (currentIndex - 1 + prasaranaData.length) % prasaranaData.length;
-  renderPrasarana(currentIndex);
-});
+  btnPrev.addEventListener("click", () => {
+    currentIndex =
+      (currentIndex - 1 + prasaranaData.length) % prasaranaData.length;
+    renderPrasarana(currentIndex);
+  });
+}
 
 // Optional: swipe keyboard
 document.addEventListener("keydown", (e) => {
@@ -111,4 +113,6 @@ style.innerHTML = `
 document.head.appendChild(style);
 
 // Initial render
-renderPrasarana(currentIndex);
+if (imgEl && titleEl && descEl) {
+  renderPrasarana(currentIndex);
+}

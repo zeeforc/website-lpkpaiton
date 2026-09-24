@@ -163,7 +163,7 @@
             <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
                 <div class="hero-image-wrapper">
                     <img src="{{ $home && $home->bg_image ? asset('storage/' . $home->bg_image) : asset('assets/mekanik-org.webp') }}"
-                        alt="Pelatihan kerja Paiton Selaras" class="hero-image" />
+                        alt="Pelatihan kerja Paiton Selaras" class="hero-image" fetchpriority="high" />
                 </div>
             </div>
         </div>
