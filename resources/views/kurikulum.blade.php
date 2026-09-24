@@ -31,7 +31,7 @@ use Illuminate\Support\Str;
                 <div class="hero-illustration-wrap">
                     <div class="hero-illustration-card">
                         <!-- ganti dengan ilustrasi sesuai desain -->
-                        <img src="assets/icon/maskot.webp" alt="Ilustrasi mekanik" />
+                        <img src="{{ asset('assets/icon/maskot.webp') }}?v={{ time() }}" alt="Ilustrasi mekanik" />
                     </div>
                 </div>
             </div>

@@ -22,7 +22,7 @@
                 <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
                     <div class="hero-illustration-wrap">
                         <div class="hero-illustration-card">
-                            <img src="{{ asset('assets/icon/icon-galeri.webp') }}" alt="Ikon Galeri"
+                            <img src="{{ asset('assets/icon/icon-galeri.webp') }}?v={{ time() }}" alt="Ikon Galeri"
                                 class="hero-illustration-img" />
                         </div>
                     </div>

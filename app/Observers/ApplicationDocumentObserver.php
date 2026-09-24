@@ -9,10 +9,6 @@ use Illuminate\Support\Facades\Log;
 
 class ApplicationDocumentObserver
 {
-    /**
-     * Track applications that have already been notified in this request lifecycle
-     * to prevent spamming multiple emails when multiple documents are updated at once.
-     */
     public static array $notifiedApplications = [];
 
     public function updated(ApplicationDocument $document): void
@@ -20,12 +16,10 @@ class ApplicationDocumentObserver
         if ($document->wasChanged(['status', 'keterangan'])) {
             $application = $document->application;
             
-            // Auto-accept if all required documents are Valid
             if ($application->status !== 'accepted' && $application->status !== 'rejected') {
                 $requiredDocs = ['KTP/Kartu Pelajar', 'Pas Foto 4x6', 'SKCK', 'Surat Sehat'];
                 $allDocsValid = true;
                 
-                // Reload documents to get the latest status
                 $documents = $application->documents()->get();
                 
                 foreach ($requiredDocs as $reqDoc) {
@@ -42,14 +36,12 @@ class ApplicationDocumentObserver
                 if ($allDocsValid) {
                     Log::info("All required documents for application {$application->id} are Valid. Auto-accepting.");
                     $application->update(['status' => 'accepted']);
-                    return; // The ApplicationObserver will handle the email sending for the 'accepted' status
+                    return; 
                 }
             }
             
-            // Prevent duplicate emails in the same request
             if (!in_array($application->id, self::$notifiedApplications)) {
                 
-                // Only send if the application is not already fully accepted/rejected
                 if (in_array($application->status, ['permohonan_diterima', 'document_review', 'revisi_dokumen'])) {
                     
                     Log::info("Document status changed. Sending email for application: {$application->id}");
@@ -62,7 +54,6 @@ class ApplicationDocumentObserver
                         Log::error("Failed to send document update email: " . $e->getMessage());
                     }
 
-                    // Mark as notified in this request
                     self::$notifiedApplications[] = $application->id;
                 }
             }
