@@ -195,7 +195,7 @@
             <div class="col-lg-6" data-aos="fade-up" data-aos-delay="150">
                 <div class="glass-card h-100 p-0 overflow-hidden">
                     <!-- Ganti src sesuai foto kantor -->
-                    <img src="{{asset('assets/map.webp')}}" alt="Kantor LPK Paiton Selaras" class="hero-image" loading="lazy" />
+                    <img src="{{asset('assets/image.png')}}" alt="Kantor LPK Paiton Selaras" class="hero-image" loading="lazy" />
                     <div class="p-3 text-center small text-dark">
                         Kantor Lembaga Pelatihan Kerja Paiton Selaras
                     </div>
