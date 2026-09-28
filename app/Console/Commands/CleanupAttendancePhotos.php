@@ -27,36 +27,42 @@ class CleanupAttendancePhotos extends Command
     {
         $this->info('Starting attendance photos cleanup...');
         
-        $thresholdDate = \Carbon\Carbon::now()->subMonth(); // hapus yang lebih lama dari 1 bulan
+        $yesterday = \Carbon\Carbon::today(); // hapus foto wajah (24 jam)
+        $lastMonth = \Carbon\Carbon::now()->subMonth(); // hapus foto dokumentasi (1 bulan)
 
-        $attendances = \App\Models\Attendance::where(function($query) {
-                $query->whereNotNull('photo_path')
-                      ->orWhereNotNull('checkout_photos');
-            })
-            ->whereDate('date', '<', $thresholdDate)
+        // 1. Bersihkan foto wajah (Check-In) yang lebih lama dari 1 hari
+        $attendancesForPhoto = \App\Models\Attendance::whereNotNull('photo_path')
+            ->whereDate('date', '<', $yesterday)
             ->get();
 
-        $count = 0;
-        foreach ($attendances as $attendance) {
-            if ($attendance->photo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($attendance->photo_path)) {
+        $countPhoto = 0;
+        foreach ($attendancesForPhoto as $attendance) {
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($attendance->photo_path)) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($attendance->photo_path);
             }
             $attendance->photo_path = null;
+            $attendance->save();
+            $countPhoto++;
+        }
 
-            if ($attendance->checkout_photos) {
-                $photos = json_decode($attendance->checkout_photos, true) ?? [];
-                foreach ($photos as $photo) {
-                    if (\Illuminate\Support\Facades\Storage::disk('public')->exists($photo)) {
-                        \Illuminate\Support\Facades\Storage::disk('public')->delete($photo);
-                    }
+        // 2. Bersihkan foto dokumentasi (Check-Out) yang lebih lama dari 1 bulan
+        $attendancesForCheckout = \App\Models\Attendance::whereNotNull('checkout_photos')
+            ->whereDate('date', '<', $lastMonth)
+            ->get();
+
+        $countCheckout = 0;
+        foreach ($attendancesForCheckout as $attendance) {
+            $photos = json_decode($attendance->checkout_photos, true) ?? [];
+            foreach ($photos as $photo) {
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($photo)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($photo);
                 }
             }
             $attendance->checkout_photos = null;
-
             $attendance->save();
-            $count++;
+            $countCheckout++;
         }
 
-        $this->info("Cleanup completed. Deleted $count old photos.");
+        $this->info("Cleanup completed. Deleted $countPhoto old check-in photos and $countCheckout old documentation photos.");
     }
 }
