@@ -702,32 +702,6 @@ class PortalController extends Controller
                 $attendance->status = 'Telat';
             }
             $attendance->notes = 'Masuk: ' . $now->format('H:i');
-        } elseif ($request->type === 'update') {
-            if (!$attendance->check_in) {
-                return redirect()->route('portal.absensi.check-in')->with('error', 'Anda harus absen masuk terlebih dahulu.');
-            }
-            if ($attendance->check_out) {
-                return redirect()->route('portal.absensi.check-in')->with('error', 'Anda sudah melakukan absen pulang.');
-            }
-            
-            if ($request->has('work_description')) {
-                $attendance->work_description = $request->work_description;
-            }
-            
-            if ($request->hasFile('checkout_photos')) {
-                $photos = $attendance->checkout_photos ? (json_decode($attendance->checkout_photos, true) ?? []) : [];
-                
-                foreach ($request->file('checkout_photos') as $photo) {
-                    if (count($photos) >= 4) break; // max 4
-                    $fileName = 'checkout_' . $user->id . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
-                    $filePath = $photo->storeAs('attendances/checkout', $fileName, 'public');
-                    $photos[] = $filePath;
-                }
-                $attendance->checkout_photos = json_encode($photos);
-            }
-            
-            $attendance->save();
-            return redirect()->route('portal.absensi.check-in')->with('success', 'Laporan kegiatan berhasil disimpan sementara!');
         } else {
             if (!$attendance->check_in) {
                 return redirect()->route('portal.absensi.check-in')->with('error', 'Anda harus absen masuk terlebih dahulu.');
@@ -747,10 +721,18 @@ class PortalController extends Controller
             }
             
             if ($request->hasFile('checkout_photos')) {
-                $photos = $attendance->checkout_photos ? (json_decode($attendance->checkout_photos, true) ?? []) : [];
+                $photos = [];
+                // Delete old if exists (misal jika diperbarui dari halaman edit admin)
+                if ($attendance->checkout_photos) {
+                    $oldPhotos = json_decode($attendance->checkout_photos, true) ?? [];
+                    foreach ($oldPhotos as $oldPhoto) {
+                        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($oldPhoto)) {
+                            \Illuminate\Support\Facades\Storage::disk('public')->delete($oldPhoto);
+                        }
+                    }
+                }
                 
                 foreach ($request->file('checkout_photos') as $photo) {
-                    if (count($photos) >= 4) break; // max 4
                     $fileName = 'checkout_' . $user->id . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
                     $filePath = $photo->storeAs('attendances/checkout', $fileName, 'public');
                     $photos[] = $filePath;

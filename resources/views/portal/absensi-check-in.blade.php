@@ -172,13 +172,7 @@
                     @if(in_array(Auth::user()->role, ['karyawan_paving', 'instruktur_lpk']))
                     <div class="mt-3">
                         <label class="fw-bold mb-2">Upload Dokumentasi Pekerjaan <span class="text-danger">*</span></label>
-                        <p class="small text-muted mb-2">Pilih 2 hingga 4 foto kegiatan (foto akan dihapus otomatis setelah 24 jam).</p>
-                        @if($attendance->checkout_photos)
-                            @php $savedPhotosCount = count(json_decode($attendance->checkout_photos, true) ?? []); @endphp
-                            <div class="alert alert-info py-2 px-3 small">
-                                <i class="fa-solid fa-images me-2"></i> Anda sudah menyimpan {{ $savedPhotosCount }} foto sementara. (Upload ulang jika ingin mengganti).
-                            </div>
-                        @endif
+                        <p class="small text-muted mb-2">Pilih 2 hingga 4 foto kegiatan (foto akan dihapus otomatis setelah 1 bulan).</p>
                         <input type="file" id="checkout-photos" class="form-control" multiple accept="image/*" />
                     </div>
                     @endif
@@ -188,12 +182,7 @@
                     </div>
                 @endif
 
-                <div class="mt-4 d-flex flex-column gap-2">
-                    @if($attendance && $attendance->check_in)
-                        <button type="button" id="btn-update" class="btn btn-outline-primary btn-absen" disabled>
-                            <i class="fa-solid fa-save me-2"></i> Simpan Laporan Sementara
-                        </button>
-                    @endif
+                <div class="mt-4">
                     <button type="button" id="btn-submit" class="btn btn-primary btn-absen" disabled>
                         <i class="fa-solid fa-fingerprint me-2"></i> 
                         {{ ($attendance && $attendance->check_in) ? 'Absen Pulang Sekarang' : 'Absen Masuk Sekarang' }}
@@ -212,7 +201,7 @@
     <input type="hidden" name="work_description" id="input-work-description">
     <input type="file" name="checkout_photos[]" id="input-checkout-photos" multiple accept="image/*">
     <input type="hidden" name="photo" id="input-photo">
-    <input type="hidden" name="type" id="input-type" value="{{ ($attendance && $attendance->check_in) ? 'out' : 'in' }}">
+    <input type="hidden" name="type" value="{{ ($attendance && $attendance->check_in) ? 'out' : 'in' }}">
 </form>
 
 @endsection
@@ -424,16 +413,12 @@
     function checkEnableButton() {
         if (isGpsValid && isFaceValid) {
             btnSubmit.disabled = false;
-            const btnUpdate = document.getElementById('btn-update');
-            if(btnUpdate) btnUpdate.disabled = false;
         } else {
             btnSubmit.disabled = true;
-            const btnUpdate = document.getElementById('btn-update');
-            if(btnUpdate) btnUpdate.disabled = true;
         }
     }
 
-    function processForm(submitType, btnElement) {
+    btnSubmit.addEventListener('click', function() {
         const descInput = document.getElementById('work-description');
         if (descInput) {
             if (!descInput.value.trim()) {
@@ -447,28 +432,17 @@
         const photosInput = document.getElementById('checkout-photos');
         if (photosInput) {
             const files = photosInput.files;
-            const existingPhotosCount = {{ ($attendance && $attendance->checkout_photos) ? count(json_decode($attendance->checkout_photos, true) ?? []) : 0 }};
-            const totalPhotos = files.length + existingPhotosCount;
             
-            if (submitType === 'out' && (totalPhotos < 2 || totalPhotos > 4)) {
-                alert(`Silakan pastikan total foto dokumentasi (tersimpan + baru) adalah 2 hingga 4 foto. (Saat ini tersimpan: ${existingPhotosCount}, baru: ${files.length})`);
+            if (files.length < 2 || files.length > 4) {
+                alert('Silakan upload minimal 2 dan maksimal 4 foto dokumentasi pekerjaan untuk absen pulang.');
                 photosInput.focus();
                 return;
             }
-            if (submitType === 'update' && files.length > 0 && totalPhotos > 4) {
-                alert(`Maksimal total 4 foto. Anda sudah menyimpan ${existingPhotosCount} foto, hanya bisa menambah maksimal ${4 - existingPhotosCount} foto lagi.`);
-                photosInput.focus();
-                return;
-            }
-            if (files.length > 0) {
-                document.getElementById('input-checkout-photos').files = files;
-            }
+            document.getElementById('input-checkout-photos').files = files;
         }
 
         document.getElementById('input-lat').value = userLat;
         document.getElementById('input-lng').value = userLng;
-        document.getElementById('input-type').value = submitType;
-        
         // Capture photo
         const captureCanvas = document.createElement('canvas');
         captureCanvas.width = video.videoWidth;
@@ -476,24 +450,11 @@
         captureCanvas.getContext('2d').drawImage(video, 0, 0);
         document.getElementById('input-photo').value = captureCanvas.toDataURL('image/jpeg', 0.6);
         
-        btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Memproses...';
-        btnElement.disabled = true;
-        if(document.getElementById('btn-update')) document.getElementById('btn-update').disabled = true;
-        btnSubmit.disabled = true;
+        this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Memproses...';
+        this.disabled = true;
         
         formAbsen.submit();
-    }
-
-    btnSubmit.addEventListener('click', function() {
-        processForm('{{ ($attendance && $attendance->check_in) ? 'out' : 'in' }}', this);
     });
-
-    const btnUpdate = document.getElementById('btn-update');
-    if (btnUpdate) {
-        btnUpdate.addEventListener('click', function() {
-            processForm('update', this);
-        });
-    }
 
     // Start everything
     document.addEventListener('DOMContentLoaded', () => {
