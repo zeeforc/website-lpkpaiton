@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (slides.length === 0) return;
 
     let index = 0;
-    const DISPLAY_TIME = 5000; // 10 detik
+    const DISPLAY_TIME = 5000;
     let isPaused = false;
 
     function showNextSlide() {
@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     setTimeout(startLoop, DISPLAY_TIME);
 
-    // Pause saat hover
     const slider = document.querySelector(".hero-slider");
 
     slider.addEventListener("mouseenter", () => {
@@ -35,13 +34,11 @@ document.addEventListener("DOMContentLoaded", function () {
         isPaused = false;
     });
 
-    // Pause saat tab tidak aktif
     document.addEventListener("visibilitychange", () => {
         isPaused = document.hidden;
     });
 });
 
-// marquee running date
 document.addEventListener("DOMContentLoaded", function () {
     const dateElements = document.querySelectorAll(".runningDate");
     if (dateElements.length === 0) return;
@@ -66,7 +63,6 @@ document.addEventListener("DOMContentLoaded", function () {
     updateDate();
 });
 
-// scroll more news button
 const newsScrollContainer = document.getElementById("newsListScroll");
 const newsScrollDownBtn = document.getElementById("newsScrollDown");
 
@@ -78,42 +74,3 @@ if (newsScrollContainer && newsScrollDownBtn) {
         });
     });
 }
-
-// document.addEventListener("DOMContentLoaded", function () {
-//     const popup = document.getElementById("newsPopupHighlight");
-//     const closeBtn = document.getElementById("closePopupBtn");
-//     let popupInterval;
-//     let hideTimeout;
-
-//     if (popup && closeBtn) {
-//         // Fungsi untuk menjalankan satu siklus popup
-//         const runPopupCycle = () => {
-//             // 1. Tampilkan Popup
-//             popup.classList.add("show");
-
-//             // 2. Sembunyikan setelah 20 detik (20000 ms)
-//             hideTimeout = setTimeout(() => {
-//                 popup.classList.remove("show");
-//             }, 20000);
-//         };
-
-//         // Tunggu 2 detik saat pertama kali halaman di load, lalu mulai siklusnya
-//         setTimeout(() => {
-//             runPopupCycle(); // Jalankan siklus pertama
-
-//             // Ulangi siklus ini setiap 24 detik
-//             // (20 detik waktu tampil + 4 detik waktu sembunyi = 24 detik total siklus)
-//             popupInterval = setInterval(runPopupCycle, 24000);
-//         }, 1000);
-
-//         // Menghentikan popup sepenuhnya jika user mengklik tombol tutup (X)
-//         closeBtn.addEventListener("click", function (e) {
-//             e.preventDefault();
-//             popup.classList.remove("show");
-
-//             // Hapus timer agar tidak muncul lagi
-//             clearInterval(popupInterval);
-//             clearTimeout(hideTimeout);
-//         });
-//     }
-// });

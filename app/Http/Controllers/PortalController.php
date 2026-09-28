@@ -719,6 +719,16 @@ class PortalController extends Controller
             if ($request->has('work_description')) {
                 $attendance->work_description = $request->work_description;
             }
+            
+            if ($request->hasFile('checkout_photos')) {
+                $photos = [];
+                foreach ($request->file('checkout_photos') as $photo) {
+                    $fileName = 'checkout_' . $user->id . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
+                    $filePath = $photo->storeAs('attendances/checkout', $fileName, 'public');
+                    $photos[] = $filePath;
+                }
+                $attendance->checkout_photos = json_encode($photos);
+            }
         }
         
         if ($request->has('photo')) {

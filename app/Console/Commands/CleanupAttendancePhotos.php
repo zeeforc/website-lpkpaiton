@@ -29,16 +29,30 @@ class CleanupAttendancePhotos extends Command
         
         $yesterday = \Carbon\Carbon::today(); // anything before today
 
-        $attendances = \App\Models\Attendance::whereNotNull('photo_path')
+        $attendances = \App\Models\Attendance::where(function($query) {
+                $query->whereNotNull('photo_path')
+                      ->orWhereNotNull('checkout_photos');
+            })
             ->whereDate('date', '<', $yesterday)
             ->get();
 
         $count = 0;
         foreach ($attendances as $attendance) {
-            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($attendance->photo_path)) {
+            if ($attendance->photo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($attendance->photo_path)) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($attendance->photo_path);
             }
             $attendance->photo_path = null;
+
+            if ($attendance->checkout_photos) {
+                $photos = json_decode($attendance->checkout_photos, true) ?? [];
+                foreach ($photos as $photo) {
+                    if (\Illuminate\Support\Facades\Storage::disk('public')->exists($photo)) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($photo);
+                    }
+                }
+            }
+            $attendance->checkout_photos = null;
+
             $attendance->save();
             $count++;
         }

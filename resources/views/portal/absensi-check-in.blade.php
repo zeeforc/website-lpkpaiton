@@ -169,6 +169,13 @@
                 </div>
 
                 @if($attendance && $attendance->check_in)
+                    @if(in_array(Auth::user()->role, ['karyawan_paving', 'instruktur_lpk']))
+                    <div class="mt-3">
+                        <label class="fw-bold mb-2">Upload Dokumentasi Pekerjaan <span class="text-danger">*</span></label>
+                        <p class="small text-muted mb-2">Pilih 2 hingga 4 foto kegiatan (foto akan dihapus otomatis setelah 24 jam).</p>
+                        <input type="file" id="checkout-photos" class="form-control" multiple accept="image/*" />
+                    </div>
+                    @endif
                     <div class="mt-3">
                         <label class="fw-bold mb-2">Deskripsi Pekerjaan Hari Ini <span class="text-danger">*</span></label>
                         <textarea class="form-control" id="work-description" rows="3" placeholder="Contoh: Pindah cetak paving, trial cetak kanstin..." required></textarea>
@@ -187,11 +194,12 @@
     </div>
 </div>
 
-<form id="form-absen" action="{{ route('portal.absensi.store') }}" method="POST" style="display: none;">
+<form id="form-absen" action="{{ route('portal.absensi.store') }}" method="POST" style="display: none;" enctype="multipart/form-data">
     @csrf
     <input type="hidden" name="latitude" id="input-lat">
     <input type="hidden" name="longitude" id="input-lng">
     <input type="hidden" name="work_description" id="input-work-description">
+    <input type="file" name="checkout_photos[]" id="input-checkout-photos" multiple accept="image/*">
     <input type="hidden" name="photo" id="input-photo">
     <input type="hidden" name="type" value="{{ ($attendance && $attendance->check_in) ? 'out' : 'in' }}">
 </form>
@@ -419,6 +427,17 @@
                 return;
             }
             document.getElementById('input-work-description').value = descInput.value;
+        }
+
+        const photosInput = document.getElementById('checkout-photos');
+        if (photosInput) {
+            const files = photosInput.files;
+            if (files.length < 2 || files.length > 4) {
+                alert('Silakan upload minimal 2 dan maksimal 4 foto dokumentasi pekerjaan.');
+                photosInput.focus();
+                return;
+            }
+            document.getElementById('input-checkout-photos').files = files;
         }
 
         document.getElementById('input-lat').value = userLat;
