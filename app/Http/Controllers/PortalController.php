@@ -715,18 +715,10 @@ class PortalController extends Controller
             }
             
             if ($request->hasFile('checkout_photos')) {
-                $photos = [];
-                // Delete old ones to save space
-                if ($attendance->checkout_photos) {
-                    $oldPhotos = json_decode($attendance->checkout_photos, true) ?? [];
-                    foreach ($oldPhotos as $oldPhoto) {
-                        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($oldPhoto)) {
-                            \Illuminate\Support\Facades\Storage::disk('public')->delete($oldPhoto);
-                        }
-                    }
-                }
-
+                $photos = $attendance->checkout_photos ? (json_decode($attendance->checkout_photos, true) ?? []) : [];
+                
                 foreach ($request->file('checkout_photos') as $photo) {
+                    if (count($photos) >= 4) break; // max 4
                     $fileName = 'checkout_' . $user->id . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
                     $filePath = $photo->storeAs('attendances/checkout', $fileName, 'public');
                     $photos[] = $filePath;
@@ -755,16 +747,10 @@ class PortalController extends Controller
             }
             
             if ($request->hasFile('checkout_photos')) {
-                $photos = [];
-                if ($attendance->checkout_photos) {
-                    $oldPhotos = json_decode($attendance->checkout_photos, true) ?? [];
-                    foreach ($oldPhotos as $oldPhoto) {
-                        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($oldPhoto)) {
-                            \Illuminate\Support\Facades\Storage::disk('public')->delete($oldPhoto);
-                        }
-                    }
-                }
+                $photos = $attendance->checkout_photos ? (json_decode($attendance->checkout_photos, true) ?? []) : [];
+                
                 foreach ($request->file('checkout_photos') as $photo) {
+                    if (count($photos) >= 4) break; // max 4
                     $fileName = 'checkout_' . $user->id . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
                     $filePath = $photo->storeAs('attendances/checkout', $fileName, 'public');
                     $photos[] = $filePath;

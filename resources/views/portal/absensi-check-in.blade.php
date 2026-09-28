@@ -447,15 +447,16 @@
         const photosInput = document.getElementById('checkout-photos');
         if (photosInput) {
             const files = photosInput.files;
-            const hasExistingPhotos = {{ ($attendance && $attendance->checkout_photos) ? 'true' : 'false' }};
+            const existingPhotosCount = {{ ($attendance && $attendance->checkout_photos) ? count(json_decode($attendance->checkout_photos, true) ?? []) : 0 }};
+            const totalPhotos = files.length + existingPhotosCount;
             
-            if (files.length === 0 && !hasExistingPhotos && submitType === 'out') {
-                alert('Silakan upload minimal 2 dan maksimal 4 foto dokumentasi pekerjaan untuk absen pulang.');
+            if (submitType === 'out' && (totalPhotos < 2 || totalPhotos > 4)) {
+                alert(`Silakan pastikan total foto dokumentasi (tersimpan + baru) adalah 2 hingga 4 foto. (Saat ini tersimpan: ${existingPhotosCount}, baru: ${files.length})`);
                 photosInput.focus();
                 return;
             }
-            if (files.length > 0 && (files.length < 2 || files.length > 4)) {
-                alert('Silakan upload minimal 2 dan maksimal 4 foto dokumentasi pekerjaan.');
+            if (submitType === 'update' && files.length > 0 && totalPhotos > 4) {
+                alert(`Maksimal total 4 foto. Anda sudah menyimpan ${existingPhotosCount} foto, hanya bisa menambah maksimal ${4 - existingPhotosCount} foto lagi.`);
                 photosInput.focus();
                 return;
             }

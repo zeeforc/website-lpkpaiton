@@ -27,13 +27,13 @@ class CleanupAttendancePhotos extends Command
     {
         $this->info('Starting attendance photos cleanup...');
         
-        $yesterday = \Carbon\Carbon::today(); // anything before today
+        $thresholdDate = \Carbon\Carbon::now()->subMonth(); // hapus yang lebih lama dari 1 bulan
 
         $attendances = \App\Models\Attendance::where(function($query) {
                 $query->whereNotNull('photo_path')
                       ->orWhereNotNull('checkout_photos');
             })
-            ->whereDate('date', '<', $yesterday)
+            ->whereDate('date', '<', $thresholdDate)
             ->get();
 
         $count = 0;
