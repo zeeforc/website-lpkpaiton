@@ -637,8 +637,8 @@
                                 Social
                             </div>
                             <div class="d-flex gap-3 mt-1">
-                                <a href="#" class="text-dark text-decoration-none fw-medium hover-primary d-flex align-items-center"><i data-feather="facebook" class="me-1" style="width: 16px; height: 16px;"></i> Facebook</a>
-                                <a href="#" class="text-dark text-decoration-none fw-medium hover-primary d-flex align-items-center"><i data-feather="instagram" class="me-1" style="width: 16px; height: 16px;"></i> Instagram</a>
+                                <!-- <a href="#" class="text-dark text-decoration-none fw-medium hover-primary d-flex align-items-center"><i data-feather="facebook" class="me-1" style="width: 16px; height: 16px;"></i> Facebook</a> -->
+                                <a href="https://www.instagram.com/lpk_paiton_selaras?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==" class="text-dark text-decoration-none fw-medium hover-primary d-flex align-items-center"><i data-feather="instagram" class="me-1" style="width: 16px; height: 16px;"></i> Instagram</a>
                             </div>
                         </div>
                     </div>
@@ -647,7 +647,7 @@
 
                     <p class="small text-secondary m-0 d-flex" style="line-height: 1.6;">
                         <i data-feather="info" class="me-2 flex-shrink-0" style="width: 18px; height: 18px; margin-top: 2px;"></i> 
-                        <span>Staf administrasi kami siap membantu pada hari kerja dengan jam layanan pukul 08.00 sampai 16.00 waktu setempat.</span>
+                        <span>Officer LPK Paiton Selaras siap membantu Anda setiap hari kerja mulai pukul 08.00 hingga 16.00 waktu setempat.</span>
                     </p>
                 </div>
             </div>            
