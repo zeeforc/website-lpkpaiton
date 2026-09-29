@@ -89,7 +89,7 @@ class AttendancesTable
                     ->color('success')
                     ->requiresConfirmation()
                     ->modalHeading('Otomatis Lengkapi Absensi?')
-                    ->modalDescription('Aksi ini akan otomatis mengisi jam yang kosong (Masuk: 07:00, Pulang: 16:00). Jika user sebelumnya sudah absen masuk (misal Telat), maka status dan jam lamanya tidak akan tertimpa. Lanjutkan?')
+                    ->modalDescription('Aksi ini hanya akan mengisi jam yang masih kosong secara otomatis (Jam Masuk Default: 07:00, Pulang: 16:00). Data absensi yang sudah tercatat sebelumnya (seperti jam masuk atau status Telat) tidak akan diubah atau ditimpa. Lanjutkan?')
                     ->action(function (\App\Models\Attendance $record) {
                         $record->update([
                             'check_in' => $record->check_in ?? '07:00:00',
