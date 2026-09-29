@@ -87,6 +87,7 @@ class PavingAttendancesTable
                     ->label('Lengkapi')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
+                    ->hidden(fn (\App\Models\Attendance $record): bool => $record->check_in !== null && $record->check_out !== null)
                     ->requiresConfirmation()
                     ->modalHeading('Otomatis Lengkapi Absensi?')
                     ->modalDescription('Aksi ini hanya akan mengisi jam yang masih kosong secara otomatis (Jam Masuk Default: 07:00, Pulang: 16:00). Data absensi yang sudah tercatat sebelumnya (seperti jam masuk atau status Telat) tidak akan diubah atau ditimpa. Lanjutkan?')
