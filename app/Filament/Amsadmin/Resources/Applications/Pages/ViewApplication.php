@@ -15,6 +15,40 @@ class ViewApplication extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('validasi_semua_dokumen')
+                ->label('Validasi Semua Dokumen')
+                ->color('warning')
+                ->icon('heroicon-m-document-check')
+                ->form([
+                    \Filament\Forms\Components\Select::make('status')
+                        ->label('Ubah Semua Status Menjadi')
+                        ->options([
+                            'Valid' => 'Valid',
+                            'Revisi' => 'Revisi',
+                        ])
+                        ->required()
+                        ->live(),
+                    \Filament\Forms\Components\Textarea::make('keterangan')
+                        ->label('Catatan Revisi')
+                        ->visible(fn (\Filament\Forms\Get $get) => $get('status') === 'Revisi')
+                        ->required(fn (\Filament\Forms\Get $get) => $get('status') === 'Revisi')
+                        ->placeholder('Tuliskan catatan yang harus direvisi oleh pendaftar pada semua dokumen...'),
+                ])
+                ->action(function (array $data) {
+                    $keterangan = $data['status'] === 'Valid' ? null : $data['keterangan'];
+                    
+                    $this->record->documents()->update([
+                        'status' => $data['status'],
+                        'keterangan' => $keterangan,
+                    ]);
+
+                    Notification::make()
+                        ->title('Status semua dokumen berhasil diubah menjadi ' . $data['status'])
+                        ->success()
+                        ->send();
+                })
+                ->visible(fn () => $this->record->documents()->exists()),
+
             Actions\Action::make('permohonan_diterima')
                 ->label('Permohonan Diterima')
                 ->color('primary')
