@@ -71,7 +71,7 @@ body {
 }
 
 .hero-illustration-card {
-    width: min(728px, 100%);
+    width: min(946px, 115%);
     border-radius: 40px;
     padding: 1.5rem 2rem 2rem;
     backdrop-filter: blur(14px);
@@ -349,7 +349,7 @@ body {
 
 .steps-folder-img {
     width: 100%;
-    max-width: 442px;
+    max-width: 575px;
     display: block;
     margin: 0 auto;
     filter: drop-shadow(0 20px 40px rgba(0,0,0,0.12));
@@ -436,6 +436,6 @@ body {
     }
 
     .steps-folder-img {
-        max-width: 312px;
+        max-width: 405px;
     }
 }

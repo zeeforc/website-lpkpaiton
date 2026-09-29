@@ -8,7 +8,7 @@
 <section class="hero-gallery">
     <div class="container">
         <div class="row align-items-center gy-5">
-            <div class="col-lg-6" data-aos="fade-right">
+            <div class="col-lg-5" data-aos="fade-right">
                 <h1 class="hero-title mb-4 text-light">
                     Panduan
                     <br />
@@ -22,7 +22,7 @@
                     <button class="btn-orange">Selengkapnya</button>
                 </a>
             </div>
-            <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+            <div class="col-lg-7" data-aos="fade-left" data-aos-delay="200">
                 <div class="hero-illustration-wrap">
                     <div class="hero-illustration-card">
                         <img src="{{ asset('assets/icon/daftar.webp') }}?v={{ time() }}" alt="Ilustrasi mekanik" />
