@@ -30,8 +30,8 @@ class ViewApplication extends ViewRecord
                         ->live(),
                     \Filament\Forms\Components\Textarea::make('keterangan')
                         ->label('Catatan Revisi')
-                        ->visible(fn (\Filament\Forms\Get $get) => $get('status') === 'Revisi')
-                        ->required(fn (\Filament\Forms\Get $get) => $get('status') === 'Revisi')
+                        ->visible(fn ($get) => $get('status') === 'Revisi')
+                        ->required(fn ($get) => $get('status') === 'Revisi')
                         ->placeholder('Tuliskan catatan yang harus direvisi oleh pendaftar pada semua dokumen...'),
                 ])
                 ->action(function (array $data) {
