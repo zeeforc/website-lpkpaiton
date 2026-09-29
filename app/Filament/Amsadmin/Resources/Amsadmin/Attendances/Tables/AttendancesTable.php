@@ -83,7 +83,7 @@ class AttendancesTable
             ])
 
             ->recordActions([
-                \Filament\Tables\Actions\Action::make('lengkapi_absen')
+                \Filament\Actions\Action::make('lengkapi_absen')
                     ->label('Lengkapi')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
