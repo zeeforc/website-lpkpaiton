@@ -89,12 +89,12 @@ class PavingAttendancesTable
                     ->color('success')
                     ->requiresConfirmation()
                     ->modalHeading('Otomatis Lengkapi Absensi?')
-                    ->modalDescription('Aksi ini akan otomatis mengisi jam masuk ke 07:00 dan jam pulang ke 16:00 (jika masih kosong), serta mengubah status menjadi Hadir. Lanjutkan?')
+                    ->modalDescription('Aksi ini akan otomatis mengisi jam yang kosong (Masuk: 07:00, Pulang: 16:00). Jika user sebelumnya sudah absen masuk (misal Telat), maka status dan jam lamanya tidak akan tertimpa. Lanjutkan?')
                     ->action(function (\App\Models\Attendance $record) {
                         $record->update([
                             'check_in' => $record->check_in ?? '07:00:00',
                             'check_out' => $record->check_out ?? '16:00:00',
-                            'status' => 'Hadir',
+                            'status' => $record->check_in ? $record->status : 'Hadir',
                         ]);
                         \Filament\Notifications\Notification::make()
                             ->title('Berhasil')
