@@ -99,7 +99,10 @@ class ListPavingAttendances extends ListRecords
                             ];
                             $userRole = $roleMap[$attendance->user->role ?? ''] ?? 'Karyawan';
                             $folderName = $userName . ' - ' . $userRole;
+                            
                             $dateObj = \Carbon\Carbon::parse($attendance->date);
+                            $dateFolderName = strtolower($dateObj->translatedFormat('d-F'));
+                            $fullFolderName = $folderName . '/' . $dateFolderName;
                             
                             // 1. Foto Masuk (photo_path)
                             if ($attendance->photo_path) {
@@ -111,7 +114,7 @@ class ListPavingAttendances extends ListRecords
                                         $checkInDate->setTimeFromTimeString($attendance->check_in);
                                     }
                                     $fileName = $checkInDate->format('Y-m-d_H-i-s') . '_Masuk.jpg';
-                                    $zip->addFile($filePath, $folderName . '/' . $fileName);
+                                    $zip->addFile($filePath, $fullFolderName . '/' . $fileName);
                                 }
                             }
 
@@ -135,8 +138,8 @@ class ListPavingAttendances extends ListRecords
                                         $filePath = storage_path('app/public/' . $cp);
                                         if (file_exists($filePath)) {
                                             $hasFiles = true;
-                                            $fileName = $checkOutDate->format('Y-m-d_H-i-s') . '_Pulang_' . $counter . '.jpg';
-                                            $zip->addFile($filePath, $folderName . '/' . $fileName);
+                                            $fileName = $checkOutDate->format('Y-m-d_H-i-s') . '_Dokumentasi_' . $counter . '.jpg';
+                                            $zip->addFile($filePath, $fullFolderName . '/' . $fileName);
                                             $counter++;
                                         }
                                     }
