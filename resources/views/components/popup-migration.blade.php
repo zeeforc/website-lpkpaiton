@@ -10,38 +10,7 @@
 
         <div class="migration-popup-left">
             <div class="megaphone-wrapper">
-                <svg width="180" height="180" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                    <g transform="translate(10, 20)">
-                        <!-- Arm/Sleeve -->
-                        <path d="M-20 150 L35 130 L45 160 L-20 180 Z" fill="#2d3748" />
-                        <path d="M35 130 L45 125 L50 155 L40 160 Z" fill="#ffffff" />
-                        
-                        <!-- Hand / Fingers -->
-                        <path d="M42 128 C50 120, 60 125, 60 135 C60 145, 55 155, 48 155 L42 128 Z" fill="#fbd38d" />
-                        <!-- Fingers wrapped -->
-                        <rect x="48" y="105" width="12" height="35" rx="6" fill="#f6ad55" transform="rotate(-15 54 122)" />
-                        
-                        <!-- Handle -->
-                        <rect x="52" y="90" width="16" height="40" rx="4" fill="#1e3a8a" transform="rotate(-15 60 110)" />
-                        
-                        <!-- Megaphone back (mouthpiece) -->
-                        <path d="M40 85 L60 80 L65 100 L45 105 Z" fill="#f59e0b" />
-                        <path d="M35 85 L45 82.5 L48 95 L38 97.5 Z" fill="#d97706" />
-
-                        <!-- Megaphone Body -->
-                        <path d="M55 80 L115 40 L135 100 L63 105 Z" fill="#3b82f6" />
-                        <path d="M55 80 L115 40 L125 70 L60 90 Z" fill="#60a5fa" />
-                        
-                        <!-- Megaphone Front Cone -->
-                        <ellipse cx="125" cy="70" rx="15" ry="35" fill="#3b82f6" transform="rotate(-15 125 70)" />
-                        <ellipse cx="125" cy="70" rx="8" ry="25" fill="#1e3a8a" transform="rotate(-15 125 70)" />
-                        
-                        <!-- Sound Lines -->
-                        <path d="M145 40 Q160 65 140 90" fill="none" stroke="#60a5fa" stroke-width="5" stroke-linecap="round" />
-                        <path d="M160 25 Q180 65 150 105" fill="none" stroke="#93c5fd" stroke-width="5" stroke-linecap="round" />
-                        <path d="M175 10 Q205 65 160 120" fill="none" stroke="#bfdbfe" stroke-width="5" stroke-linecap="round" />
-                    </g>
-                </svg>
+                <img src="{{ asset('assets/logo/megaphone.png') }}" alt="Megaphone">
             </div>
         </div>
 
@@ -106,8 +75,16 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        width: 100%;
+        padding: 20px;
         filter: drop-shadow(4px 10px 8px rgba(59, 130, 246, 0.2));
         transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .megaphone-wrapper img {
+        width: 100%;
+        max-width: 180px;
+        height: auto;
+        object-fit: contain;
     }
     .migration-popup-card:hover .megaphone-wrapper {
         transform: scale(1.05) rotate(-3deg);
