@@ -212,10 +212,19 @@
     @if(!($attendance && $attendance->check_in && $attendance->check_out))
     
     // Data dari backend
-    @if(Auth::user()->role === 'karyawan_paving')
+    @php
+        $isKaryawanPaving = Auth::user()->role === 'karyawan_paving';
+        $isLastDayOfMonth = \Carbon\Carbon::today()->isLastOfMonth();
+        $isAbsenPulang = $attendance && $attendance->check_in ? true : false;
+        $switchToLpk = $isKaryawanPaving && $isLastDayOfMonth && $isAbsenPulang;
+    @endphp
+
+    @if($isKaryawanPaving && !$switchToLpk)
+    // Karyawan paving (bukan akhir bulan atau masih absen pagi)
     const TARGET_LAT = {{ $settings['paving_latitude'] ?? '-7.7126' }};
     const TARGET_LNG = {{ $settings['paving_longitude'] ?? '113.4687' }};
     @else
+    // Instruktur/Siswa, atau Karyawan Paving (Absen Pulang di Akhir Bulan)
     const TARGET_LAT = {{ $settings['lpk_latitude'] ?? '-7.7126' }};
     const TARGET_LNG = {{ $settings['lpk_longitude'] ?? '113.4687' }};
     @endif
