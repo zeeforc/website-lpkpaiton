@@ -5,6 +5,10 @@
 
     RewriteEngine On
 
+    # Redirect lpkpaiton.site atau app.lpkpaiton.site ke lpkpaiton.com
+    RewriteCond %{HTTP_HOST} ^(app\.)?lpkpaiton\.site$ [NC]
+    RewriteRule ^(.*)$ https://lpkpaiton.com/$1 [L,R=301]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
