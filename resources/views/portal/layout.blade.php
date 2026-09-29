@@ -488,5 +488,8 @@
     </script>
     
     @stack('scripts')
+    <!-- Migration Popup -->
+    @include('components.popup-migration')
+
 </body>
 </html>

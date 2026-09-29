@@ -57,6 +57,9 @@
             offset: 50, // offset (in px) from the original trigger point
         });
     </script>
+    <!-- Migration Popup -->
+    @include('components.popup-migration')
+
 </body>
 
 </html>
