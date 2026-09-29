@@ -70,7 +70,9 @@ class ListPavingAttendances extends ListRecords
                     })
                     ->whereYear('date', $year)
                     ->whereMonth('date', $month)
-                    ->whereNotNull('photo_path')
+                    ->where(function($q) {
+                        $q->whereNotNull('photo_path')->orWhereNotNull('checkout_photos');
+                    })
                     ->with('user')
                     ->get();
 
@@ -90,28 +92,55 @@ class ListPavingAttendances extends ListRecords
                     if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
                         $hasFiles = false;
                         foreach ($attendances as $attendance) {
-                            $filePath = storage_path('app/public/' . $attendance->photo_path);
+                            $userName = preg_replace('/[^A-Za-z0-9\-\s]/', '', $attendance->user->name ?? 'Unknown');
+                            $roleMap = [
+                                'karyawan_paving' => 'Karyawan Paving',
+                                'instruktur_lpk' => 'Instruktur LPK'
+                            ];
+                            $userRole = $roleMap[$attendance->user->role ?? ''] ?? 'Karyawan';
+                            $folderName = $userName . ' - ' . $userRole;
+                            $dateObj = \Carbon\Carbon::parse($attendance->date);
                             
-                            if (file_exists($filePath)) {
-                                $hasFiles = true;
-                                $userName = preg_replace('/[^A-Za-z0-9\-\s]/', '', $attendance->user->name ?? 'Unknown');
-                                
-                                $roleMap = [
-                                    'karyawan_paving' => 'Karyawan Paving',
-                                    'instruktur_lpk' => 'Instruktur LPK'
-                                ];
-                                $userRole = $roleMap[$attendance->user->role ?? ''] ?? 'Karyawan';
-                                
-                                $folderName = $userName . ' - ' . $userRole;
-                                
-                                $dateObj = \Carbon\Carbon::parse($attendance->date);
-                                if ($attendance->check_in) {
-                                    $dateObj->setTimeFromTimeString($attendance->check_in);
+                            // 1. Foto Masuk (photo_path)
+                            if ($attendance->photo_path) {
+                                $filePath = storage_path('app/public/' . $attendance->photo_path);
+                                if (file_exists($filePath)) {
+                                    $hasFiles = true;
+                                    $checkInDate = clone $dateObj;
+                                    if ($attendance->check_in) {
+                                        $checkInDate->setTimeFromTimeString($attendance->check_in);
+                                    }
+                                    $fileName = $checkInDate->format('Y-m-d_H-i-s') . '_Masuk.jpg';
+                                    $zip->addFile($filePath, $folderName . '/' . $fileName);
                                 }
-                                // Format: Tanggal_Jam.jpg
-                                $fileName = $dateObj->format('Y-m-d_H-i-s') . '.jpg';
-                                
-                                $zip->addFile($filePath, $folderName . '/' . $fileName);
+                            }
+
+                            // 2. Foto Dokumentasi / Pulang (checkout_photos)
+                            if ($attendance->checkout_photos) {
+                                $checkoutPhotos = is_array($attendance->checkout_photos) 
+                                    ? $attendance->checkout_photos 
+                                    : json_decode($attendance->checkout_photos, true);
+                                    
+                                if (is_array($checkoutPhotos)) {
+                                    $checkOutDate = clone $dateObj;
+                                    if ($attendance->check_out) {
+                                        $checkOutDate->setTimeFromTimeString($attendance->check_out);
+                                    } else {
+                                        // Default jam jika belum checkout tapi sudah upload (seharusnya tidak terjadi)
+                                        $checkOutDate->setTime(16, 0, 0); 
+                                    }
+                                    
+                                    $counter = 1;
+                                    foreach ($checkoutPhotos as $cp) {
+                                        $filePath = storage_path('app/public/' . $cp);
+                                        if (file_exists($filePath)) {
+                                            $hasFiles = true;
+                                            $fileName = $checkOutDate->format('Y-m-d_H-i-s') . '_Pulang_' . $counter . '.jpg';
+                                            $zip->addFile($filePath, $folderName . '/' . $fileName);
+                                            $counter++;
+                                        }
+                                    }
+                                }
                             }
                         }
                         $zip->close();
