@@ -83,6 +83,25 @@ class AttendancesTable
             ])
 
             ->recordActions([
+                \Filament\Tables\Actions\Action::make('lengkapi_absen')
+                    ->label('Lengkapi')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Otomatis Lengkapi Absensi?')
+                    ->modalDescription('Aksi ini akan otomatis mengisi jam masuk ke 07:00 dan jam pulang ke 16:00 (jika masih kosong), serta mengubah status menjadi Hadir. Lanjutkan?')
+                    ->action(function (\App\Models\Attendance $record) {
+                        $record->update([
+                            'check_in' => $record->check_in ?? '07:00:00',
+                            'check_out' => $record->check_out ?? '16:00:00',
+                            'status' => 'Hadir',
+                        ]);
+                        \Filament\Notifications\Notification::make()
+                            ->title('Berhasil')
+                            ->body('Data absensi telah dilengkapi otomatis.')
+                            ->success()
+                            ->send();
+                    }),
                 ViewAction::make(),
                 EditAction::make(),
             ])
