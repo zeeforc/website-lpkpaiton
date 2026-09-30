@@ -25,7 +25,8 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\LeaveRequest::observe(\App\Observers\LeaveRequestObserver::class);
         Paginator::useBootstrapFive();
 
-        if (config('app.env') === 'production' || str_contains(config('app.url'), 'https://')) {
+        // Memaksa HTTPS jika bukan di local/Laragon agar upload tidak diblokir
+        if (!request()->is('localhost*') && !request()->is('127.0.0.1*') && !str_contains(request()->url(), 'lpkpaiton.test')) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
     }
