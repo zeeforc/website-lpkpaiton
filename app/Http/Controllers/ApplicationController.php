@@ -123,6 +123,7 @@ class ApplicationController extends Controller
             'dokumen_skck' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'dokumen_sehat' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'dokumen_portofolio' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'dokumen_perjanjian_pkl' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
             'dokumen_lainnya' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ], [
             'dokumen_ktp.max' => 'Ukuran fotocopy KTP maksimal 2MB.',
@@ -130,6 +131,7 @@ class ApplicationController extends Controller
             'dokumen_skck.max' => 'Ukuran Surat Kelakuan Baik maksimal 2MB.',
             'dokumen_sehat.max' => 'Ukuran Surat Keterangan Sehat maksimal 2MB.',
             'dokumen_portofolio.max' => 'Ukuran Portofolio maksimal 5MB.',
+            'dokumen_perjanjian_pkl.max' => 'Ukuran Surat Perjanjian PKL maksimal 5MB.',
             'dokumen_lainnya.max' => 'Ukuran Dokumen Tambahan maksimal 5MB.',
         ]);
 
@@ -142,6 +144,7 @@ class ApplicationController extends Controller
                 'dokumen_skck' => 'SKCK',
                 'dokumen_sehat' => 'Surat Sehat',
                 'dokumen_portofolio' => 'Portofolio',
+                'dokumen_perjanjian_pkl' => 'Surat Perjanjian PKL',
                 'dokumen_lainnya' => 'Dokumen Tambahan',
             ];
 
@@ -234,7 +237,7 @@ class ApplicationController extends Controller
         }
 
         $request->validate([
-            'document_type' => 'required|string|in:KTP/Kartu Pelajar,Pas Foto 4x6,SKCK,Surat Sehat,Portofolio,Dokumen Tambahan',
+            'document_type' => 'required|string|in:KTP/Kartu Pelajar,Pas Foto 4x6,SKCK,Surat Sehat,Portofolio,Surat Perjanjian PKL,Dokumen Tambahan',
             'dokumen_baru' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 

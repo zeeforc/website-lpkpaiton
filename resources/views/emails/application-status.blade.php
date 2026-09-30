@@ -16,7 +16,14 @@ Beberapa dokumen persyaratan Anda perlu diperbaiki. Silakan cek catatan dari tim
 Perbaiki Dokumen
 </x-mail::button>
 @elseif($application->status === 'permohonan_diterima')
-Permohonan pendaftaran Anda telah diterima. Silakan unggah dokumen persyaratan (KTP, Pas Foto, SKCK, Surat Sehat, dan dokumen pendukung lainnya).
+Permohonan pendaftaran Anda telah diterima! Bersama email ini, kami melampirkan **Surat Balasan** dan **Surat Perjanjian PKL** untuk Anda.
+
+Silakan unduh lampiran tersebut, lalu **tandatangani Surat Perjanjian PKL**. Setelah itu, silakan klik tombol di bawah ini untuk mengunggah dokumen persyaratan (Surat Perjanjian PKL yang sudah ditandatangani, KTP, Pas Foto, SKCK, Surat Sehat, dan dokumen pendukung lainnya).
+
+@if(!empty($note))
+**Catatan Tambahan:**
+{{ $note }}
+@endif
 
 <x-mail::button :url="URL::signedRoute('application.upload', ['application' => $application->id])">
 Unggah Dokumen

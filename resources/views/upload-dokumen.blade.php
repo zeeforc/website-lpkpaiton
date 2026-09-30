@@ -114,7 +114,13 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="dokumen_lainnya" class="form-label fw-bold">6. BPJS Kesehatan <span class="text-muted fw-normal">(Opsional)</span></label>
+                    <label for="dokumen_perjanjian_pkl" class="form-label fw-bold">6. Surat Perjanjian PKL (Telah Ditandatangani) <span class="text-danger">*</span></label>
+                    <div class="form-text text-muted mb-2">Upload Surat Perjanjian PKL yang kami kirimkan via email setelah ditandatangani (PDF/JPG/PNG, Maks 5 MB).</div>
+                    <input class="form-control" type="file" id="dokumen_perjanjian_pkl" name="dokumen_perjanjian_pkl" accept=".pdf,.jpg,.jpeg,.png" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="dokumen_lainnya" class="form-label fw-bold">7. BPJS Kesehatan <span class="text-muted fw-normal">(Opsional)</span></label>
                     <div class="form-text text-muted mb-2">Upload sertifikat/dokumen pendukung lainnya jika ada (PDF/JPG/PNG, Maks 5 MB).</div>
                     <input class="form-control" type="file" id="dokumen_lainnya" name="dokumen_lainnya" accept=".pdf,.jpg,.jpeg,.png">
                 </div>
@@ -140,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
             { id: 'dokumen_skck', name: 'Surat Kelakuan Baik / SKCK', maxSize: 2 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] },
             { id: 'dokumen_sehat', name: 'Surat Keterangan Sehat', maxSize: 2 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] },
             { id: 'dokumen_portofolio', name: 'Portofolio', maxSize: 10 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] },
+            { id: 'dokumen_perjanjian_pkl', name: 'Surat Perjanjian PKL', maxSize: 5 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] },
             { id: 'dokumen_lainnya', name: 'Dokumen Tambahan', maxSize: 5 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] }
         ];
 
