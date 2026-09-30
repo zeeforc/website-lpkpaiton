@@ -30,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
             \Illuminate\Support\Facades\URL::forceScheme('https');
             \Illuminate\Support\Facades\URL::forceRootUrl(config('app.url'));
             request()->server->set('HTTPS', 'on');
+            request()->server->set('SERVER_PORT', 443);
             request()->headers->set('HOST', parse_url(config('app.url'), PHP_URL_HOST));
         }
     }
