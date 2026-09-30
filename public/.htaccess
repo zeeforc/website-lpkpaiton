@@ -5,10 +5,10 @@
 
     RewriteEngine On
 
-    # Cloudflare Proxy: beri tahu Apache bahwa request ini HTTPS
-    # Ini HARUS sebelum PHP jalan agar Livewire signed URL tidak 401
+    # Cloudflare Proxy Fix: cPanel internal proxy OVERWRITE X-Forwarded-Proto to 'http'
+    # Jadi kita pakai CF-Visitor header yang tidak ditimpa oleh cPanel
     <IfModule mod_setenvif.c>
-        SetEnvIf X-Forwarded-Proto "https" HTTPS=on
+        SetEnvIf CF-Visitor "https" HTTPS=on
     </IfModule>
 
     # Redirect lpkpaiton.site atau app.lpkpaiton.site ke lpkpaiton.com
