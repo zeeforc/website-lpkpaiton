@@ -28,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         // Memaksa HTTPS jika bukan di local/Laragon agar upload tidak diblokir
         if (!request()->is('localhost*') && !request()->is('127.0.0.1*') && !str_contains(request()->url(), 'lpkpaiton.test')) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
+            request()->server->set('HTTPS', 'on');
         }
     }
 }
