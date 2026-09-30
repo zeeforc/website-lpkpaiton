@@ -14,7 +14,14 @@ return Application::configure(basePath: dirname(__DIR__))
         // Trust all proxies (Cloudflare, load balancers, etc.)
         // This ensures Laravel correctly reads X-Forwarded-Proto so it knows the
         // user is on HTTPS, which is critical for secure session cookies to work.
-        $middleware->trustProxies(at: '*');
+        $middleware->trustProxies(
+            at: '*',
+            headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |
+                     \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST |
+                     \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT |
+                     \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO |
+                     \Illuminate\Http\Request::HEADER_X_FORWARDED_PREFIX
+        );
 
         // Redirect unauthenticated users to the portal login page
         // instead of the default 'login' route which doesn't exist

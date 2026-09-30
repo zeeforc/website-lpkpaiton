@@ -5,6 +5,12 @@
 
     RewriteEngine On
 
+    # Cloudflare Proxy: beri tahu Apache bahwa request ini HTTPS
+    # Ini HARUS sebelum PHP jalan agar Livewire signed URL tidak 401
+    <IfModule mod_setenvif.c>
+        SetEnvIf X-Forwarded-Proto "https" HTTPS=on
+    </IfModule>
+
     # Redirect lpkpaiton.site atau app.lpkpaiton.site ke lpkpaiton.com
     RewriteCond %{HTTP_HOST} ^(app\.)?lpkpaiton\.site$ [NC]
     RewriteRule ^(.*)$ https://lpkpaiton.com/$1 [L,R=301]
