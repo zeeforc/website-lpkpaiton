@@ -24,5 +24,9 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\ApplicationDocument::observe(\App\Observers\ApplicationDocumentObserver::class);
         \App\Models\LeaveRequest::observe(\App\Observers\LeaveRequestObserver::class);
         Paginator::useBootstrapFive();
+
+        if (config('app.env') === 'production' || str_contains(config('app.url'), 'https://')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
     }
 }
