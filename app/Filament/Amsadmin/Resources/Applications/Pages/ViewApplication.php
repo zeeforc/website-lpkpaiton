@@ -55,20 +55,8 @@ class ViewApplication extends ViewRecord
                 ->icon('heroicon-m-check-circle')
                 ->requiresConfirmation()
                 ->modalHeading('Terima Permohonan')
-                ->modalDescription('Apakah Anda yakin ingin menyetujui permohonan ini? Sistem akan mengirimkan email ke pendaftar beserta dokumen terlampir.')
+                ->modalDescription('Apakah Anda yakin ingin menyetujui permohonan ini? Sistem akan OTOMATIS membuatkan Surat Balasan dan Perjanjian PKL dari template, lalu mengirimkannya ke email pendaftar.')
                 ->form([
-                    \Filament\Forms\Components\FileUpload::make('surat_balasan')
-                        ->label('Surat Balasan (PDF/Word)')
-                        ->directory('application_documents')
-                        ->rules(['mimes:pdf,doc,docx'])
-                        ->maxSize(5120) // 5MB max
-                        ->required(),
-                    \Filament\Forms\Components\FileUpload::make('surat_perjanjian')
-                        ->label('Surat Perjanjian PKL (PDF/Word)')
-                        ->directory('application_documents')
-                        ->rules(['mimes:pdf,doc,docx'])
-                        ->maxSize(5120) // 5MB max
-                        ->required(),
                     \Filament\Forms\Components\Textarea::make('note')
                         ->label('Catatan Tambahan (Opsional)')
                         ->placeholder('Tuliskan instruksi tambahan di sini...')
@@ -76,10 +64,14 @@ class ViewApplication extends ViewRecord
                 ])
                 ->modalSubmitActionLabel('Ya, Setujui Permohonan')
                 ->action(function (array $data) {
+                    // Generate dokumen dari template
+                    $generator = new \App\Services\PklLetterGenerator();
+                    $generatedFiles = $generator->generateForApplication($this->record);
+                    
                     $this->record->update([
                         'status' => 'permohonan_diterima',
-                        'surat_balasan' => $data['surat_balasan'] ?? null,
-                        'surat_perjanjian' => $data['surat_perjanjian'] ?? null,
+                        'surat_balasan' => $generatedFiles['surat_balasan'] ?? null,
+                        'surat_perjanjian' => $generatedFiles['surat_perjanjian'] ?? null,
                     ]);
                     
                     if (!empty($data['note'])) {
@@ -91,7 +83,7 @@ class ViewApplication extends ViewRecord
                     }
                     
                     Notification::make()
-                        ->title('Permohonan berhasil diterima. Email dikirim ke pendaftar.')
+                        ->title('Permohonan berhasil diterima. Dokumen otomatis dibuat & Email dikirim.')
                         ->success()
                         ->send();
                 })
