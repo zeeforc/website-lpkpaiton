@@ -10,7 +10,8 @@ class Application extends Model
         'user_id', 'nama_lengkap', 'instansi', 'tingkat_pendidikan', 'jurusan', 'no_hp',
         'pengajuan', 'periode_gelombang', 'jumlah_peserta', 'lama_durasi_bulan',
         'fokus_studi', 'email_balasan', 'status',
-        'start_date', 'end_date', 'is_jalur_khusus'
+        'start_date', 'end_date', 'is_jalur_khusus',
+        'surat_balasan', 'surat_perjanjian'
     ];
 
     protected $casts = [

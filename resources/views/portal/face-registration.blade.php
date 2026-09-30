@@ -115,7 +115,7 @@
     let isDetecting = false;
     let detectionLoop;
 
-    // Pastikan models path sesuai
+    
     const MODEL_URL = '/models';
 
     async function initFaceAPI() {
@@ -153,26 +153,24 @@
     video.addEventListener('play', () => {
         statusText.innerText = 'Menganalisis wajah...';
         
-        // Buat canvas untuk menggambar kotak deteksi
+        
         const canvas = faceapi.createCanvasFromMedia(video);
         document.getElementById('camera-container').append(canvas);
         
         const displaySize = { width: video.clientWidth, height: video.clientHeight };
         faceapi.matchDimensions(canvas, displaySize);
 
-        // Resize observer in case window resizes
+        
         new ResizeObserver(() => {
             const newDisplaySize = { width: video.clientWidth, height: video.clientHeight };
             faceapi.matchDimensions(canvas, newDisplaySize);
         }).observe(video);
 
-        // Optimasi: gunakan rekursif timeout daripada setInterval agar tidak freeze
         async function detect() {
             if(video.paused || video.ended || isDetecting) return;
             isDetecting = true;
 
             try {
-                // Gunakan inputSize yang lebih kecil (misal 160 atau 224) agar lebih cepat
                 const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.5 });
                 
                 const detections = await faceapi.detectAllFaces(video, options)
@@ -199,11 +197,9 @@
                     btnScan.innerHTML = '<i class="fa-solid fa-camera me-2"></i> Pindai Wajah Sekarang';
                     faceDescriptorToSave = null;
                 } else {
-                    // Tepat 1 wajah terdeteksi
                     statusText.innerText = 'Wajah terdeteksi! Silakan klik "Pindai Wajah Sekarang"';
-                    statusMessage.style.background = 'rgba(25, 135, 84, 0.8)'; // Hijau
+                    statusMessage.style.background = 'rgba(25, 135, 84, 0.8)';
                     
-                    // Ambil descriptor (array 128 dimensi)
                     faceDescriptorToSave = detections[0].descriptor;
                     
                     btnScan.disabled = false;
@@ -213,24 +209,22 @@
             }
 
             isDetecting = false;
-            // Panggil lagi setelah jeda pendek
             detectionLoop = setTimeout(detect, 200);
         }
 
-        // Mulai loop deteksi
         detect();
     });
 
-    // Handle tombol simpan
+    
     btnScan.addEventListener('click', function() {
         if (!faceDescriptorToSave) return;
 
-        // Ubah state loading
+        
         this.disabled = true;
         this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Menyimpan...';
-        clearTimeout(detectionLoop); // Hentikan loop deteksi
+        clearTimeout(detectionLoop); 
 
-        // Konversi float32 array ke array biasa agar bisa di-JSON-kan
+        
         const descriptorArray = Array.from(faceDescriptorToSave);
         
         fetch('{{ route("portal.face-registration.store") }}', {
@@ -271,12 +265,12 @@
             this.disabled = false;
             this.innerHTML = '<i class="fa-solid fa-camera me-2"></i> Pindai Wajah Sekarang';
             
-            // Lanjutkan loop deteksi
+            
             detect();
         });
     });
 
-    // Mulai inisialisasi saat DOM siap
+    
     document.addEventListener('DOMContentLoaded', initFaceAPI);
 
 </script>

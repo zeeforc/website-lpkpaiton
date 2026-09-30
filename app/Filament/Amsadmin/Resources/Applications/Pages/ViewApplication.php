@@ -54,11 +54,42 @@ class ViewApplication extends ViewRecord
                 ->color('primary')
                 ->icon('heroicon-m-check-circle')
                 ->requiresConfirmation()
-                ->modalHeading('Permohonan Diterima')
-                ->modalDescription('Apakah Anda yakin ingin menyetujui permohonan awal ini? Sistem akan mengirim email ke pendaftar untuk mengunggah dokumen.')
+                ->modalHeading('Terima Permohonan')
+                ->modalDescription('Apakah Anda yakin ingin menyetujui permohonan ini? Sistem akan mengirimkan email ke pendaftar beserta dokumen terlampir.')
+                ->form([
+                    \Filament\Forms\Components\FileUpload::make('surat_balasan')
+                        ->label('Surat Balasan (PDF/Word)')
+                        ->directory('application_documents')
+                        ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.doc', '.docx'])
+                        ->maxSize(5120) // 5MB max
+                        ->required(),
+                    \Filament\Forms\Components\FileUpload::make('surat_perjanjian')
+                        ->label('Surat Perjanjian PKL (PDF/Word)')
+                        ->directory('application_documents')
+                        ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.doc', '.docx'])
+                        ->maxSize(5120) // 5MB max
+                        ->required(),
+                    \Filament\Forms\Components\Textarea::make('note')
+                        ->label('Catatan Tambahan (Opsional)')
+                        ->placeholder('Tuliskan instruksi tambahan di sini...')
+                        ->nullable(),
+                ])
                 ->modalSubmitActionLabel('Ya, Setujui Permohonan')
-                ->action(function () {
-                    $this->record->update(['status' => 'permohonan_diterima']);
+                ->action(function (array $data) {
+                    $this->record->update([
+                        'status' => 'permohonan_diterima',
+                        'surat_balasan' => $data['surat_balasan'] ?? null,
+                        'surat_perjanjian' => $data['surat_perjanjian'] ?? null,
+                    ]);
+                    
+                    if (!empty($data['note'])) {
+                        \App\Models\ApplicationNote::create([
+                            'application_id' => $this->record->id,
+                            'user_id' => auth()->id(),
+                            'note' => $data['note'],
+                        ]);
+                    }
+                    
                     Notification::make()
                         ->title('Permohonan berhasil diterima. Email dikirim ke pendaftar.')
                         ->success()

@@ -38,4 +38,22 @@ class ApplicationStatusUpdated extends Mailable
             ],
         );
     }
+
+    public function attachments(): array
+    {
+        $attachments = [];
+        if ($this->application->status === 'permohonan_diterima') {
+            if ($this->application->surat_balasan) {
+                $ext = pathinfo($this->application->surat_balasan, PATHINFO_EXTENSION);
+                $attachments[] = \Illuminate\Mail\Mailables\Attachment::fromStorageDisk('public', $this->application->surat_balasan)
+                    ->as('Surat_Balasan.' . ($ext ?: 'pdf'));
+            }
+            if ($this->application->surat_perjanjian) {
+                $ext = pathinfo($this->application->surat_perjanjian, PATHINFO_EXTENSION);
+                $attachments[] = \Illuminate\Mail\Mailables\Attachment::fromStorageDisk('public', $this->application->surat_perjanjian)
+                    ->as('Surat_Perjanjian_PKL.' . ($ext ?: 'pdf'));
+            }
+        }
+        return $attachments;
+    }
 }

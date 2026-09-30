@@ -17,10 +17,11 @@ class ClearanceTemplateForm
                     ->label('Nama Format')
                     ->required(),
                 FileUpload::make('file_path')
-                    ->label('File Format')
+                    ->label('File Format (PDF/Word/Image)')
                     ->directory('clearance_templates')
-                    ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'])
-                    ->maxSize(2048)
+                    ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.doc', '.docx', 'image/jpeg', 'image/png'])
+                    ->maxSize(5120)
+                    ->downloadable()
                     ->required(),
                 Toggle::make('is_active')
                     ->required(),
