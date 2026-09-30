@@ -5,11 +5,8 @@
 
     RewriteEngine On
 
-    # Cloudflare Proxy Fix: cPanel internal proxy OVERWRITE X-Forwarded-Proto to 'http'
-    # Jadi kita pakai CF-Visitor header yang tidak ditimpa oleh cPanel
-    <IfModule mod_setenvif.c>
-        SetEnvIf CF-Visitor "https" HTTPS=on
-    </IfModule>
+    # Note: HTTPS handling dilakukan di AppServiceProvider via CF-Visitor header
+    # JANGAN pakai SetEnvIf HTTPS=on di sini - akan merusak Apache asset serving
 
     # Redirect lpkpaiton.site atau app.lpkpaiton.site ke lpkpaiton.com
     RewriteCond %{HTTP_HOST} ^(app\.)?lpkpaiton\.site$ [NC]
