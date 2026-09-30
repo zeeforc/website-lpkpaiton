@@ -19,7 +19,7 @@ class ClearanceTemplateForm
                 FileUpload::make('file_path')
                     ->label('File Format (PDF/Word/Image)')
                     ->directory('clearance_templates')
-                    ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.doc', '.docx', 'image/jpeg', 'image/png'])
+                    ->rules(['mimes:pdf,doc,docx,jpeg,png,jpg'])
                     ->maxSize(5120)
                     ->downloadable()
                     ->required(),

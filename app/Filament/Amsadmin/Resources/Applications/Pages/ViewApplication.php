@@ -60,13 +60,13 @@ class ViewApplication extends ViewRecord
                     \Filament\Forms\Components\FileUpload::make('surat_balasan')
                         ->label('Surat Balasan (PDF/Word)')
                         ->directory('application_documents')
-                        ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.doc', '.docx'])
+                        ->rules(['mimes:pdf,doc,docx'])
                         ->maxSize(5120) // 5MB max
                         ->required(),
                     \Filament\Forms\Components\FileUpload::make('surat_perjanjian')
                         ->label('Surat Perjanjian PKL (PDF/Word)')
                         ->directory('application_documents')
-                        ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.doc', '.docx'])
+                        ->rules(['mimes:pdf,doc,docx'])
                         ->maxSize(5120) // 5MB max
                         ->required(),
                     \Filament\Forms\Components\Textarea::make('note')
