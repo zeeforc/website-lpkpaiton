@@ -293,8 +293,8 @@
                                     <input type="text" name="title" class="form-control form-control-sm" placeholder="Contoh: Analisis Sistem Informasi..." required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label text-secondary" style="font-size: 0.85rem">Upload Laporan (PDF) <span class="text-danger">*</span></label>
-                                    <input type="file" name="file_path" class="form-control form-control-sm" accept=".pdf" required>
+                                    <label class="form-label text-secondary" style="font-size: 0.85rem">Upload Laporan (PDF/ZIP) <span class="text-danger">*</span></label>
+                                    <input type="file" name="file_path" class="form-control form-control-sm" accept=".pdf,.zip" required>
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label text-secondary" style="font-size: 0.85rem">Catatan untuk Admin (opsional)</label>

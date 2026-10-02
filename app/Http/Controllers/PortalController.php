@@ -485,7 +485,10 @@ class PortalController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'notes' => 'nullable|string',
-            'file_path' => 'required|file|mimes:pdf|max:10240',
+            'file_path' => 'required|file|mimes:pdf,zip|max:10240',
+        ], [
+            'file_path.mimes' => 'File laporan harus berupa PDF atau ZIP.',
+            'file_path.max' => 'Ukuran file laporan maksimal 10MB.',
         ]);
         
         $path = $request->file('file_path')->store('reports', 'public');
