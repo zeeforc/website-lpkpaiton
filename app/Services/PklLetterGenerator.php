@@ -36,12 +36,12 @@ class PklLetterGenerator
 
         // Siapkan variabel yang akan direplace
         $templateProcessor->setValue('NAMA', $application->nama_lengkap ?? '-');
-        $templateProcessor->setValue('ASAL_SEKOLAH', $application->asal_sekolah ?? '-');
-        $templateProcessor->setValue('NISN', $application->nisn ?? '-');
-        $templateProcessor->setValue('PROGRAM_KEAHLIAN', $application->program_keahlian ?? '-');
+        $templateProcessor->setValue('ASAL_SEKOLAH', $application->instansi ?? '-');
+        $templateProcessor->setValue('NISN', '-'); // Belum ada di form
+        $templateProcessor->setValue('PROGRAM_KEAHLIAN', $application->jurusan ?? '-');
         
-        $tanggalMulai = $application->tanggal_mulai ? \Carbon\Carbon::parse($application->tanggal_mulai)->translatedFormat('d F Y') : '-';
-        $tanggalSelesai = $application->tanggal_selesai ? \Carbon\Carbon::parse($application->tanggal_selesai)->translatedFormat('d F Y') : '-';
+        $tanggalMulai = $application->start_date ? \Carbon\Carbon::parse($application->start_date)->translatedFormat('d F Y') : '-';
+        $tanggalSelesai = $application->end_date ? \Carbon\Carbon::parse($application->end_date)->translatedFormat('d F Y') : '-';
         
         $templateProcessor->setValue('TANGGAL_MASUK', $tanggalMulai);
         $templateProcessor->setValue('TANGGAL_KELUAR', $tanggalSelesai);
