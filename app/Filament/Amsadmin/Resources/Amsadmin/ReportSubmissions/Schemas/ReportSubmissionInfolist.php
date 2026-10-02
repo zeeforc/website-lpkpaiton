@@ -10,10 +10,10 @@ class ReportSubmissionInfolist
     {
         return $schema
             ->components([
-                \Filament\Infolists\Components\Section::make('Detail Laporan')
+                \Filament\Schemas\Components\Section::make('Detail Laporan')
                     ->description('Informasi lengkap mengenai laporan PKL siswa')
                     ->schema([
-                        \Filament\Infolists\Components\Grid::make(2)->schema([
+                        \Filament\Schemas\Components\Grid::make(2)->schema([
                             \Filament\Infolists\Components\TextEntry::make('user.name')
                                 ->label('Nama Siswa'),
                             \Filament\Infolists\Components\TextEntry::make('title')
@@ -33,7 +33,7 @@ class ReportSubmissionInfolist
                                 ->url(fn ($record) => asset('storage/' . $record->file_path))
                                 ->openUrlInNewTab(),
                         ]),
-                        \Filament\Infolists\Components\Grid::make(1)->schema([
+                        \Filament\Schemas\Components\Grid::make(1)->schema([
                             \Filament\Infolists\Components\TextEntry::make('notes')
                                 ->label('Catatan Siswa'),
                             \Filament\Infolists\Components\TextEntry::make('admin_note')
