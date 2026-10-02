@@ -2,9 +2,9 @@
 
 namespace App\Filament\Amsadmin\Resources\PklLetterTemplates\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 
 class PklLetterTemplatesTable
@@ -19,13 +19,13 @@ class PklLetterTemplatesTable
                     ->sortable(),
                 \Filament\Tables\Columns\TextColumn::make('type')
                     ->label('Jenis Surat')
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                    ->formatStateUsing(fn (?string $state): string => match ($state) {
                         'surat_balasan' => 'Surat Balasan',
                         'surat_perjanjian' => 'Surat Perjanjian PKL',
-                        default => $state,
+                        default => $state ?? '-',
                     })
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn (?string $state): string => match ($state) {
                         'surat_balasan' => 'success',
                         'surat_perjanjian' => 'warning',
                         default => 'gray',

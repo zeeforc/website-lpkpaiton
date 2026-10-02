@@ -5,6 +5,7 @@
         'SKCK' => 'Surat Kelakuan Baik / SKCK',
         'Surat Sehat' => 'Surat Keterangan Sehat',
         'Portofolio' => 'Portofolio',
+        'Surat Perjanjian PKL' => 'Surat Perjanjian PKL',
         'Dokumen Tambahan' => 'Dokumen Tambahan (Opsional)'
     ];
     $existingDocs = optional($application)->documents ?? collect();
