@@ -258,4 +258,24 @@ class ApplicationController extends Controller
             return back()->withErrors(['error' => 'Gagal mengunggah dokumen.']);
         }
     }
+
+    public function downloadContohPortofolio()
+    {
+        $contohPortofolioSetting = \App\Models\Setting::where('key', 'contoh_portofolio')->first();
+        
+        if ($contohPortofolioSetting && $contohPortofolioSetting->value) {
+            $path = storage_path('app/public/' . $contohPortofolioSetting->value);
+            if (file_exists($path)) {
+                return response()->download($path, 'Contoh_Format_Portofolio_PKL.pdf');
+            }
+        }
+
+        // Fallback to public asset if no setting or file doesn't exist
+        $fallbackPath = public_path('contoh_portofolio.pdf');
+        if (file_exists($fallbackPath)) {
+            return response()->download($fallbackPath, 'Contoh_Format_Portofolio_PKL.pdf');
+        }
+
+        abort(404, 'File contoh portofolio belum tersedia.');
+    }
 }

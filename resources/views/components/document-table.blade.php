@@ -53,12 +53,8 @@
                                         @endif
                                     </div>
                                     @if($docType === 'Portofolio')
-                                        @php
-                                            $contohPortofolioSetting = \App\Models\Setting::where('key', 'contoh_portofolio')->first();
-                                            $contohUrl = $contohPortofolioSetting && $contohPortofolioSetting->value ? Storage::disk('public')->url($contohPortofolioSetting->value) : asset('contoh_portofolio.pdf');
-                                        @endphp
                                         <div class="mt-1 mb-1">
-                                            <a href="{{ $contohUrl }}" target="_blank" class="text-decoration-none" style="color: #2563eb; font-size: 0.8rem; font-weight: 500;">
+                                            <a href="{{ route('application.download-contoh-portofolio') }}" class="text-decoration-none" style="color: #2563eb; font-size: 0.8rem; font-weight: 500;">
                                                 <i class="fa-solid fa-download me-1"></i> Download Contoh Portofolio
                                             </a>
                                         </div>

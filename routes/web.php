@@ -111,6 +111,7 @@ Route::get('/pendaftaran/{application}/upload', [\App\Http\Controllers\Applicati
 Route::post('/pendaftaran/{application}/upload', [\App\Http\Controllers\ApplicationController::class, 'uploadDocuments'])->name('application.upload.store')->middleware('signed');
 Route::post('/pendaftaran/{application}/upload-missing', [\App\Http\Controllers\ApplicationController::class, 'uploadMissingDocumentExternal'])->name('application.dokumen.upload-missing')->middleware('signed');
 Route::post('/pendaftaran/{application}/dokumen/{document}/reupload', [\App\Http\Controllers\ApplicationController::class, 'reuploadDocumentExternal'])->name('application.dokumen.reupload')->middleware('signed');
+Route::get('/download-contoh-portofolio', [\App\Http\Controllers\ApplicationController::class, 'downloadContohPortofolio'])->name('application.download-contoh-portofolio');
 
 // Portal Siswa PKL Routes
 Route::prefix('portal')->name('portal.')->group(function () {

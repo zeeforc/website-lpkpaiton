@@ -55,11 +55,6 @@
             </div>
         @endif
 
-        @php
-            $contohPortofolioSetting = \App\Models\Setting::where('key', 'contoh_portofolio')->first();
-            $contohUrl = $contohPortofolioSetting && $contohPortofolioSetting->value ? Storage::disk('public')->url($contohPortofolioSetting->value) : asset('contoh_portofolio.pdf');
-        @endphp
-
         @if($application->documents()->count() > 0)
             <div class="alert alert-warning mb-4">
                 <strong>Dokumen Anda Sedang/Telah Direview!</strong><br>
@@ -106,7 +101,7 @@
                     <label for="dokumen_portofolio" class="form-label fw-bold">5. Portofolio <span class="text-danger">*</span></label>
                     <div class="form-text text-muted mb-2">Upload portofolio atau hasil karya/project yang pernah Anda buat (PDF/JPG/PNG, Maks 10 MB).
                         <br>
-                        <a href="{{ $contohUrl }}" target="_blank" class="text-decoration-none" style="color: #2563eb; font-weight: 500;">
+                        <a href="{{ route('application.download-contoh-portofolio') }}" class="text-decoration-none" style="color: #2563eb; font-weight: 500;">
                             Download Contoh Format Portofolio
                         </a>
                     </div>
