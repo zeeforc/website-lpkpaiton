@@ -290,11 +290,17 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label text-secondary" style="font-size: 0.85rem">Judul / Tema Laporan <span class="text-danger">*</span></label>
-                                    <input type="text" name="title" class="form-control form-control-sm" placeholder="Contoh: Analisis Sistem Informasi..." required>
+                                    <input type="text" name="title" class="form-control form-control-sm @error('title') is-invalid @enderror" placeholder="Contoh: Analisis Sistem Informasi..." required value="{{ old('title') }}">
+                                    @error('title')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label text-secondary" style="font-size: 0.85rem">Upload Laporan (PDF/ZIP) <span class="text-danger">*</span></label>
-                                    <input type="file" name="file_path" class="form-control form-control-sm" accept=".pdf,.zip" required>
+                                    <label class="form-label text-secondary" style="font-size: 0.85rem">Upload Laporan (PDF/ZIP, Maks 10MB) <span class="text-danger">*</span></label>
+                                    <input type="file" name="file_path" class="form-control form-control-sm @error('file_path') is-invalid @enderror" accept=".pdf,.zip" required>
+                                    @error('file_path')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label text-secondary" style="font-size: 0.85rem">Catatan untuk Admin (opsional)</label>

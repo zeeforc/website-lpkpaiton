@@ -232,6 +232,7 @@ class ApplicationController extends Controller
 
     public function uploadMissingDocumentExternal(Request $request, Application $application)
     {
+        // Existing code (omitted for brevity, let's look at the actual content before replacing blindly)
         if (! $request->hasValidSignature()) {
             abort(401, 'Link tidak valid atau sudah kadaluarsa.');
         }
@@ -257,25 +258,5 @@ class ApplicationController extends Controller
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Gagal mengunggah dokumen.']);
         }
-    }
-
-    public function downloadContohPortofolio()
-    {
-        $contohPortofolioSetting = \App\Models\Setting::where('key', 'contoh_portofolio')->first();
-        
-        if ($contohPortofolioSetting && $contohPortofolioSetting->value) {
-            $path = storage_path('app/public/' . $contohPortofolioSetting->value);
-            if (file_exists($path)) {
-                return response()->download($path, 'Contoh_Format_Portofolio_PKL.pdf');
-            }
-        }
-
-        // Fallback to public asset if no setting or file doesn't exist
-        $fallbackPath = public_path('contoh_portofolio.pdf');
-        if (file_exists($fallbackPath)) {
-            return response()->download($fallbackPath, 'Contoh_Format_Portofolio_PKL.pdf');
-        }
-
-        abort(404, 'File contoh portofolio belum tersedia.');
     }
 }

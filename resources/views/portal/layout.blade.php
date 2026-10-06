@@ -399,6 +399,23 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>
+        @if($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                html: '{!! implode("<br>", $errors->all()) !!}',
+                confirmButtonColor: '#3b82f6',
+            });
+        @endif
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: "{{ session('success') }}",
+                confirmButtonColor: '#3b82f6',
+            });
+        @endif
+
         // PWA Installation Logic
         let deferredPrompt = null;
         const pwaInstallBanner = document.getElementById('pwa-install-banner');
