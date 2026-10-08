@@ -6,7 +6,7 @@
         'Surat Sehat' => 'Surat Keterangan Sehat',
         'Portofolio' => 'Portofolio',
         'Surat Perjanjian PKL' => 'Surat Perjanjian PKL',
-        'Dokumen Tambahan' => 'Dokumen Tambahan (Opsional)'
+        'Dokumen Tambahan' => 'BPJS Kesehatan (Opsional)'
     ];
     $existingDocs = optional($application)->documents ?? collect();
     $isPortal = request()->is('portal/*');

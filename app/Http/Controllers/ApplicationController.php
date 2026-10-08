@@ -132,7 +132,7 @@ class ApplicationController extends Controller
             'dokumen_sehat.max' => 'Ukuran Surat Keterangan Sehat maksimal 2MB.',
             'dokumen_portofolio.max' => 'Ukuran Portofolio maksimal 5MB.',
             'dokumen_perjanjian_pkl.max' => 'Ukuran Surat Perjanjian PKL maksimal 5MB.',
-            'dokumen_lainnya.max' => 'Ukuran Dokumen Tambahan maksimal 5MB.',
+            'dokumen_lainnya.max' => 'Ukuran BPJS Kesehatan maksimal 5MB.',
         ]);
 
         try {

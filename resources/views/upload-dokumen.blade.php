@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
             { id: 'dokumen_sehat', name: 'Surat Keterangan Sehat', maxSize: 2 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] },
             { id: 'dokumen_portofolio', name: 'Portofolio', maxSize: 10 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] },
             { id: 'dokumen_perjanjian_pkl', name: 'Surat Perjanjian PKL', maxSize: 5 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] },
-            { id: 'dokumen_lainnya', name: 'Dokumen Tambahan', maxSize: 5 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] }
+            { id: 'dokumen_lainnya', name: 'BPJS Kesehatan', maxSize: 5 * 1024 * 1024, types: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'] }
         ];
 
         for (let rule of rules) {
