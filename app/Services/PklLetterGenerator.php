@@ -46,6 +46,18 @@ class PklLetterGenerator
         $templateProcessor->setValue('TANGGAL_MASUK', $tanggalMulai);
         $templateProcessor->setValue('TANGGAL_KELUAR', $tanggalSelesai);
 
+        // Tambahan variabel untuk perjanjian
+        $templateProcessor->setValue('DURASI', $application->lama_durasi_bulan ? $application->lama_durasi_bulan . ' bulan' : '3 bulan');
+
+        $persetujuanWali = ' dan dengan persetujuan orang tua/wali'; // default
+        if ($application->user && $application->user->studentProfile && $application->user->studentProfile->tanggal_lahir) {
+            $age = \Carbon\Carbon::parse($application->user->studentProfile->tanggal_lahir)->age;
+            if ($age >= 18) {
+                $persetujuanWali = ''; // Dihapus jika usia >= 18 tahun
+            }
+        }
+        $templateProcessor->setValue('PERSETUJUAN_WALI', $persetujuanWali);
+
         // Buat folder jika belum ada
         $directory = 'application_documents/generated/' . $application->id;
         if (!Storage::disk('public')->exists($directory)) {
