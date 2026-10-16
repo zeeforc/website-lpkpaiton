@@ -1,0 +1,11 @@
+# Fallback proteksi root direktori untuk shared hosting (cPanel / DomaiNesia)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Blokir akses langsung ke file konfigurasi dan log rahasia
+    RewriteRule ^(\.git|\.env|\.user\.ini|composer\.(json|lock)|package(-lock)?\.json|storage/logs/.*) - [F,L]
+
+    # Arahkan semua request ke folder public jika document root server belum diarahkan ke /public
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L,QSA]
+</IfModule>

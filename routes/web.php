@@ -74,7 +74,8 @@ Route::get('/index', function () {
 });
 
 Route::post('/kontak', [ContactController::class, 'store'])
-    ->name('contact.store');
+    ->name('contact.store')
+    ->middleware('throttle:5,1');
 
 Route::get('/kurikulum', [KurikulumController::class, 'index'])->name('kurikulum.index');
 Route::get('/kurikulum/{kurikulum}', [KurikulumController::class, 'show'])->name('kurikulum.show');
@@ -102,10 +103,10 @@ Route::get('/syarat', function () {
 })->name('syarat');
 
 Route::get('/pendaftaran', [\App\Http\Controllers\ApplicationController::class, 'create'])->name('application.create');
-Route::post('/pendaftaran', [\App\Http\Controllers\ApplicationController::class, 'store'])->name('application.store');
+Route::post('/pendaftaran', [\App\Http\Controllers\ApplicationController::class, 'store'])->name('application.store')->middleware('throttle:5,1');
 
 Route::get('/cek-status', [\App\Http\Controllers\ApplicationController::class, 'cekStatus'])->name('application.cekStatus');
-Route::post('/cek-status', [\App\Http\Controllers\ApplicationController::class, 'checkStatus'])->name('application.check');
+Route::post('/cek-status', [\App\Http\Controllers\ApplicationController::class, 'checkStatus'])->name('application.check')->middleware('throttle:10,1');
 
 Route::get('/pendaftaran/{application}/upload', [\App\Http\Controllers\ApplicationController::class, 'showUploadForm'])->name('application.upload')->middleware('signed');
 Route::post('/pendaftaran/{application}/upload', [\App\Http\Controllers\ApplicationController::class, 'uploadDocuments'])->name('application.upload.store')->middleware('signed');
@@ -116,9 +117,9 @@ Route::get('/download-contoh-portofolio', [\App\Http\Controllers\ApplicationCont
 // Portal Siswa PKL Routes
 Route::prefix('portal')->name('portal.')->group(function () {
     Route::get('/login', [\App\Http\Controllers\PortalController::class, 'showLogin'])->name('login');
-    Route::post('/login', [\App\Http\Controllers\PortalController::class, 'login'])->name('login.post');
+    Route::post('/login', [\App\Http\Controllers\PortalController::class, 'login'])->name('login.post')->middleware('throttle:5,1');
     Route::get('/register-karyawan', [\App\Http\Controllers\PortalController::class, 'showRegisterKaryawan'])->name('register-karyawan');
-    Route::post('/register-karyawan', [\App\Http\Controllers\PortalController::class, 'registerKaryawan'])->name('register-karyawan.post');
+    Route::post('/register-karyawan', [\App\Http\Controllers\PortalController::class, 'registerKaryawan'])->name('register-karyawan.post')->middleware('throttle:5,1');
     Route::post('/logout', [\App\Http\Controllers\PortalController::class, 'logout'])->name('logout');
     Route::get('/test-419', function () {
         throw new \Illuminate\Session\TokenMismatchException;
@@ -159,7 +160,12 @@ Route::prefix('portal')->name('portal.')->group(function () {
     });
 });
 
-Route::get('/amsadmin/export-attendances', function (\Illuminate\Http\Request $request) {
+Route::middleware(['auth:admin,web'])->group(function () {
+    Route::get('/amsadmin/export-attendances', function (\Illuminate\Http\Request $request) {
+        $user = auth('admin')->user() ?? auth('web')->user();
+        if (!$user || $user->role !== 'admin') {
+            abort(403, 'Akses ditolak. Hanya admin yang berhak mengunduh rekap absensi.');
+        }
     $currentMonth = date('m');
     $currentYear = date('Y');
     $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
@@ -358,7 +364,11 @@ Route::get('/amsadmin/export-attendances', function (\Illuminate\Http\Request $r
     exit;
 })->name('admin.attendances.export');
 
-Route::get('/amsadmin/export-paving-attendances', function (\Illuminate\Http\Request $request) {
+    Route::get('/amsadmin/export-paving-attendances', function (\Illuminate\Http\Request $request) {
+        $user = auth('admin')->user() ?? auth('web')->user();
+        if (!$user || $user->role !== 'admin') {
+            abort(403, 'Akses ditolak. Hanya admin yang berhak mengunduh rekap absensi.');
+        }
     $currentMonth = date('m');
     $currentYear = date('Y');
     $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
@@ -563,4 +573,5 @@ Route::get('/amsadmin/export-paving-attendances', function (\Illuminate\Http\Req
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
     $writer->save('php://output');
     exit;
-})->name('admin.paving-attendances.export');
+    })->name('admin.paving-attendances.export');
+});

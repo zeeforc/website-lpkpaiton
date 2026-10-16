@@ -403,7 +403,7 @@
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                html: '{!! implode("<br>", $errors->all()) !!}',
+                html: {!! json_encode(implode('<br>', array_map('e', $errors->all()))) !!},
                 confirmButtonColor: '#3b82f6',
             });
         @endif
@@ -411,8 +411,16 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: "{{ session('success') }}",
+                text: {!! json_encode(session('success')) !!},
                 confirmButtonColor: '#3b82f6',
+            });
+        @endif
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Perhatian!',
+                text: {!! json_encode(session('error')) !!},
+                confirmButtonColor: '#ef4444',
             });
         @endif
 
