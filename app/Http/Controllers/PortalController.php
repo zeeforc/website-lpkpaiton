@@ -259,21 +259,16 @@ class PortalController extends Controller
         
         // Fetch all attendances for the month
         $attendancesData = Attendance::where('user_id', $user->id)
-            ->whereMonth('date', $month)
-            ->whereYear('date', $year)
+            ->whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
             ->get()
             ->keyBy(fn($item) => Carbon::parse($item->date)->format('Y-m-d'));
             
-        // Fetch all holidays
-        $holidays = Holiday::whereMonth('date', $month)
-            ->whereYear('date', $year)
+        $holidays = Holiday::whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
             ->get()
             ->keyBy(fn($item) => Carbon::parse($item->date)->format('Y-m-d'));
             
-        // Fetch all approved leaves
         $leaves = LeaveRequest::where('user_id', $user->id)
-            ->whereMonth('date', $month)
-            ->whereYear('date', $year)
+            ->whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
             ->where('status', 'approved')
             ->get()
             ->keyBy(fn($item) => Carbon::parse($item->date)->format('Y-m-d'));
@@ -367,19 +362,16 @@ class PortalController extends Controller
         $endDate = $startDate->copy()->endOfMonth();
         
         $attendancesData = Attendance::where('user_id', $user->id)
-            ->whereMonth('date', $month)
-            ->whereYear('date', $year)
+            ->whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
             ->get()
             ->keyBy(fn($item) => Carbon::parse($item->date)->format('Y-m-d'));
             
-        $holidays = Holiday::whereMonth('date', $month)
-            ->whereYear('date', $year)
+        $holidays = Holiday::whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
             ->get()
             ->keyBy(fn($item) => Carbon::parse($item->date)->format('Y-m-d'));
             
         $leaves = LeaveRequest::where('user_id', $user->id)
-            ->whereMonth('date', $month)
-            ->whereYear('date', $year)
+            ->whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
             ->where('status', 'approved')
             ->get()
             ->keyBy(fn($item) => Carbon::parse($item->date)->format('Y-m-d'));
@@ -590,16 +582,18 @@ class PortalController extends Controller
     public function storeFaceDescriptor(Request $request)
     {
         $request->validate([
-            'face_descriptor' => 'required|string',
+            'face_descriptor' => 'required|string|max:10000',
         ]);
+
+        $newDescriptorArray = json_decode($request->face_descriptor, true);
+        if (!is_array($newDescriptorArray)) {
+            return response()->json(['success' => false, 'message' => 'Format data wajah tidak valid.'], 422);
+        }
 
         $user = Auth::user();
         $profile = StudentProfile::where('user_id', $user->id)->first();
         
         if ($profile) {
-            $newDescriptorArray = json_decode($request->face_descriptor, true);
-            
-            // Cek apakah wajah ini sudah pernah didaftarkan oleh akun lain
             if (!$this->checkFaceUniqueness($newDescriptorArray, $user->id)) {
                 return response()->json([
                     'success' => false, 
@@ -748,8 +742,19 @@ class PortalController extends Controller
             $imageParts = explode(";base64,", $request->photo);
             if (count($imageParts) == 2) {
                 $imageTypeAux = explode("image/", $imageParts[0]);
-                $imageType = $imageTypeAux[1];
-                $imageBase64 = base64_decode($imageParts[1]);
+                $imageType = $imageTypeAux[1] ?? '';
+                if (!in_array($imageType, ['jpeg', 'jpg', 'png', 'webp'])) {
+                    return redirect()->route('portal.absensi.check-in')->with('error', 'Format foto tidak valid.');
+                }
+                $imageBase64 = base64_decode($imageParts[1], true);
+                if ($imageBase64 === false || strlen($imageBase64) > 5 * 1024 * 1024) {
+                    return redirect()->route('portal.absensi.check-in')->with('error', 'Data foto tidak valid atau terlalu besar.');
+                }
+                $finfo = new \finfo(FILEINFO_MIME_TYPE);
+                $detectedMime = $finfo->buffer($imageBase64);
+                if (!str_starts_with($detectedMime, 'image/')) {
+                    return redirect()->route('portal.absensi.check-in')->with('error', 'File bukan gambar yang valid.');
+                }
                 $fileName = 'attendance_' . $user->id . '_' . time() . '.' . $imageType;
                 $filePath = 'attendances/' . $fileName;
                 \Illuminate\Support\Facades\Storage::disk('public')->put($filePath, $imageBase64);
@@ -892,11 +897,19 @@ class PortalController extends Controller
             $imageParts = explode(";base64,", $request->photo);
             if (count($imageParts) == 2) {
                 $imageTypeAux = explode("image/", $imageParts[0]);
-                $imageType = $imageTypeAux[1];
-                $imageBase64 = base64_decode($imageParts[1]);
-                $fileName = 'group_attendance_' . $user->id . '_' . time() . '.' . $imageType;
-                $filePath = 'attendances/' . $fileName;
-                \Illuminate\Support\Facades\Storage::disk('public')->put($filePath, $imageBase64);
+                $imageType = $imageTypeAux[1] ?? '';
+                if (in_array($imageType, ['jpeg', 'jpg', 'png', 'webp'])) {
+                    $imageBase64 = base64_decode($imageParts[1], true);
+                    if ($imageBase64 !== false && strlen($imageBase64) <= 5 * 1024 * 1024) {
+                        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+                        $detectedMime = $finfo->buffer($imageBase64);
+                        if (str_starts_with($detectedMime, 'image/')) {
+                            $fileName = 'group_attendance_' . $user->id . '_' . time() . '.' . $imageType;
+                            $filePath = 'attendances/' . $fileName;
+                            \Illuminate\Support\Facades\Storage::disk('public')->put($filePath, $imageBase64);
+                        }
+                    }
+                }
             }
         }
         
