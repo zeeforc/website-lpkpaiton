@@ -87,7 +87,7 @@ class ApplicationController extends Controller
 
             DB::commit();
 
-            return redirect()->back()->with('success', 'Formulir pendaftaran berhasil dikirim. Kami akan memprosesnya dan memberikan balasan melalui email.');
+            return redirect()->back()->with('success', 'Formulir pendaftaran berhasil dikirim. Kode referensi Anda: ' . $application->reference_code . '. Simpan kode ini untuk mengecek status pendaftaran.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan saat memproses formulir. Silakan coba lagi.'])->withInput();
@@ -180,12 +180,19 @@ class ApplicationController extends Controller
 
     public function checkStatus(Request $request)
     {
-        $request->validate(['email' => 'required|email']);
+        $request->validate([
+            'email' => 'required|email',
+            'reference_code' => 'required|string|max:10',
+        ]);
         
-        $application = Application::with('notes')->where('email_balasan', $request->email)->latest()->first();
+        $application = Application::with('notes')
+            ->where('email_balasan', $request->email)
+            ->where('reference_code', $request->reference_code)
+            ->latest()
+            ->first();
         
         if (!$application) {
-            return redirect()->back()->with('error', 'Data pendaftaran dengan email tersebut tidak ditemukan.')->withInput();
+            return redirect()->back()->with('error', 'Data tidak ditemukan. Pastikan email dan kode referensi sudah benar.')->withInput();
         }
         
         return view('cek-status', compact('application'));

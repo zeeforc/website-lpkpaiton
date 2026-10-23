@@ -43,7 +43,7 @@
     <div class="form-container" data-aos="fade-up">
         <div class="form-header">
             <h2 style="color: #0b5ed7; font-weight: 700;">CEK STATUS PENDAFTARAN</h2>
-            <p class="text-muted">Masukkan email yang Anda gunakan saat mendaftar.</p>
+            <p class="text-muted">Masukkan email dan kode referensi yang Anda terima saat mendaftar.</p>
         </div>
 
         @if(session('error'))
@@ -54,9 +54,14 @@
 
         <form action="{{ route('application.check') }}" method="POST">
             @csrf
-            <div class="mb-4">
+            <div class="mb-3">
                 <label for="email" class="form-label">Alamat Email <span class="text-danger">*</span></label>
                 <input type="email" class="form-control" id="email" name="email" required value="{{ old('email') }}">
+            </div>
+
+            <div class="mb-4">
+                <label for="reference_code" class="form-label">Kode Referensi <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="reference_code" name="reference_code" required value="{{ old('reference_code') }}" maxlength="10" style="text-transform: uppercase;">
             </div>
 
             <button type="submit" class="btn btn-submit">Cek Status</button>
