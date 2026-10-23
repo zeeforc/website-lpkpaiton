@@ -49,10 +49,10 @@ Route::get('/', function () {
         // Abaikan jika duplicate key error
     }
 
-    // Ambil total pengunjung dari tabel Visitor
-    $visitorCountModel = Visitor::count();
+    $visitorCountModel = cache()->remember('visitor_count', now()->addMinutes(5), function () {
+        return Visitor::count();
+    });
     
-    // Fallback: Jika tabel Visitor kosong, mulai dari angka dasar 1250 ditambah data baru
     $baseVisitor = 1250;
     $totalVisitor = $baseVisitor + $visitorCountModel;
     
@@ -121,10 +121,6 @@ Route::prefix('portal')->name('portal.')->group(function () {
     Route::get('/register-karyawan', [\App\Http\Controllers\PortalController::class, 'showRegisterKaryawan'])->name('register-karyawan');
     Route::post('/register-karyawan', [\App\Http\Controllers\PortalController::class, 'registerKaryawan'])->name('register-karyawan.post')->middleware('throttle:5,1');
     Route::post('/logout', [\App\Http\Controllers\PortalController::class, 'logout'])->name('logout');
-    Route::get('/test-419', function () {
-        throw new \Illuminate\Session\TokenMismatchException;
-    });
-
     Route::middleware('auth')->group(function () {
         Route::get('/biodata', [\App\Http\Controllers\PortalController::class, 'biodata'])->name('biodata');
         Route::post('/biodata', [\App\Http\Controllers\PortalController::class, 'updateBiodata'])->name('biodata.update');
@@ -172,8 +168,10 @@ Route::middleware(['auth:admin,web'])->group(function () {
     $monthNames = [1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
     $monthName = $monthNames[(int)$currentMonth];
     
-    $holidays = \App\Models\Holiday::whereMonth('date', $currentMonth)
-        ->whereYear('date', $currentYear)
+    $holidays = \App\Models\Holiday::whereBetween('date', [
+            \Carbon\Carbon::createFromDate($currentYear, $currentMonth, 1)->toDateString(),
+            \Carbon\Carbon::createFromDate($currentYear, $currentMonth, $daysInMonth)->toDateString(),
+        ])
         ->get()
         ->keyBy(function($item) {
             return (int) \Carbon\Carbon::parse($item->date)->format('j');
@@ -181,21 +179,23 @@ Route::middleware(['auth:admin,web'])->group(function () {
         
     $users = \App\Models\User::where('role', 'siswa')->get();
     
+    $startDate = \Carbon\Carbon::createFromDate($currentYear, $currentMonth, 1)->toDateString();
+    $endDate = \Carbon\Carbon::createFromDate($currentYear, $currentMonth, $daysInMonth)->toDateString();
+    $allAttendances = \App\Models\Attendance::whereIn('user_id', $users->pluck('id'))
+        ->whereBetween('date', [$startDate, $endDate])
+        ->get()
+        ->groupBy('user_id');
+    
     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-    $spreadsheet->removeSheetByIndex(0); // Remove default sheet
+    $spreadsheet->removeSheetByIndex(0);
     
     foreach ($users as $index => $user) {
-        // Excel sheet names max 31 characters
         $baseName = substr(str_replace(['*', ':', '/', '\\', '?', '[', ']'], '', $user->name), 0, 25);
         $sheetName = $baseName . '_' . $user->id;
         $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $sheetName);
         $spreadsheet->addSheet($sheet, $index);
         
-        // Fetch attendances
-        $attendances = \App\Models\Attendance::where('user_id', $user->id)
-            ->whereMonth('date', $currentMonth)
-            ->whereYear('date', $currentYear)
-            ->get()
+        $attendances = ($allAttendances->get($user->id) ?? collect())
             ->keyBy(function($item) {
                 return (int) \Carbon\Carbon::parse($item->date)->format('j');
             });
@@ -375,8 +375,10 @@ Route::middleware(['auth:admin,web'])->group(function () {
     $monthNames = [1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
     $monthName = $monthNames[(int)$currentMonth];
     
-    $holidays = \App\Models\Holiday::whereMonth('date', $currentMonth)
-        ->whereYear('date', $currentYear)
+    $holidays = \App\Models\Holiday::whereBetween('date', [
+            \Carbon\Carbon::createFromDate($currentYear, $currentMonth, 1)->toDateString(),
+            \Carbon\Carbon::createFromDate($currentYear, $currentMonth, $daysInMonth)->toDateString(),
+        ])
         ->get()
         ->keyBy(function($item) {
             return (int) \Carbon\Carbon::parse($item->date)->format('j');
@@ -390,21 +392,23 @@ Route::middleware(['auth:admin,web'])->group(function () {
         $users = \App\Models\User::where('role', $roleFilter)->get();
     }
     
+    $startDate = \Carbon\Carbon::createFromDate($currentYear, $currentMonth, 1)->toDateString();
+    $endDate = \Carbon\Carbon::createFromDate($currentYear, $currentMonth, $daysInMonth)->toDateString();
+    $allAttendances = \App\Models\Attendance::whereIn('user_id', $users->pluck('id'))
+        ->whereBetween('date', [$startDate, $endDate])
+        ->get()
+        ->groupBy('user_id');
+    
     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-    $spreadsheet->removeSheetByIndex(0); // Remove default sheet
+    $spreadsheet->removeSheetByIndex(0);
     
     foreach ($users as $index => $user) {
-        // Excel sheet names max 31 characters
         $baseName = substr(str_replace(['*', ':', '/', '\\', '?', '[', ']'], '', $user->name), 0, 25);
         $sheetName = $baseName . '_' . $user->id;
         $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $sheetName);
         $spreadsheet->addSheet($sheet, $index);
         
-        // Fetch attendances
-        $attendances = \App\Models\Attendance::where('user_id', $user->id)
-            ->whereMonth('date', $currentMonth)
-            ->whereYear('date', $currentYear)
-            ->get()
+        $attendances = ($allAttendances->get($user->id) ?? collect())
             ->keyBy(function($item) {
                 return (int) \Carbon\Carbon::parse($item->date)->format('j');
             });
