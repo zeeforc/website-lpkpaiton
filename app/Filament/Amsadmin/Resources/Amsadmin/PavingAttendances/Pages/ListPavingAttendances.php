@@ -62,9 +62,10 @@ class ListPavingAttendances extends ListRecords
                         ->required(),
                 ])
                 ->action(function (array $data, \Livewire\Component $livewire) {
-                    $month = $data['month'];
-                    $year = $data['year'];
-                    $monthName = \Carbon\Carbon::createFromDate($year, $month, 1)->translatedFormat('F');
+                    try {
+                        $month = $data['month'];
+                        $year = $data['year'];
+                        $monthName = \Carbon\Carbon::createFromDate($year, $month, 1)->translatedFormat('F');
                     
                     $attendances = \App\Models\Attendance::whereHas('user', function ($query) {
                         $query->whereIn('role', ['karyawan_paving', 'instruktur_lpk']);
@@ -168,7 +169,9 @@ class ListPavingAttendances extends ListRecords
                                 }
                             }
                         }
-                        $zip->close();
+                        if (!$zip->close()) {
+                            throw new \RuntimeException('Server gagal menyelesaikan arsip ZIP.');
+                        }
                         
                         if (!$hasFiles) {
                             \Filament\Notifications\Notification::make()
@@ -187,13 +190,26 @@ class ListPavingAttendances extends ListRecords
                                 'download_name' => 'Dokumentasi Karyawan - ' . $monthName . ' ' . $year . '.zip',
                             ],
                         ), navigate: false);
-                    } else {
+                        } else {
+                            \Filament\Notifications\Notification::make()
+                                ->title('Gagal')
+                                ->body('Gagal membuat file ZIP.')
+                                ->danger()
+                                ->send();
+                            return;
+                        }
+                    } catch (\Throwable $exception) {
+                        Log::error('Attendance documentation ZIP download failed.', [
+                            'month' => $data['month'] ?? null,
+                            'year' => $data['year'] ?? null,
+                            'exception' => $exception,
+                        ]);
+
                         \Filament\Notifications\Notification::make()
-                            ->title('Gagal')
-                            ->body('Gagal membuat file ZIP.')
+                            ->title('Gagal membuat dokumentasi ZIP')
+                            ->body('Detail error: ' . $exception->getMessage())
                             ->danger()
                             ->send();
-                        return;
                     }
                 }),
             CreateAction::make(),
