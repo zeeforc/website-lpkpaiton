@@ -61,7 +61,7 @@ class ListPavingAttendances extends ListRecords
                         ->numeric()
                         ->required(),
                 ])
-                ->action(function (array $data) {
+                ->action(function (array $data, \Livewire\Component $livewire) {
                     $month = $data['month'];
                     $year = $data['year'];
                     $monthName = \Carbon\Carbon::createFromDate($year, $month, 1)->translatedFormat('F');
@@ -179,14 +179,14 @@ class ListPavingAttendances extends ListRecords
                             return;
                         }
 
-                        return redirect()->to(\Illuminate\Support\Facades\URL::temporarySignedRoute(
+                        $livewire->redirect(\Illuminate\Support\Facades\URL::temporarySignedRoute(
                             'admin.paving-attendances.documentation-download',
                             now()->addMinutes(10),
                             [
                                 'archive' => $archiveName,
                                 'download_name' => 'Dokumentasi Karyawan - ' . $monthName . ' ' . $year . '.zip',
                             ],
-                        ));
+                        ), navigate: false);
                     } else {
                         \Filament\Notifications\Notification::make()
                             ->title('Gagal')
