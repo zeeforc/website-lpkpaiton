@@ -5,6 +5,7 @@ namespace App\Filament\Amsadmin\Resources\Amsadmin\PavingAttendances\Pages;
 use App\Filament\Amsadmin\Resources\Amsadmin\PavingAttendances\PavingAttendanceResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Log;
 
 class ListPavingAttendances extends ListRecords
 {
@@ -91,6 +92,26 @@ class ListPavingAttendances extends ListRecords
 
                     if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
                         $hasFiles = false;
+                        $addFileToZip = function (string $filePath, string $archivePath) use ($zip, &$hasFiles): bool {
+                            if (!is_file($filePath) || !is_readable($filePath)) {
+                                Log::warning('Skipped invalid attendance documentation path.', [
+                                    'path' => $filePath,
+                                ]);
+                                return false;
+                            }
+
+                            if (!$zip->addFile($filePath, $archivePath)) {
+                                Log::warning('Failed to add attendance documentation file to ZIP.', [
+                                    'path' => $filePath,
+                                    'archive_path' => $archivePath,
+                                ]);
+                                return false;
+                            }
+
+                            $hasFiles = true;
+                            return true;
+                        };
+
                         foreach ($attendances as $attendance) {
                             $userName = preg_replace('/[^A-Za-z0-9\-\s]/', '', $attendance->user->name ?? 'Unknown');
                             $roleMap = [
@@ -107,15 +128,12 @@ class ListPavingAttendances extends ListRecords
                             // 1. Foto Masuk (photo_path)
                             if ($attendance->photo_path) {
                                 $filePath = storage_path('app/public/' . $attendance->photo_path);
-                                if (file_exists($filePath)) {
-                                    $hasFiles = true;
-                                    $checkInDate = clone $dateObj;
-                                    if ($attendance->check_in) {
-                                        $checkInDate->setTimeFromTimeString($attendance->check_in);
-                                    }
-                                    $fileName = $checkInDate->format('Y-m-d_H-i-s') . '_Masuk.jpg';
-                                    $zip->addFile($filePath, $fullFolderName . '/' . $fileName);
+                                $checkInDate = clone $dateObj;
+                                if ($attendance->check_in) {
+                                    $checkInDate->setTimeFromTimeString($attendance->check_in);
                                 }
+                                $fileName = $checkInDate->format('Y-m-d_H-i-s') . '_Masuk.jpg';
+                                $addFileToZip($filePath, $fullFolderName . '/' . $fileName);
                             }
 
                             // 2. Foto Dokumentasi / Pulang (checkout_photos)
@@ -135,11 +153,13 @@ class ListPavingAttendances extends ListRecords
                                     
                                     $counter = 1;
                                     foreach ($checkoutPhotos as $cp) {
+                                        if (!is_string($cp) || $cp === '') {
+                                            continue;
+                                        }
+
                                         $filePath = storage_path('app/public/' . $cp);
-                                        if (file_exists($filePath)) {
-                                            $hasFiles = true;
-                                            $fileName = $checkOutDate->format('Y-m-d_H-i-s') . '_Dokumentasi_' . $counter . '.jpg';
-                                            $zip->addFile($filePath, $fullFolderName . '/' . $fileName);
+                                        $fileName = $checkOutDate->format('Y-m-d_H-i-s') . '_Dokumentasi_' . $counter . '.jpg';
+                                        if ($addFileToZip($filePath, $fullFolderName . '/' . $fileName)) {
                                             $counter++;
                                         }
                                     }
