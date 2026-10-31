@@ -578,4 +578,31 @@ Route::middleware(['auth:admin,web'])->group(function () {
     $writer->save('php://output');
     exit;
     })->name('admin.paving-attendances.export');
+
+    Route::get('/amsadmin/download-attendance-documentation/{archive}', function (
+        \Illuminate\Http\Request $request,
+        string $archive,
+    ) {
+        $user = auth('admin')->user() ?? auth('web')->user();
+        if (!$user || $user->role !== 'admin') {
+            abort(403, 'Akses ditolak. Hanya admin yang berhak mengunduh dokumentasi.');
+        }
+
+        $archiveId = pathinfo($archive, PATHINFO_FILENAME);
+        if (!\Illuminate\Support\Str::isUuid($archiveId) || pathinfo($archive, PATHINFO_EXTENSION) !== 'zip') {
+            abort(404);
+        }
+
+        $archivePath = storage_path('app/private/attendance-exports/' . $archive);
+        if (!is_file($archivePath) || !is_readable($archivePath)) {
+            abort(404);
+        }
+
+        $downloadName = $request->query('download_name');
+        if (!is_string($downloadName) || $downloadName === '') {
+            $downloadName = 'Dokumentasi Karyawan.zip';
+        }
+
+        return response()->download($archivePath, $downloadName)->deleteFileAfterSend(true);
+    })->middleware('signed')->name('admin.paving-attendances.documentation-download');
 });

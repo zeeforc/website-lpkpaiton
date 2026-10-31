@@ -87,8 +87,10 @@ class ListPavingAttendances extends ListRecords
                     }
 
                     $zip = new \ZipArchive();
-                    $zipFileName = 'Dokumentasi Karyawan - ' . $monthName . ' ' . $year . '.zip';
-                    $zipPath = storage_path('app/public/' . $zipFileName);
+                    $archiveName = \Illuminate\Support\Str::uuid() . '.zip';
+                    $archiveDirectory = storage_path('app/private/attendance-exports');
+                    \Illuminate\Support\Facades\File::ensureDirectoryExists($archiveDirectory);
+                    $zipPath = $archiveDirectory . DIRECTORY_SEPARATOR . $archiveName;
 
                     if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
                         $hasFiles = false;
@@ -177,7 +179,14 @@ class ListPavingAttendances extends ListRecords
                             return;
                         }
 
-                        return response()->download($zipPath)->deleteFileAfterSend(true);
+                        return redirect()->to(\Illuminate\Support\Facades\URL::temporarySignedRoute(
+                            'admin.paving-attendances.documentation-download',
+                            now()->addMinutes(10),
+                            [
+                                'archive' => $archiveName,
+                                'download_name' => 'Dokumentasi Karyawan - ' . $monthName . ' ' . $year . '.zip',
+                            ],
+                        ));
                     } else {
                         \Filament\Notifications\Notification::make()
                             ->title('Gagal')
