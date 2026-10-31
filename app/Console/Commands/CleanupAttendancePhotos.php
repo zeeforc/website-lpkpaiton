@@ -3,66 +3,116 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Throwable;
 
 class CleanupAttendancePhotos extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'app:cleanup-attendance-photos';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Clean up attendance photos older than today to save disk space';
+    protected $description = 'Delete attendance photos from months before the current month';
 
-    /**
-     * Execute the console command.
-     */
-    public function handle()
+    public function handle(): int
     {
-        $this->info('Starting attendance photos cleanup...');
-        
-        $yesterday = \Carbon\Carbon::today(); // hapus foto wajah (24 jam)
-        $lastMonth = \Carbon\Carbon::now()->subMonth(); // hapus foto dokumentasi (1 bulan)
+        $cutoff = now()->startOfMonth()->toDateString();
+        $disk = Storage::disk('public');
+        $updatedRecords = 0;
 
-        // 1. Bersihkan foto wajah (Check-In) yang lebih lama dari 1 hari
-        $attendancesForPhoto = \App\Models\Attendance::whereNotNull('photo_path')
-            ->whereDate('date', '<', $yesterday)
-            ->get();
+        DB::table('attendances')
+            ->whereDate('date', '<', $cutoff)
+            ->where(function ($query): void {
+                $query->whereNotNull('photo_path')
+                    ->orWhereNotNull('checkout_photos');
+            })
+            ->orderBy('id')
+            ->chunkById(100, function ($attendances) use ($cutoff, $disk, &$updatedRecords): void {
+                foreach ($attendances as $attendance) {
+                    $updates = [];
 
-        $countPhoto = 0;
-        foreach ($attendancesForPhoto as $attendance) {
-            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($attendance->photo_path)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($attendance->photo_path);
-            }
-            $attendance->photo_path = null;
-            $attendance->save();
-            $countPhoto++;
-        }
+                    if ($attendance->photo_path && $this->deleteManagedPhoto($attendance->photo_path, $cutoff, $disk)) {
+                        $updates['photo_path'] = null;
+                    }
 
-        // 2. Bersihkan foto dokumentasi (Check-Out) yang lebih lama dari 1 bulan
-        $attendancesForCheckout = \App\Models\Attendance::whereNotNull('checkout_photos')
-            ->whereDate('date', '<', $lastMonth)
-            ->get();
+                    if ($attendance->checkout_photos) {
+                        $photos = json_decode($attendance->checkout_photos, true);
 
-        $countCheckout = 0;
-        foreach ($attendancesForCheckout as $attendance) {
-            $photos = json_decode($attendance->checkout_photos, true) ?? [];
-            foreach ($photos as $photo) {
-                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($photo)) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($photo);
+                        if (! is_array($photos)) {
+                            Log::warning('Skipped attendance cleanup because checkout photo paths are invalid.', [
+                                'attendance_id' => $attendance->id,
+                            ]);
+                        } else {
+                            $remainingPhotos = [];
+
+                            foreach ($photos as $photo) {
+                                if (! is_string($photo) || ! $this->deleteManagedPhoto($photo, $cutoff, $disk)) {
+                                    $remainingPhotos[] = $photo;
+                                }
+                            }
+
+                            if ($remainingPhotos === []) {
+                                $updates['checkout_photos'] = null;
+                            } elseif (count($remainingPhotos) !== count($photos)) {
+                                $updates['checkout_photos'] = json_encode($remainingPhotos, JSON_THROW_ON_ERROR);
+                            }
+                        }
+                    }
+
+                    if ($updates !== []) {
+                        DB::table('attendances')
+                            ->where('id', $attendance->id)
+                            ->whereDate('date', '<', $cutoff)
+                            ->update($updates);
+                        $updatedRecords++;
+                    }
                 }
-            }
-            $attendance->checkout_photos = null;
-            $attendance->save();
-            $countCheckout++;
+            });
+
+        $this->info("Attendance photo cleanup completed for records before {$cutoff}. Updated {$updatedRecords} attendance records.");
+
+        return self::SUCCESS;
+    }
+
+    private function deleteManagedPhoto(string $path, string $cutoff, Filesystem $disk): bool
+    {
+        if (! Str::startsWith($path, 'attendances/') || in_array('..', explode('/', $path), true)) {
+            Log::warning('Skipped attendance cleanup for a path outside the attendance photo directory.', [
+                'path' => $path,
+            ]);
+
+            return false;
         }
 
-        $this->info("Cleanup completed. Deleted $countPhoto old check-in photos and $countCheckout old documentation photos.");
+        $referencedByCurrentAttendance = DB::table('attendances')
+            ->whereDate('date', '>=', $cutoff)
+            ->where(function ($query) use ($path): void {
+                $query->where('photo_path', $path)
+                    ->orWhereJsonContains('checkout_photos', $path);
+            })
+            ->exists();
+
+        if ($referencedByCurrentAttendance) {
+            return true;
+        }
+
+        try {
+            if ($disk->exists($path) && ! $disk->delete($path)) {
+                Log::error('Failed to delete an expired attendance photo.', ['path' => $path]);
+
+                return false;
+            }
+        } catch (Throwable $exception) {
+            Log::error('Failed to delete an expired attendance photo.', [
+                'path' => $path,
+                'exception' => $exception,
+            ]);
+
+            return false;
+        }
+
+        return true;
     }
 }

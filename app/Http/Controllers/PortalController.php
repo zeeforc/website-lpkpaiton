@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\ImageOptimizer;
 use App\Models\StudentProfile;
 use App\Models\Attendance;
 use App\Models\ReportSubmission;
@@ -630,7 +631,7 @@ class PortalController extends Controller
         return view('portal.absensi-check-in', compact('user', 'profile', 'settings', 'attendance'));
     }
 
-    public function storeAbsensi(Request $request)
+    public function storeAbsensi(Request $request, ImageOptimizer $imageOptimizer)
     {
         $user = Auth::user();
         
@@ -638,7 +639,19 @@ class PortalController extends Controller
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'type' => 'required|in:in,out',
+            'photo' => 'nullable|string',
+            'checkout_photos' => 'sometimes|array',
+            'checkout_photos.*' => 'file|mimes:jpeg,jpg,png,webp|max:5120',
         ]);
+
+        $optimizedPhoto = null;
+        if ($request->filled('photo')) {
+            try {
+                $optimizedPhoto = $imageOptimizer->fromDataUri($request->string('photo')->toString());
+            } catch (\InvalidArgumentException $exception) {
+                return redirect()->route('portal.absensi.check-in')->with('error', $exception->getMessage());
+            }
+        }
         
         $today = today();
         
@@ -719,51 +732,46 @@ class PortalController extends Controller
             
             if ($request->hasFile('checkout_photos')) {
                 $photos = [];
-                // Delete old if exists (misal jika diperbarui dari halaman edit admin)
-                if ($attendance->checkout_photos) {
-                    $oldPhotos = json_decode($attendance->checkout_photos, true) ?? [];
-                    foreach ($oldPhotos as $oldPhoto) {
-                        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($oldPhoto)) {
-                            \Illuminate\Support\Facades\Storage::disk('public')->delete($oldPhoto);
+                $disk = Storage::disk('public');
+
+                try {
+                    foreach ($request->file('checkout_photos') as $photo) {
+                        $webp = $imageOptimizer->toWebp($photo->get(), $photo->getMimeType());
+                        $filePath = 'attendances/checkout/checkout_' . $user->id . '_' . \Illuminate\Support\Str::uuid() . '.webp';
+
+                        if (! $disk->put($filePath, $webp)) {
+                            throw new \RuntimeException('Server gagal menyimpan foto dokumentasi.');
                         }
+
+                        $photos[] = $filePath;
+                    }
+                } catch (\Throwable $exception) {
+                    foreach ($photos as $photoPath) {
+                        $disk->delete($photoPath);
+                    }
+
+                    throw $exception;
+                }
+
+                $oldPhotos = json_decode($attendance->checkout_photos ?? '[]', true) ?? [];
+                foreach ($oldPhotos as $oldPhoto) {
+                    if (is_string($oldPhoto)) {
+                        $disk->delete($oldPhoto);
                     }
                 }
-                
-                foreach ($request->file('checkout_photos') as $photo) {
-                    $fileName = 'checkout_' . $user->id . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
-                    $filePath = $photo->storeAs('attendances/checkout', $fileName, 'public');
-                    $photos[] = $filePath;
-                }
-                $attendance->checkout_photos = json_encode($photos);
+
+                $attendance->checkout_photos = json_encode($photos, JSON_THROW_ON_ERROR);
             }
         }
         
-        if ($request->has('photo')) {
-            $imageParts = explode(";base64,", $request->photo);
-            if (count($imageParts) == 2) {
-                $imageTypeAux = explode("image/", $imageParts[0]);
-                $imageType = $imageTypeAux[1] ?? '';
-                if (!in_array($imageType, ['jpeg', 'jpg', 'png', 'webp'])) {
-                    return redirect()->route('portal.absensi.check-in')->with('error', 'Format foto tidak valid.');
-                }
-                $imageBase64 = base64_decode($imageParts[1], true);
-                if ($imageBase64 === false || strlen($imageBase64) > 5 * 1024 * 1024) {
-                    return redirect()->route('portal.absensi.check-in')->with('error', 'Data foto tidak valid atau terlalu besar.');
-                }
-                $finfo = new \finfo(FILEINFO_MIME_TYPE);
-                $detectedMime = $finfo->buffer($imageBase64);
-                if (!str_starts_with($detectedMime, 'image/')) {
-                    return redirect()->route('portal.absensi.check-in')->with('error', 'File bukan gambar yang valid.');
-                }
-                $fileName = 'attendance_' . $user->id . '_' . time() . '.' . $imageType;
-                $filePath = 'attendances/' . $fileName;
-                \Illuminate\Support\Facades\Storage::disk('public')->put($filePath, $imageBase64);
-                
-                // Safety net: cek apakah kolom photo_path sudah di-migrate di production
-                if (\Illuminate\Support\Facades\Schema::hasColumn('attendances', 'photo_path')) {
-                    $attendance->photo_path = $filePath;
-                }
+        if ($optimizedPhoto !== null && \Illuminate\Support\Facades\Schema::hasColumn('attendances', 'photo_path')) {
+            $filePath = 'attendances/attendance_' . $user->id . '_' . \Illuminate\Support\Str::uuid() . '.webp';
+
+            if (! Storage::disk('public')->put($filePath, $optimizedPhoto)) {
+                throw new \RuntimeException('Server gagal menyimpan foto absensi.');
             }
+
+            $attendance->photo_path = $filePath;
         }
         
         $attendance->save();
@@ -863,7 +871,7 @@ class PortalController extends Controller
         return view('portal.guru-absensi-rombongan', compact('user', 'students', 'settings'));
     }
 
-    public function storeAbsensiRombongan(Request $request)
+    public function storeAbsensiRombongan(Request $request, ImageOptimizer $imageOptimizer)
     {
         $user = Auth::user();
         if ($user->role !== 'guru_pondok') {
@@ -875,7 +883,17 @@ class PortalController extends Controller
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'type' => 'required|in:in,out',
+            'photo' => 'nullable|string',
         ]);
+
+        $optimizedPhoto = null;
+        if ($request->filled('photo')) {
+            try {
+                $optimizedPhoto = $imageOptimizer->fromDataUri($request->string('photo')->toString());
+            } catch (\InvalidArgumentException $exception) {
+                return response()->json(['success' => false, 'message' => $exception->getMessage()], 422);
+            }
+        }
         
         // Logika jarak opsional di backend (dapat disamakan dengan reguler)
         
@@ -893,23 +911,11 @@ class PortalController extends Controller
         }
         
         $filePath = null;
-        if ($request->has('photo')) {
-            $imageParts = explode(";base64,", $request->photo);
-            if (count($imageParts) == 2) {
-                $imageTypeAux = explode("image/", $imageParts[0]);
-                $imageType = $imageTypeAux[1] ?? '';
-                if (in_array($imageType, ['jpeg', 'jpg', 'png', 'webp'])) {
-                    $imageBase64 = base64_decode($imageParts[1], true);
-                    if ($imageBase64 !== false && strlen($imageBase64) <= 5 * 1024 * 1024) {
-                        $finfo = new \finfo(FILEINFO_MIME_TYPE);
-                        $detectedMime = $finfo->buffer($imageBase64);
-                        if (str_starts_with($detectedMime, 'image/')) {
-                            $fileName = 'group_attendance_' . $user->id . '_' . time() . '.' . $imageType;
-                            $filePath = 'attendances/' . $fileName;
-                            \Illuminate\Support\Facades\Storage::disk('public')->put($filePath, $imageBase64);
-                        }
-                    }
-                }
+        if ($optimizedPhoto !== null && \Illuminate\Support\Facades\Schema::hasColumn('attendances', 'photo_path')) {
+            $filePath = 'attendances/group_attendance_' . $user->id . '_' . \Illuminate\Support\Str::uuid() . '.webp';
+
+            if (! Storage::disk('public')->put($filePath, $optimizedPhoto)) {
+                throw new \RuntimeException('Server gagal menyimpan foto absensi rombongan.');
             }
         }
         

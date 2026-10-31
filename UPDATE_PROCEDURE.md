@@ -45,6 +45,27 @@ Gunakan metode **Maintenance Mode** ini setiap kali Anda melakukan update kode d
 
 ---
 
+## CRON WAJIB UNTUK CLEANUP STORAGE
+
+Jadwal Laravel hanya berjalan jika cron server memanggil scheduler. Di cPanel **Cron Jobs**, tambahkan cron yang berjalan setiap menit:
+
+```bash
+* * * * * cd /home/lpkpait1/website-lpkpaiton && php artisan schedule:run >> /dev/null 2>&1
+```
+
+Jika `php` pada cron berbeda dari versi PHP website, gunakan path binary PHP 8.3 dari cPanel, misalnya `ea-php83`, sesuai konfigurasi hosting. Pastikan cron aktif dan gunakan path project yang benar.
+
+Scheduler akan:
+
+- menghapus ZIP ekspor absensi yang sudah berumur lebih dari 6 jam saat jadwal per jam berikutnya berjalan;
+- pada tanggal 5 setiap bulan pukul 01.00 WIB, menghapus foto absensi dan dokumentasi untuk tanggal sebelum awal bulan berjalan, lalu mengosongkan referensi foto pada record absensi. Record absensi dan data lainnya tetap disimpan.
+
+Penghapusan foto bersifat permanen. Sebelum mengaktifkan jadwal pertama kali, pastikan kebijakan retensi ini sesuai dan backup yang diperlukan sudah tersedia.
+
+Upload foto absensi dan dokumentasi baru dikonversi ke WebP dengan dimensi maksimal 1920 piksel dan kualitas 80. File asli yang sudah tersimpan tidak langsung dikonversi; file tersebut tetap mengikuti jadwal penghapusan di atas.
+
+---
+
 ## SAFETY NET (SUDAH DITERAPKAN DI DALAM KODE)
 Sebagai lapisan keamanan tambahan, kode sistem ini telah dipasangi *Graceful Error Handling* (Metode 2 & 3). 
 

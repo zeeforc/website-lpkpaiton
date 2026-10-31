@@ -135,7 +135,11 @@ class ListPavingAttendances extends ListRecords
                                 if ($attendance->check_in) {
                                     $checkInDate->setTimeFromTimeString($attendance->check_in);
                                 }
-                                $fileName = $checkInDate->format('Y-m-d_H-i-s') . '_Masuk.jpg';
+                                $extension = strtolower(pathinfo($attendance->photo_path, PATHINFO_EXTENSION));
+                                if (! in_array($extension, ['jpg', 'jpeg', 'png', 'webp'], true)) {
+                                    $extension = 'jpg';
+                                }
+                                $fileName = $checkInDate->format('Y-m-d_H-i-s') . '_Masuk.' . $extension;
                                 $addFileToZip($filePath, $fullFolderName . '/' . $fileName);
                             }
 
@@ -161,7 +165,11 @@ class ListPavingAttendances extends ListRecords
                                         }
 
                                         $filePath = storage_path('app/public/' . $cp);
-                                        $fileName = $checkOutDate->format('Y-m-d_H-i-s') . '_Dokumentasi_' . $counter . '.jpg';
+                                        $extension = strtolower(pathinfo($cp, PATHINFO_EXTENSION));
+                                        if (! in_array($extension, ['jpg', 'jpeg', 'png', 'webp'], true)) {
+                                            $extension = 'jpg';
+                                        }
+                                        $fileName = $checkOutDate->format('Y-m-d_H-i-s') . '_Dokumentasi_' . $counter . '.' . $extension;
                                         if ($addFileToZip($filePath, $fullFolderName . '/' . $fileName)) {
                                             $counter++;
                                         }

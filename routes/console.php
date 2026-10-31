@@ -9,4 +9,8 @@ Artisan::command('inspire', function () {
 
 use Illuminate\Support\Facades\Schedule;
 
-Schedule::command('app:cleanup-attendance-photos')->dailyAt('23:55');
+Schedule::command('app:cleanup-attendance-photos')
+    ->monthlyOn(5, '01:00')
+    ->timezone('Asia/Jakarta');
+
+Schedule::command('app:cleanup-attendance-exports')->hourly();
