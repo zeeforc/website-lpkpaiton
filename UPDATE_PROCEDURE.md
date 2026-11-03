@@ -57,8 +57,22 @@ Jika `php` pada cron berbeda dari versi PHP website, gunakan path binary PHP 8.3
 
 Scheduler akan:
 
-- menghapus ZIP ekspor absensi yang sudah berumur lebih dari 6 jam saat jadwal per jam berikutnya berjalan;
+- menghapus ZIP ekspor absensi dan file unduhan lama yang tidak selesai (`.part`) setelah berumur lebih dari 6 jam;
 - pada tanggal 5 setiap bulan pukul 01.00 WIB, menghapus foto absensi dan dokumentasi untuk tanggal sebelum awal bulan berjalan, lalu mengosongkan referensi foto pada record absensi. Record absensi dan data lainnya tetap disimpan.
+- mempertahankan satu dokumen syarat PKL terbaru; saat dokumen baru disimpan, dokumen lama dan file-nya dihapus.
+
+Setelah deploy perubahan cleanup pertama kali, jalankan perintah berikut satu kali untuk membersihkan file lama:
+
+```bash
+php artisan app:cleanup-pkl-requirement-documents
+php artisan app:cleanup-attendance-exports
+```
+
+Jika foto absensi bulan sebelumnya belum dibersihkan karena scheduler belum aktif pada jadwal sebelumnya, jalankan sekali dengan tanggal cutoff yang sesuai. Contoh untuk menghapus foto sebelum Oktober 2026 tanpa menghapus foto Oktober:
+
+```bash
+php artisan app:cleanup-attendance-photos --before=2026-10-01
+```
 
 Penghapusan foto bersifat permanen. Sebelum mengaktifkan jadwal pertama kali, pastikan kebijakan retensi ini sesuai dan backup yang diperlukan sudah tersedia.
 

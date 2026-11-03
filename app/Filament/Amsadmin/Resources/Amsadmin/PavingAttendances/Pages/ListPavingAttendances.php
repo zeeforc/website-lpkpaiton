@@ -62,6 +62,7 @@ class ListPavingAttendances extends ListRecords
                         ->required(),
                 ])
                 ->action(function (array $data, \Livewire\Component $livewire) {
+                    $zipPath = null;
                     try {
                         $month = $data['month'];
                         $year = $data['year'];
@@ -86,6 +87,8 @@ class ListPavingAttendances extends ListRecords
                             ->send();
                         return;
                     }
+
+                    app(\App\Services\AttendanceExportStorage::class)->clearPreviousExports();
 
                     $zip = new \ZipArchive();
                     $archiveName = \Illuminate\Support\Str::uuid() . '.zip';
@@ -182,6 +185,10 @@ class ListPavingAttendances extends ListRecords
                         }
                         
                         if (!$hasFiles) {
+                            if (is_file($zipPath) && ! unlink($zipPath)) {
+                                throw new \RuntimeException('Server gagal menghapus arsip dokumentasi yang kosong.');
+                            }
+
                             \Filament\Notifications\Notification::make()
                                 ->title('File Tidak Ditemukan')
                                 ->body('Data absen ada, tapi file fisik fotonya tidak ditemukan di server.')
@@ -199,6 +206,10 @@ class ListPavingAttendances extends ListRecords
                             ],
                         ), navigate: false);
                         } else {
+                            if (is_file($zipPath) && ! unlink($zipPath)) {
+                                throw new \RuntimeException('Server gagal menghapus arsip dokumentasi yang tidak valid.');
+                            }
+
                             \Filament\Notifications\Notification::make()
                                 ->title('Gagal')
                                 ->body('Gagal membuat file ZIP.')
@@ -207,6 +218,12 @@ class ListPavingAttendances extends ListRecords
                             return;
                         }
                     } catch (\Throwable $exception) {
+                        if ($zipPath && is_file($zipPath) && ! unlink($zipPath)) {
+                            Log::error('Failed to remove incomplete attendance documentation ZIP.', [
+                                'path' => $zipPath,
+                            ]);
+                        }
+
                         Log::error('Attendance documentation ZIP download failed.', [
                             'month' => $data['month'] ?? null,
                             'year' => $data['year'] ?? null,

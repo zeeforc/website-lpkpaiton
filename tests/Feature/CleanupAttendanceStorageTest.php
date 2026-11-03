@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Services\AttendanceExportStorage;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -26,18 +28,20 @@ class CleanupAttendanceStorageTest extends TestCase
     protected function tearDown(): void
     {
         Schema::dropIfExists('attendances');
-        \Illuminate\Support\Carbon::setTestNow();
+        Carbon::setTestNow();
 
         parent::tearDown();
     }
 
     public function test_it_deletes_expired_attendance_photos_without_deleting_attendance_records(): void
     {
-        \Illuminate\Support\Carbon::setTestNow('2026-11-05 01:00:00');
+        Carbon::setTestNow('2026-11-05 01:00:00');
         Storage::fake('public');
         Storage::disk('public')->put('attendances/expired.webp', 'old');
         Storage::disk('public')->put('attendances/shared.webp', 'shared');
         Storage::disk('public')->put('attendances/current.webp', 'current');
+        Storage::disk('public')->put('attendances/orphaned.webp', 'old orphan');
+        touch(Storage::disk('public')->path('attendances/orphaned.webp'), now()->subDays(40)->getTimestamp());
 
         DB::table('attendances')->insert([
             [
@@ -63,22 +67,79 @@ class CleanupAttendanceStorageTest extends TestCase
         $this->assertSame('attendances/current.webp', $currentAttendance->photo_path);
         $this->assertSame(['attendances/shared.webp'], json_decode($currentAttendance->checkout_photos, true));
         Storage::disk('public')->assertMissing('attendances/expired.webp');
+        Storage::disk('public')->assertMissing('attendances/orphaned.webp');
         Storage::disk('public')->assertExists('attendances/shared.webp');
         Storage::disk('public')->assertExists('attendances/current.webp');
     }
 
+    public function test_manual_cutoff_removes_september_photos_without_removing_october_photos(): void
+    {
+        Carbon::setTestNow('2026-11-03 01:00:00');
+        Storage::fake('public');
+        Storage::disk('public')->put('attendances/september.webp', 'september');
+        Storage::disk('public')->put('attendances/october.webp', 'october');
+
+        DB::table('attendances')->insert([
+            [
+                'date' => '2026-09-25',
+                'photo_path' => 'attendances/september.webp',
+                'checkout_photos' => null,
+            ],
+            [
+                'date' => '2026-10-25',
+                'photo_path' => 'attendances/october.webp',
+                'checkout_photos' => null,
+            ],
+        ]);
+
+        $this->artisan('app:cleanup-attendance-photos', ['--before' => '2026-10-01'])->assertExitCode(0);
+
+        $september = DB::table('attendances')->whereDate('date', '2026-09-25')->first();
+        $october = DB::table('attendances')->whereDate('date', '2026-10-25')->first();
+
+        $this->assertNull($september->photo_path);
+        $this->assertSame('attendances/october.webp', $october->photo_path);
+        Storage::disk('public')->assertMissing('attendances/september.webp');
+        Storage::disk('public')->assertExists('attendances/october.webp');
+    }
+
     public function test_it_deletes_only_zip_exports_older_than_six_hours(): void
     {
-        \Illuminate\Support\Carbon::setTestNow('2026-11-05 08:00:00');
+        Carbon::setTestNow('2026-11-05 08:00:00');
         Storage::fake('local');
+        Storage::fake('public');
         Storage::disk('local')->put('attendance-exports/old.zip', 'old');
         Storage::disk('local')->put('attendance-exports/recent.zip', 'recent');
         touch(Storage::disk('local')->path('attendance-exports/old.zip'), now()->subHours(7)->getTimestamp());
         touch(Storage::disk('local')->path('attendance-exports/recent.zip'), now()->getTimestamp());
+        Storage::disk('public')->put('Dokumentasi Karyawan - Oktober.zip.abc123.part', 'partial');
+        Storage::disk('public')->put('Dokumentasi Karyawan - Oktober.zip', 'legacy');
+        Storage::disk('public')->put('unrelated.zip.part', 'keep');
+        touch(Storage::disk('public')->path('Dokumentasi Karyawan - Oktober.zip.abc123.part'), now()->subHours(7)->getTimestamp());
+        touch(Storage::disk('public')->path('Dokumentasi Karyawan - Oktober.zip'), now()->subHours(7)->getTimestamp());
 
         $this->artisan('app:cleanup-attendance-exports')->assertExitCode(0);
 
         Storage::disk('local')->assertMissing('attendance-exports/old.zip');
         Storage::disk('local')->assertExists('attendance-exports/recent.zip');
+        Storage::disk('public')->assertMissing('Dokumentasi Karyawan - Oktober.zip.abc123.part');
+        Storage::disk('public')->assertMissing('Dokumentasi Karyawan - Oktober.zip');
+        Storage::disk('public')->assertExists('unrelated.zip.part');
+    }
+
+    public function test_new_documentation_export_removes_previous_exports_and_legacy_part_files(): void
+    {
+        Storage::fake('local');
+        Storage::fake('public');
+        Storage::disk('local')->put('attendance-exports/previous.zip', 'previous');
+        Storage::disk('public')->put('Dokumentasi Karyawan - Oktober.zip.abc123.part', 'partial');
+        Storage::disk('public')->put('keep-this-file.part', 'unrelated');
+
+        $deleted = app(AttendanceExportStorage::class)->clearPreviousExports();
+
+        $this->assertSame(2, $deleted);
+        Storage::disk('local')->assertMissing('attendance-exports/previous.zip');
+        Storage::disk('public')->assertMissing('Dokumentasi Karyawan - Oktober.zip.abc123.part');
+        Storage::disk('public')->assertExists('keep-this-file.part');
     }
 }

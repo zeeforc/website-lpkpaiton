@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -12,13 +13,25 @@ use Throwable;
 
 class CleanupAttendancePhotos extends Command
 {
-    protected $signature = 'app:cleanup-attendance-photos';
+    protected $signature = 'app:cleanup-attendance-photos {--before= : Delete photos for attendance dates before YYYY-MM-DD}';
 
-    protected $description = 'Delete attendance photos from months before the current month';
+    protected $description = 'Delete attendance photos older than the selected retention cutoff';
 
     public function handle(): int
     {
-        $cutoff = now()->startOfMonth()->toDateString();
+        $cutoff = $this->option('before') ?: now()->startOfMonth()->toDateString();
+        try {
+            $cutoffDate = Carbon::createFromFormat('!Y-m-d', $cutoff);
+        } catch (Throwable) {
+            $cutoffDate = false;
+        }
+
+        if ($cutoffDate === false || $cutoffDate->toDateString() !== $cutoff) {
+            $this->error('The --before option must be a valid date in YYYY-MM-DD format.');
+
+            return self::FAILURE;
+        }
+
         $disk = Storage::disk('public');
         $updatedRecords = 0;
 
@@ -71,9 +84,85 @@ class CleanupAttendancePhotos extends Command
                 }
             });
 
-        $this->info("Attendance photo cleanup completed for records before {$cutoff}. Updated {$updatedRecords} attendance records.");
+        $orphanedFiles = $this->deleteExpiredOrphanedPhotos($cutoffDate->getTimestamp(), $disk);
+        $this->info("Attendance photo cleanup completed before {$cutoff}. Updated {$updatedRecords} attendance records and deleted {$orphanedFiles} orphaned photo files.");
 
         return self::SUCCESS;
+    }
+
+    private function deleteExpiredOrphanedPhotos(int $cutoff, Filesystem $disk): int
+    {
+        $referencedPaths = [];
+        $invalidReferencesFound = false;
+
+        DB::table('attendances')
+            ->select('id', 'photo_path', 'checkout_photos')
+            ->orderBy('id')
+            ->chunkById(500, function ($attendances) use (&$referencedPaths, &$invalidReferencesFound): void {
+                foreach ($attendances as $attendance) {
+                    if (is_string($attendance->photo_path) && $attendance->photo_path !== '') {
+                        $referencedPaths[$attendance->photo_path] = true;
+                    }
+
+                    if (! $attendance->checkout_photos) {
+                        continue;
+                    }
+
+                    $photos = json_decode($attendance->checkout_photos, true);
+                    if (! is_array($photos)) {
+                        $invalidReferencesFound = true;
+                        Log::warning('Skipped orphan attendance photo cleanup because checkout photo paths are invalid.', [
+                            'attendance_id' => $attendance->id,
+                        ]);
+
+                        continue;
+                    }
+
+                    foreach ($photos as $photo) {
+                        if (! is_string($photo) || $photo === '') {
+                            $invalidReferencesFound = true;
+
+                            continue;
+                        }
+
+                        $referencedPaths[$photo] = true;
+                    }
+                }
+            });
+
+        if ($invalidReferencesFound) {
+            $this->warn('Skipped orphan photo scan because some attendance photo references are invalid.');
+
+            return 0;
+        }
+
+        $deleted = 0;
+        foreach ($disk->allFiles('attendances') as $path) {
+            if (isset($referencedPaths[$path])) {
+                continue;
+            }
+
+            try {
+                if ($disk->lastModified($path) >= $cutoff) {
+                    continue;
+                }
+
+                if (! $disk->delete($path)) {
+                    Log::error('Failed to delete an orphaned attendance photo.', ['path' => $path]);
+
+                    continue;
+                }
+
+                $deleted++;
+            } catch (Throwable $exception) {
+                Log::error('Failed to clean up an orphaned attendance photo.', [
+                    'path' => $path,
+                    'exception' => $exception,
+                ]);
+            }
+        }
+
+        return $deleted;
     }
 
     private function deleteManagedPhoto(string $path, string $cutoff, Filesystem $disk): bool
