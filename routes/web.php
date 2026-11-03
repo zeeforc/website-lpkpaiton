@@ -579,30 +579,20 @@ Route::middleware(['auth:admin,web'])->group(function () {
     exit;
     })->name('admin.paving-attendances.export');
 
-    Route::get('/amsadmin/download-attendance-documentation/{archive}', function (
-        \Illuminate\Http\Request $request,
-        string $archive,
+    Route::get('/amsadmin/download-attendance-documentation/{year}/{month}', function (
+        \App\Services\AttendanceDocumentationExporter $exporter,
+        int $year,
+        int $month,
     ) {
         $user = auth('admin')->user() ?? auth('web')->user();
         if (!$user || $user->role !== 'admin') {
             abort(403, 'Akses ditolak. Hanya admin yang berhak mengunduh dokumentasi.');
         }
 
-        $archiveId = pathinfo($archive, PATHINFO_FILENAME);
-        if (!\Illuminate\Support\Str::isUuid($archiveId) || pathinfo($archive, PATHINFO_EXTENSION) !== 'zip') {
+        if ($year < 2020 || $year > 2100 || $month < 1 || $month > 12) {
             abort(404);
         }
 
-        $archivePath = storage_path('app/private/attendance-exports/' . $archive);
-        if (!is_file($archivePath) || !is_readable($archivePath)) {
-            abort(404);
-        }
-
-        $downloadName = $request->query('download_name');
-        if (!is_string($downloadName) || $downloadName === '') {
-            $downloadName = 'Dokumentasi Karyawan.zip';
-        }
-
-        return response()->download($archivePath, $downloadName)->deleteFileAfterSend(true);
+        return $exporter->download($year, $month);
     })->middleware('signed')->name('admin.paving-attendances.documentation-download');
 });

@@ -58,25 +58,34 @@ Jika `php` pada cron berbeda dari versi PHP website, gunakan path binary PHP 8.3
 Scheduler akan:
 
 - menghapus ZIP ekspor absensi dan file unduhan lama yang tidak selesai (`.part`) setelah berumur lebih dari 6 jam;
-- pada tanggal 5 setiap bulan pukul 01.00 WIB, menghapus foto absensi dan dokumentasi untuk tanggal sebelum awal bulan berjalan, lalu mengosongkan referensi foto pada record absensi. Record absensi dan data lainnya tetap disimpan.
+- memproses antrean kompresi foto checkout tiap menit, satu worker, supaya request absensi cepat selesai meskipun beberapa karyawan mengirim foto bersamaan;
+- mengonversi maksimal 10 foto absensi atau dokumentasi lama ke WebP setiap 5 menit sebagai pemrosesan arsip dan cadangan jika dispatch job gagal. Proses memakai lock yang sama dengan export supaya foto tidak berubah saat sedang diunduh;
 - mempertahankan satu dokumen syarat PKL terbaru; saat dokumen baru disimpan, dokumen lama dan file-nya dihapus.
 
-Setelah deploy perubahan cleanup pertama kali, jalankan perintah berikut satu kali untuk membersihkan file lama:
+Jadwal penghapusan foto absensi **dinonaktifkan sementara**. Jangan menjalankan command cleanup foto sampai dokumentasi Oktober sudah berhasil diekspor dan kebijakan retensi dikonfirmasi kembali.
+
+Setelah `git pull`, sinkronkan dependency yang tercantum di Composer:
 
 ```bash
-php artisan app:cleanup-pkl-requirement-documents
-php artisan app:cleanup-attendance-exports
+composer install --no-dev --optimize-autoloader
+php artisan optimize:clear
 ```
 
-Jika foto absensi bulan sebelumnya belum dibersihkan karena scheduler belum aktif pada jadwal sebelumnya, jalankan sekali dengan tanggal cutoff yang sesuai. Contoh untuk menghapus foto sebelum Oktober 2026 tanpa menghapus foto Oktober:
+Kemudian hapus ZIP sementara lama yang berasal dari percobaan export gagal. Pastikan tidak ada unduhan dokumentasi lama yang sedang berjalan:
 
 ```bash
-php artisan app:cleanup-attendance-photos --before=2026-10-01
+php artisan app:cleanup-attendance-exports --all
 ```
 
-Penghapusan foto bersifat permanen. Sebelum mengaktifkan jadwal pertama kali, pastikan kebijakan retensi ini sesuai dan backup yang diperlukan sudah tersedia.
+Perintah migrasi foto aman dijalankan berulang, maksimal 10 gambar per batch:
 
-Upload foto absensi dan dokumentasi baru dikonversi ke WebP dengan dimensi maksimal 1920 piksel dan kualitas 80. File asli yang sudah tersimpan tidak langsung dikonversi; file tersebut tetap mengikuti jadwal penghapusan di atas.
+```bash
+php artisan app:optimize-attendance-photos --limit=10
+```
+
+Karyawan harus mengunggah 2 foto checkout, masing-masing harus berukuran di bawah 1 MB (maksimal 1023 KB). File asli disimpan dan absensi dicatat terlebih dahulu; job antrean lalu mengonversi foto ke WebP dengan sisi terpanjang awal maksimal 1920 piksel dan kualitas 80. Kualitas kemudian dimensi diturunkan seperlunya agar hasil maksimal 100 KB. Bila batas ukuran atau jumlah foto terlampaui, halaman absensi menampilkan pesan validasi. Foto selfie hanya dikirim saat absen masuk supaya request pulang tidak menjalankan proses kompresi sinkron tambahan.
+
+Download dokumentasi karyawan menggunakan streaming ZIP langsung ke koneksi HTTP, tanpa membuat arsip sementara di storage. ZIP memakai metode STORE karena JPEG/WebP sudah terkompresi, sehingga server tidak menghabiskan waktu dan CPU untuk mengompres ulang foto.
 
 ---
 

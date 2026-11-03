@@ -16,7 +16,7 @@ class ImageOptimizerTest extends TestCase
         $png = ob_get_clean();
         imagedestroy($image);
 
-        $webp = (new ImageOptimizer())->toWebp($png, 'image/png');
+        $webp = (new ImageOptimizer)->toWebp($png, 'image/png');
         $imageInfo = getimagesizefromstring($webp);
 
         $this->assertSame('image/webp', $imageInfo['mime']);
@@ -28,7 +28,7 @@ class ImageOptimizerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        (new ImageOptimizer())->toWebp('not an image');
+        (new ImageOptimizer)->toWebp('not an image');
     }
 
     public function test_it_rejects_a_mime_type_that_does_not_match_the_image(): void
@@ -41,6 +41,37 @@ class ImageOptimizerTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        (new ImageOptimizer())->toWebp($png, 'image/jpeg');
+        (new ImageOptimizer)->toWebp($png, 'image/jpeg');
+    }
+
+    public function test_it_rejects_base64_uploads_larger_than_one_megabyte(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('melebihi 1 MB');
+
+        (new ImageOptimizer)->fromDataUri('data:image/jpeg;base64,'.str_repeat('A', 1400000));
+    }
+
+    public function test_webp_output_never_exceeds_one_hundred_kilobytes(): void
+    {
+        $image = imagecreatetruecolor(800, 600);
+        mt_srand(1234);
+
+        for ($y = 0; $y < 600; $y++) {
+            for ($x = 0; $x < 800; $x++) {
+                $color = (mt_rand(0, 255) << 16) | (mt_rand(0, 255) << 8) | mt_rand(0, 255);
+                imagesetpixel($image, $x, $y, $color);
+            }
+        }
+
+        ob_start();
+        imagejpeg($image, null, 90);
+        $jpeg = ob_get_clean();
+        imagedestroy($image);
+
+        $webp = (new ImageOptimizer)->toWebp($jpeg, 'image/jpeg');
+
+        $this->assertLessThanOrEqual(100 * 1024, strlen($webp));
+        $this->assertSame('image/webp', getimagesizefromstring($webp)['mime']);
     }
 }

@@ -172,7 +172,7 @@
                     @if(in_array(Auth::user()->role, ['karyawan_paving', 'instruktur_lpk']))
                     <div class="mt-3">
                         <label class="fw-bold mb-2">Upload Dokumentasi Pekerjaan <span class="text-danger">*</span></label>
-                        <p class="small text-muted mb-2">Pilih 2 hingga 4 foto kegiatan (foto akan dihapus otomatis setelah 1 bulan).</p>
+                        <p class="small text-muted mb-2">Pilih 2 foto kegiatan. Setiap foto harus di bawah 1 MB.</p>
                         <input type="file" id="checkout-photos" class="form-control" multiple accept="image/*" />
                     </div>
                     @endif
@@ -442,22 +442,32 @@
         if (photosInput) {
             const files = photosInput.files;
             
-            if (files.length < 2 || files.length > 4) {
-                alert('Silakan upload minimal 2 dan maksimal 4 foto dokumentasi pekerjaan untuk absen pulang.');
+            if (files.length !== 2) {
+                alert('Silakan pilih tepat 2 foto dokumentasi pekerjaan untuk absen pulang.');
                 photosInput.focus();
                 return;
             }
+
+            if (Array.from(files).some(file => file.size >= 1024 * 1024)) {
+                alert('Ukuran setiap foto harus di bawah 1 MB. Silakan pilih foto yang lebih kecil.');
+                photosInput.focus();
+                return;
+            }
+
             document.getElementById('input-checkout-photos').files = files;
         }
 
         document.getElementById('input-lat').value = userLat;
         document.getElementById('input-lng').value = userLng;
-        // Capture photo
-        const captureCanvas = document.createElement('canvas');
-        captureCanvas.width = video.videoWidth;
-        captureCanvas.height = video.videoHeight;
-        captureCanvas.getContext('2d').drawImage(video, 0, 0);
-        document.getElementById('input-photo').value = captureCanvas.toDataURL('image/jpeg', 0.6);
+        if (document.querySelector('input[name="type"]').value === 'in') {
+            const captureCanvas = document.createElement('canvas');
+            captureCanvas.width = video.videoWidth;
+            captureCanvas.height = video.videoHeight;
+            captureCanvas.getContext('2d').drawImage(video, 0, 0);
+            document.getElementById('input-photo').value = captureCanvas.toDataURL('image/jpeg', 0.6);
+        } else {
+            document.getElementById('input-photo').value = '';
+        }
         
         this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Memproses...';
         this.disabled = true;

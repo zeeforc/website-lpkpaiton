@@ -635,17 +635,31 @@ class PortalController extends Controller
     {
         $user = Auth::user();
         
-        $request->validate([
+        $validationRules = [
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'type' => 'required|in:in,out',
             'photo' => 'nullable|string',
-            'checkout_photos' => 'sometimes|array',
-            'checkout_photos.*' => 'file|mimes:jpeg,jpg,png,webp|max:5120',
+            'checkout_photos' => 'sometimes|array|max:2',
+            'checkout_photos.*' => 'file|mimes:jpeg,jpg,png,webp|max:1023',
+        ];
+
+        if (
+            $request->input('type') === 'out'
+            && in_array($user->role, ['karyawan_paving', 'instruktur_lpk'], true)
+        ) {
+            $validationRules['checkout_photos'] = 'required|array|size:2';
+        }
+
+        $request->validate($validationRules, [
+            'checkout_photos.max' => 'Maksimal 2 foto dokumentasi yang dapat diunggah.',
+            'checkout_photos.required' => 'Silakan unggah 2 foto dokumentasi pekerjaan.',
+            'checkout_photos.size' => 'Silakan unggah tepat 2 foto dokumentasi pekerjaan.',
+            'checkout_photos.*.max' => 'Ukuran setiap foto harus di bawah 1 MB. Silakan pilih foto yang lebih kecil.',
         ]);
 
         $optimizedPhoto = null;
-        if ($request->filled('photo')) {
+        if ($request->input('type') === 'in' && $request->filled('photo')) {
             try {
                 $optimizedPhoto = $imageOptimizer->fromDataUri($request->string('photo')->toString());
             } catch (\InvalidArgumentException $exception) {
@@ -654,6 +668,8 @@ class PortalController extends Controller
         }
         
         $today = today();
+        $checkoutPhotoPaths = [];
+        $previousCheckoutPhotos = [];
         
         // Cek Libur / Akhir Pekan
         if ($today->isWeekend()) {
@@ -731,36 +747,38 @@ class PortalController extends Controller
             }
             
             if ($request->hasFile('checkout_photos')) {
-                $photos = [];
                 $disk = Storage::disk('public');
 
                 try {
                     foreach ($request->file('checkout_photos') as $photo) {
-                        $webp = $imageOptimizer->toWebp($photo->get(), $photo->getMimeType());
-                        $filePath = 'attendances/checkout/checkout_' . $user->id . '_' . \Illuminate\Support\Str::uuid() . '.webp';
+                        $extension = $photo->guessExtension();
+                        if (! in_array($extension, ['jpg', 'jpeg', 'png', 'webp'], true)) {
+                            throw new \RuntimeException('Format foto dokumentasi tidak didukung.');
+                        }
 
-                        if (! $disk->put($filePath, $webp)) {
+                        $filePath = $disk->putFileAs(
+                            'attendances/checkout',
+                            $photo,
+                            'checkout_'.$user->id.'_'.\Illuminate\Support\Str::uuid().'.'.$extension,
+                        );
+
+                        if (! is_string($filePath)) {
                             throw new \RuntimeException('Server gagal menyimpan foto dokumentasi.');
                         }
 
-                        $photos[] = $filePath;
+                        $checkoutPhotoPaths[] = $filePath;
                     }
                 } catch (\Throwable $exception) {
-                    foreach ($photos as $photoPath) {
+                    foreach ($checkoutPhotoPaths as $photoPath) {
                         $disk->delete($photoPath);
                     }
 
                     throw $exception;
                 }
 
-                $oldPhotos = json_decode($attendance->checkout_photos ?? '[]', true) ?? [];
-                foreach ($oldPhotos as $oldPhoto) {
-                    if (is_string($oldPhoto)) {
-                        $disk->delete($oldPhoto);
-                    }
-                }
-
-                $attendance->checkout_photos = json_encode($photos, JSON_THROW_ON_ERROR);
+                $decodedPreviousPhotos = json_decode($attendance->checkout_photos ?? '[]', true);
+                $previousCheckoutPhotos = is_array($decodedPreviousPhotos) ? $decodedPreviousPhotos : [];
+                $attendance->checkout_photos = json_encode($checkoutPhotoPaths, JSON_THROW_ON_ERROR);
             }
         }
         
@@ -774,9 +792,43 @@ class PortalController extends Controller
             $attendance->photo_path = $filePath;
         }
         
-        $attendance->save();
+        try {
+            $attendance->save();
+        } catch (\Throwable $exception) {
+            foreach ($checkoutPhotoPaths as $photoPath) {
+                Storage::disk('public')->delete($photoPath);
+            }
+
+            throw $exception;
+        }
+
+        if ($checkoutPhotoPaths !== []) {
+            foreach ($previousCheckoutPhotos as $oldPhotoPath) {
+                if (is_string($oldPhotoPath)) {
+                    Storage::disk('public')->delete($oldPhotoPath);
+                }
+            }
+
+            try {
+                \App\Jobs\OptimizeAttendancePhotos::dispatch($attendance->id, $checkoutPhotoPaths)
+                    ->onConnection('database')
+                    ->onQueue('attendance-photos')
+                    ->afterCommit();
+            } catch (\Throwable $exception) {
+                \Illuminate\Support\Facades\Log::error('Could not queue checkout photo optimization; scheduled migration will retry.', [
+                    'attendance_id' => $attendance->id,
+                    'paths' => $checkoutPhotoPaths,
+                    'exception' => $exception,
+                ]);
+            }
+        }
         
-        return redirect()->route('portal.absensi.check-in')->with('success', 'Berhasil! Absensi ' . ($request->type === 'in' ? 'masuk' : 'pulang') . ' telah dicatat.');
+        $successMessage = 'Berhasil! Absensi '.($request->type === 'in' ? 'masuk' : 'pulang').' telah dicatat.';
+        if ($checkoutPhotoPaths !== []) {
+            $successMessage .= ' Foto dokumentasi sedang diproses di latar belakang.';
+        }
+
+        return redirect()->route('portal.absensi.check-in')->with('success', $successMessage);
     }
     
     public function izin()

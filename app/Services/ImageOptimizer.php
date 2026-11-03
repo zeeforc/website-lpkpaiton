@@ -12,7 +12,9 @@ class ImageOptimizer
 
     private const MAX_PIXELS = 12000000;
 
-    private const WEBP_QUALITY = 80;
+    private const MAX_INPUT_BYTES = 1024 * 1024;
+
+    private const MAX_OUTPUT_BYTES = 100 * 1024;
 
     public function fromDataUri(string $dataUri): string
     {
@@ -22,8 +24,8 @@ class ImageOptimizer
 
         $image = base64_decode($matches[2], true);
 
-        if ($image === false || strlen($image) > 5 * 1024 * 1024) {
-            throw new InvalidArgumentException('Data foto tidak valid atau melebihi 5 MB.');
+        if ($image === false || strlen($image) > self::MAX_INPUT_BYTES) {
+            throw new InvalidArgumentException('Data foto tidak valid atau melebihi 1 MB.');
         }
 
         $expectedMime = strtolower($matches[1]) === 'jpg' ? 'image/jpeg' : 'image/'.strtolower($matches[1]);
@@ -60,34 +62,61 @@ class ImageOptimizer
             throw new InvalidArgumentException('Foto tidak dapat dibaca sebagai gambar.');
         }
 
-        $scale = min(1, self::MAX_DIMENSION / max($width, $height));
-        $targetWidth = max(1, (int) round($width * $scale));
-        $targetHeight = max(1, (int) round($height * $scale));
-        $target = imagecreatetruecolor($targetWidth, $targetHeight);
+        try {
+            $scale = min(1, self::MAX_DIMENSION / max($width, $height));
+            $targetWidth = max(1, (int) round($width * $scale));
+            $targetHeight = max(1, (int) round($height * $scale));
 
-        if ($target === false) {
+            while (true) {
+                $target = imagecreatetruecolor($targetWidth, $targetHeight);
+                if ($target === false) {
+                    throw new RuntimeException('Server tidak memiliki memori cukup untuk memproses foto.');
+                }
+
+                imagealphablending($target, false);
+                imagesavealpha($target, true);
+
+                if (! imagecopyresampled($target, $source, 0, 0, 0, 0, $targetWidth, $targetHeight, $width, $height)) {
+                    imagedestroy($target);
+                    throw new RuntimeException('Server gagal mengubah ukuran foto.');
+                }
+
+                foreach ([80, 70, 60, 50, 40, 30] as $quality) {
+                    $webp = $this->encodeWebp($target, $quality);
+                    if (strlen($webp) <= self::MAX_OUTPUT_BYTES) {
+                        imagedestroy($target);
+
+                        return $webp;
+                    }
+                }
+
+                imagedestroy($target);
+
+                if ($targetWidth === 1 && $targetHeight === 1) {
+                    throw new RuntimeException('Server gagal menghasilkan WebP di bawah batas 100 KB.');
+                }
+
+                $targetWidth = max(1, (int) floor($targetWidth * 0.8));
+                $targetHeight = max(1, (int) floor($targetHeight * 0.8));
+            }
+        } finally {
             imagedestroy($source);
-            throw new RuntimeException('Server tidak memiliki memori cukup untuk memproses foto.');
         }
+    }
 
-        imagealphablending($target, false);
-        imagesavealpha($target, true);
-
-        if (! imagecopyresampled($target, $source, 0, 0, 0, 0, $targetWidth, $targetHeight, $width, $height)) {
-            imagedestroy($source);
-            imagedestroy($target);
-            throw new RuntimeException('Server gagal mengubah ukuran foto.');
-        }
-
+    private function encodeWebp(\GdImage $image, int $quality): string
+    {
         $bufferLevel = ob_get_level();
         ob_start();
 
         try {
-            $encoded = imagewebp($target, null, self::WEBP_QUALITY);
-            $webp = ob_get_clean();
-
-            if (! $encoded || ! is_string($webp) || $webp === '') {
+            if (! imagewebp($image, null, $quality)) {
                 throw new RuntimeException('Server gagal mengonversi foto ke WebP.');
+            }
+
+            $webp = ob_get_clean();
+            if (! is_string($webp) || $webp === '') {
+                throw new RuntimeException('Server menghasilkan file WebP kosong.');
             }
 
             return $webp;
@@ -97,9 +126,6 @@ class ImageOptimizer
             }
 
             throw $exception;
-        } finally {
-            imagedestroy($source);
-            imagedestroy($target);
         }
     }
 

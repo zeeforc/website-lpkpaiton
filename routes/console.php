@@ -9,8 +9,12 @@ Artisan::command('inspire', function () {
 
 use Illuminate\Support\Facades\Schedule;
 
-Schedule::command('app:cleanup-attendance-photos')
-    ->monthlyOn(5, '01:00')
-    ->timezone('Asia/Jakarta');
-
 Schedule::command('app:cleanup-attendance-exports')->hourly();
+
+Schedule::command('app:optimize-attendance-photos --limit=10')
+    ->everyFiveMinutes()
+    ->withoutOverlapping();
+
+Schedule::command('queue:work database --queue=attendance-photos --stop-when-empty --timeout=45 --max-time=50 --tries=10')
+    ->everyMinute()
+    ->withoutOverlapping(2);

@@ -17,7 +17,7 @@ class AttendanceExportStorage
         $publicDisk = Storage::disk('public');
 
         foreach ($privateDisk->files('attendance-exports') as $path) {
-            if (strtolower(pathinfo($path, PATHINFO_EXTENSION)) === 'zip') {
+            if ($this->isPrivateExport($path)) {
                 $this->deleteOrFail($privateDisk, $path);
                 $deleted++;
             }
@@ -40,7 +40,7 @@ class AttendanceExportStorage
         $publicDisk = Storage::disk('public');
 
         foreach ($privateDisk->files('attendance-exports') as $path) {
-            if (strtolower(pathinfo($path, PATHINFO_EXTENSION)) === 'zip') {
+            if ($this->isPrivateExport($path)) {
                 $deleted += $this->deleteIfExpired($privateDisk, $path, $olderThan) ? 1 : 0;
             }
         }
@@ -60,6 +60,14 @@ class AttendanceExportStorage
 
         return preg_match('/\ADokumentasi Karyawan - .+\.zip(?:\.[A-Za-z0-9]+)?\.part\z/i', $name) === 1
             || preg_match('/\ADokumentasi Karyawan - .+\.zip\z/i', $name) === 1;
+    }
+
+    private function isPrivateExport(string $path): bool
+    {
+        return preg_match(
+            '/\A[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.zip(?:\.[A-Za-z0-9]+\.part)?\z/i',
+            basename($path),
+        ) === 1;
     }
 
     private function deleteIfExpired(Filesystem $disk, string $path, int $olderThan): bool

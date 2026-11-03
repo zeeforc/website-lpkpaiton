@@ -108,10 +108,17 @@ class CleanupAttendanceStorageTest extends TestCase
         Carbon::setTestNow('2026-11-05 08:00:00');
         Storage::fake('local');
         Storage::fake('public');
-        Storage::disk('local')->put('attendance-exports/old.zip', 'old');
-        Storage::disk('local')->put('attendance-exports/recent.zip', 'recent');
-        touch(Storage::disk('local')->path('attendance-exports/old.zip'), now()->subHours(7)->getTimestamp());
-        touch(Storage::disk('local')->path('attendance-exports/recent.zip'), now()->getTimestamp());
+        $oldZip = 'attendance-exports/4c5cbdd0-8276-4a36-9a25-c9f2bd9f82f4.zip';
+        $recentZip = 'attendance-exports/2d020cec-94b9-4a4d-8509-7d16c36cf4be.zip';
+        Storage::disk('local')->put($oldZip, 'old');
+        Storage::disk('local')->put($recentZip, 'recent');
+        touch(Storage::disk('local')->path($oldZip), now()->subHours(7)->getTimestamp());
+        touch(Storage::disk('local')->path($recentZip), now()->getTimestamp());
+        Storage::disk('local')->put('attendance-exports/b10b24b7-197f-4175-a6f4-076f56d055ba.zip.70ag1h.part', 'partial');
+        touch(
+            Storage::disk('local')->path('attendance-exports/b10b24b7-197f-4175-a6f4-076f56d055ba.zip.70ag1h.part'),
+            now()->subHours(7)->getTimestamp(),
+        );
         Storage::disk('public')->put('Dokumentasi Karyawan - Oktober.zip.abc123.part', 'partial');
         Storage::disk('public')->put('Dokumentasi Karyawan - Oktober.zip', 'legacy');
         Storage::disk('public')->put('unrelated.zip.part', 'keep');
@@ -120,8 +127,9 @@ class CleanupAttendanceStorageTest extends TestCase
 
         $this->artisan('app:cleanup-attendance-exports')->assertExitCode(0);
 
-        Storage::disk('local')->assertMissing('attendance-exports/old.zip');
-        Storage::disk('local')->assertExists('attendance-exports/recent.zip');
+        Storage::disk('local')->assertMissing($oldZip);
+        Storage::disk('local')->assertExists($recentZip);
+        Storage::disk('local')->assertMissing('attendance-exports/b10b24b7-197f-4175-a6f4-076f56d055ba.zip.70ag1h.part');
         Storage::disk('public')->assertMissing('Dokumentasi Karyawan - Oktober.zip.abc123.part');
         Storage::disk('public')->assertMissing('Dokumentasi Karyawan - Oktober.zip');
         Storage::disk('public')->assertExists('unrelated.zip.part');
@@ -131,14 +139,15 @@ class CleanupAttendanceStorageTest extends TestCase
     {
         Storage::fake('local');
         Storage::fake('public');
-        Storage::disk('local')->put('attendance-exports/previous.zip', 'previous');
+        $previousZip = 'attendance-exports/f4d90597-5f7d-4184-9f93-60cf2c216671.zip';
+        Storage::disk('local')->put($previousZip, 'previous');
         Storage::disk('public')->put('Dokumentasi Karyawan - Oktober.zip.abc123.part', 'partial');
         Storage::disk('public')->put('keep-this-file.part', 'unrelated');
 
         $deleted = app(AttendanceExportStorage::class)->clearPreviousExports();
 
         $this->assertSame(2, $deleted);
-        Storage::disk('local')->assertMissing('attendance-exports/previous.zip');
+        Storage::disk('local')->assertMissing($previousZip);
         Storage::disk('public')->assertMissing('Dokumentasi Karyawan - Oktober.zip.abc123.part');
         Storage::disk('public')->assertExists('keep-this-file.part');
     }
