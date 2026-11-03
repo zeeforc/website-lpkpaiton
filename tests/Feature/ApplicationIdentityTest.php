@@ -3,12 +3,15 @@
 namespace Tests\Feature;
 
 use App\Models\Application;
+use App\Models\ApplicationDocument;
 use App\Models\StudentProfile;
 use App\Models\User;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 class ApplicationIdentityTest extends TestCase
@@ -87,6 +90,7 @@ class ApplicationIdentityTest extends TestCase
             $table->string('file_path');
             $table->string('original_name');
             $table->string('status')->nullable();
+            $table->text('keterangan')->nullable();
             $table->timestamps();
         });
 
@@ -283,5 +287,92 @@ class ApplicationIdentityTest extends TestCase
             ->assertDontSee('name="nim"')
             ->assertDontSee('name="nama_wali_kelas"')
             ->assertDontSee('name="no_hp_wali_kelas"');
+    }
+
+    public function test_external_missing_document_upload_moves_approved_application_to_document_review(): void
+    {
+        Storage::fake('public');
+        Mail::fake();
+
+        $application = $this->buildTestApplication('permohonan_diterima');
+        ApplicationDocument::create([
+            'application_id' => $application->id,
+            'file_path' => 'applications/documents/initial.pdf',
+            'original_name' => 'Surat Pengantar - awal.pdf',
+            'status' => 'Valid',
+        ]);
+        $url = URL::temporarySignedRoute(
+            'application.dokumen.upload-missing',
+            now()->addMinutes(10),
+            ['application' => $application->id],
+        );
+
+        $this->post($url, [
+            'document_type' => 'KTP/Kartu Pelajar',
+            'dokumen_baru' => UploadedFile::fake()->create('ktp.pdf', 20, 'application/pdf'),
+        ])->assertRedirect();
+
+        $this->assertSame('document_review', $application->fresh()->status);
+        $this->assertDatabaseHas('application_documents', [
+            'application_id' => $application->id,
+            'original_name' => 'KTP/Kartu Pelajar - ktp.pdf',
+            'status' => 'Menunggu Review',
+        ]);
+    }
+
+    public function test_external_document_reupload_returns_revision_application_to_document_review(): void
+    {
+        Storage::fake('public');
+        Mail::fake();
+
+        $application = $this->buildTestApplication('revisi_dokumen');
+        $document = ApplicationDocument::create([
+            'application_id' => $application->id,
+            'file_path' => 'applications/documents/old.pdf',
+            'original_name' => 'KTP/Kartu Pelajar - lama.pdf',
+            'status' => 'Revisi',
+            'keterangan' => 'Unggah ulang dokumen.',
+        ]);
+        Storage::disk('public')->put($document->file_path, 'old document');
+        $url = URL::temporarySignedRoute(
+            'application.dokumen.reupload',
+            now()->addMinutes(10),
+            ['application' => $application->id, 'document' => $document->id],
+        );
+
+        $this->post($url, [
+            'dokumen_baru' => UploadedFile::fake()->create('ktp-baru.pdf', 20, 'application/pdf'),
+        ])->assertRedirect();
+
+        $this->assertSame('document_review', $application->fresh()->status);
+        $this->assertSame('Menunggu Review', $document->fresh()->status);
+        $this->assertNull($document->fresh()->keterangan);
+        Storage::disk('public')->assertMissing('applications/documents/old.pdf');
+    }
+
+    private function buildTestApplication(string $status): Application
+    {
+        $user = User::create([
+            'name' => 'Pendaftar',
+            'email' => 'pendaftar-'.uniqid().'@example.com',
+            'password' => 'password',
+        ]);
+
+        return Application::create([
+            'user_id' => $user->id,
+            'nama_lengkap' => 'Pendaftar',
+            'instansi' => 'Instansi',
+            'tingkat_pendidikan' => 'Mahasiswa',
+            'nomor_induk' => '000123',
+            'jurusan' => 'Teknik',
+            'no_hp' => '08123456789',
+            'pengajuan' => 'PKL',
+            'periode_gelombang' => 'Januari',
+            'jumlah_peserta' => '1 ORANG',
+            'lama_durasi_bulan' => 3,
+            'fokus_studi' => 'Pembelajaran',
+            'email_balasan' => $user->email,
+            'status' => $status,
+        ]);
     }
 }

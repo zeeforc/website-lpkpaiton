@@ -243,6 +243,8 @@ class ApplicationController extends Controller
                 'keterangan' => null,
             ]);
 
+            $this->moveApplicationToDocumentReview($application);
+
             return back()->with('success', 'Dokumen berhasil diunggah ulang.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Gagal mengunggah ulang dokumen.']);
@@ -251,7 +253,6 @@ class ApplicationController extends Controller
 
     public function uploadMissingDocumentExternal(Request $request, Application $application)
     {
-        // Existing code (omitted for brevity, let's look at the actual content before replacing blindly)
         if (! $request->hasValidSignature()) {
             abort(401, 'Link tidak valid atau sudah kadaluarsa.');
         }
@@ -273,9 +274,18 @@ class ApplicationController extends Controller
                 'status' => 'Menunggu Review',
             ]);
 
+            $this->moveApplicationToDocumentReview($application);
+
             return back()->with('success', 'Dokumen berhasil diunggah.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Gagal mengunggah dokumen.']);
+        }
+    }
+
+    private function moveApplicationToDocumentReview(Application $application): void
+    {
+        if (in_array($application->status, ['permohonan_diterima', 'revisi_dokumen'], true)) {
+            $application->update(['status' => 'document_review']);
         }
     }
 
