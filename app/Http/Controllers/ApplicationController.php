@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Application;
 use App\Models\ApplicationDocument;
+use App\Models\StudentProfile;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -32,6 +33,7 @@ class ApplicationController extends Controller
             'nama_lengkap' => 'required|string|max:255',
             'instansi' => 'required|string|max:255',
             'tingkat_pendidikan' => 'required|string|in:Mahasiswa,Siswa SMK/SMA',
+            'nomor_induk' => ['required', 'string', 'max:50', 'regex:/^[0-9]+$/'],
             'jurusan' => 'required|string|max:255',
             'no_hp' => 'required|string|max:50',
             'pengajuan' => 'required|string',
@@ -45,6 +47,8 @@ class ApplicationController extends Controller
             'email_balasan.unique' => 'Email ini sudah pernah digunakan untuk mendaftar. Silakan gunakan email lain.',
             'documents.*.mimes' => 'Format file dokumen harus berupa PDF, JPG, atau PNG.',
             'documents.*.max' => 'Ukuran file dokumen maksimal adalah 5MB per file.',
+            'nomor_induk.required' => 'NISN atau NIM wajib diisi.',
+            'nomor_induk.regex' => 'NISN atau NIM hanya boleh berisi angka.',
         ]);
 
         try {
@@ -63,6 +67,7 @@ class ApplicationController extends Controller
                 'nama_lengkap' => $request->nama_lengkap,
                 'instansi' => $request->instansi,
                 'tingkat_pendidikan' => $request->tingkat_pendidikan,
+                'nomor_induk' => $request->nomor_induk,
                 'jurusan' => $request->jurusan,
                 'no_hp' => $request->no_hp,
                 'pengajuan' => $request->pengajuan,
@@ -73,6 +78,13 @@ class ApplicationController extends Controller
                 'email_balasan' => $request->email_balasan,
                 'status' => 'pending',
             ]);
+
+            StudentProfile::updateOrCreate(
+                ['user_id' => $user->id],
+                $request->tingkat_pendidikan === 'Mahasiswa'
+                    ? ['nim' => $request->nomor_induk]
+                    : ['nisn' => $request->nomor_induk],
+            );
 
             if ($request->hasFile('documents')) {
                 foreach ($request->file('documents') as $file) {

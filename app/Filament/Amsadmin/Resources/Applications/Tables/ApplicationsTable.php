@@ -2,6 +2,8 @@
 
 namespace App\Filament\Amsadmin\Resources\Applications\Tables;
 
+use Filament\Tables\Filters\Filter;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -19,6 +21,9 @@ class ApplicationsTable
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('nama_lengkap')
+                    ->searchable(),
+                TextColumn::make('nomor_induk')
+                    ->label('NISN / NIM')
                     ->searchable(),
                 TextColumn::make('instansi')
                     ->searchable(),
@@ -53,7 +58,9 @@ class ApplicationsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Filter::make('duplicate_names')
+                    ->label('Nama ganda')
+                    ->query(fn (Builder $query): Builder => $query->withDuplicateNames()),
             ])
             ->recordActions([
                 ViewAction::make(),

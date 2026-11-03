@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class Application extends Model
 {
     protected $fillable = [
-        'user_id', 'nama_lengkap', 'instansi', 'tingkat_pendidikan', 'jurusan', 'no_hp',
+        'user_id', 'nama_lengkap', 'instansi', 'tingkat_pendidikan', 'nomor_induk', 'jurusan', 'no_hp',
         'pengajuan', 'periode_gelombang', 'jumlah_peserta', 'lama_durasi_bulan',
         'fokus_studi', 'email_balasan', 'status',
         'start_date', 'end_date', 'is_jalur_khusus',
@@ -36,6 +38,18 @@ class Application extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function scopeWithDuplicateNames(Builder $query): Builder
+    {
+        $duplicateNames = static::query()
+            ->selectRaw('LOWER(TRIM(nama_lengkap))')
+            ->whereNotNull('nama_lengkap')
+            ->whereRaw("TRIM(nama_lengkap) <> ''")
+            ->groupByRaw('LOWER(TRIM(nama_lengkap))')
+            ->havingRaw('COUNT(*) > 1');
+
+        return $query->whereIn(DB::raw('LOWER(TRIM(nama_lengkap))'), $duplicateNames);
     }
 
     public function documents()

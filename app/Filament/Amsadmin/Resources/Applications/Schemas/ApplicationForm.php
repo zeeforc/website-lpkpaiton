@@ -22,6 +22,16 @@ class ApplicationForm
                     ->numeric(),
                 TextInput::make('nama_lengkap')
                     ->required(),
+                Select::make('tingkat_pendidikan')
+                    ->options([
+                        'Mahasiswa' => 'Mahasiswa',
+                        'Siswa SMK/SMA' => 'Siswa SMK/SMA',
+                    ])
+                    ->required(),
+                TextInput::make('nomor_induk')
+                    ->label('NISN / NIM')
+                    ->rule('regex:/^[0-9]+$/')
+                    ->maxLength(50),
                 TextInput::make('instansi')
                     ->required(),
                 TextInput::make('jurusan')

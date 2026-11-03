@@ -125,19 +125,21 @@ class PortalController extends Controller
         $profile = $user->studentProfile ?? StudentProfile::create(['user_id' => $user->id]);
         $application = Application::where('user_id', $user->id)->first();
         $pasFoto = $application ? $application->documents()->where('original_name', 'like', '%Pas Foto%')->first() : null;
+        $isMahasiswa = $application?->tingkat_pendidikan === 'Mahasiswa';
         
-        return view('portal.biodata', compact('user', 'profile', 'application', 'pasFoto'));
+        return view('portal.biodata', compact('user', 'profile', 'application', 'pasFoto', 'isMahasiswa'));
     }
 
     public function updateBiodata(Request $request)
     {
         $user = Auth::user();
         $profile = $user->studentProfile;
-        
-        $validated = $request->validate([
+
+        $application = Application::where('user_id', $user->id)->first();
+        $isMahasiswa = $application?->tingkat_pendidikan === 'Mahasiswa';
+
+        $rules = [
             'nama_panggilan' => 'nullable|string|max:255',
-            'nis' => 'nullable|string|max:50',
-            'nisn' => 'nullable|string|max:50',
             'jenis_kelamin' => 'nullable|string|in:Laki-laki,Perempuan',
             'tempat_lahir' => 'nullable|string|max:255',
             'tanggal_lahir' => 'nullable|date',
@@ -145,13 +147,20 @@ class PortalController extends Controller
             'npsn' => 'nullable|string|max:50',
             'kelas' => 'nullable|string|max:50',
             'tahun_ajaran' => 'nullable|string|max:50',
-            'nama_wali_kelas' => 'nullable|string|max:255',
-            'no_hp_wali_kelas' => 'nullable|string|max:50',
             'nama_kontak_darurat' => 'nullable|string|max:255',
             'hubungan_kontak_darurat' => 'nullable|string|max:255',
             'no_hp_kontak_darurat' => 'nullable|string|max:50',
             'alamat_kontak_darurat' => 'nullable|string',
-        ]);
+        ];
+
+        if ($isMahasiswa) {
+            $rules['nim'] = ['nullable', 'string', 'max:50', 'regex:/^[0-9]+$/'];
+        } else {
+            $rules['nis'] = 'nullable|string|max:50';
+            $rules['nisn'] = ['nullable', 'string', 'max:50', 'regex:/^[0-9]+$/'];
+        }
+
+        $validated = $request->validate($rules);
 
         $profile->update($validated);
         

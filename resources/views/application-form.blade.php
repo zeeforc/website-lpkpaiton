@@ -103,6 +103,12 @@
             </div>
 
             <div class="mb-4">
+                <label for="nomor_induk" class="form-label"><span id="nomor_induk_label">NISN / NIM</span> <span class="text-danger">*</span></label>
+                <input type="text" inputmode="numeric" pattern="[0-9]+" maxlength="50" class="form-control" id="nomor_induk" name="nomor_induk" placeholder="NISN atau NIM" required value="{{ old('nomor_induk') }}" aria-describedby="nomor_induk_help">
+                <div id="nomor_induk_help" class="form-text">Masukkan NISN untuk siswa atau NIM untuk mahasiswa. Hanya angka.</div>
+            </div>
+
+            <div class="mb-4">
                 <label for="jurusan" class="form-label">JURUSAN/BIDANG STUDI <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="jurusan" name="jurusan" placeholder="Jurusan" required value="{{ old('jurusan') }}">
             </div>
@@ -214,6 +220,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const radioB = document.querySelectorAll('input[name="sepatu_safety_b"]');
     const containerB = document.getElementById('sepatu_safety_b_container');
     const form = document.querySelector('form');
+    const identityLabel = document.getElementById('nomor_induk_label');
+    const identityInput = document.getElementById('nomor_induk');
+    const educationOptions = document.querySelectorAll('input[name="tingkat_pendidikan"]');
+
+    function updateIdentityLabel() {
+        const selectedEducation = document.querySelector('input[name="tingkat_pendidikan"]:checked')?.value;
+        const label = selectedEducation === 'Mahasiswa' ? 'NIM' : 'NISN';
+        identityLabel.textContent = label;
+        identityInput.placeholder = label;
+    }
+
+    educationOptions.forEach(option => option.addEventListener('change', updateIdentityLabel));
+    updateIdentityLabel();
 
     radioA.forEach(radio => {
         radio.addEventListener('change', function() {

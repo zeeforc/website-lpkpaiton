@@ -110,18 +110,27 @@
                                     <input type="text" name="nama_panggilan" class="form-control form-control-sm" value="{{ $profile->nama_panggilan }}">
                                 </div>
                             </div>
-                            <div class="row mb-2 align-items-center">
-                                <div class="col-sm-4 text-secondary">NIS</div>
-                                <div class="col-sm-8">
-                                    <input type="number" name="nis" class="form-control form-control-sm" value="{{ $profile->nis }}">
+                            @if($isMahasiswa)
+                                <div class="row mb-2 align-items-center">
+                                    <div class="col-sm-4 text-secondary">NIM</div>
+                                    <div class="col-sm-8">
+                                        <input type="text" inputmode="numeric" pattern="[0-9]+" name="nim" class="form-control form-control-sm" value="{{ $profile->nim ?? optional($application)->nomor_induk }}">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row mb-2 align-items-center">
-                                <div class="col-sm-4 text-secondary">NISN</div>
-                                <div class="col-sm-8">
-                                    <input type="number" name="nisn" class="form-control form-control-sm" value="{{ $profile->nisn }}">
+                            @else
+                                <div class="row mb-2 align-items-center">
+                                    <div class="col-sm-4 text-secondary">NIS</div>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="nis" class="form-control form-control-sm" value="{{ $profile->nis }}">
+                                    </div>
                                 </div>
-                            </div>
+                                <div class="row mb-2 align-items-center">
+                                    <div class="col-sm-4 text-secondary">NISN</div>
+                                    <div class="col-sm-8">
+                                        <input type="text" inputmode="numeric" pattern="[0-9]+" name="nisn" class="form-control form-control-sm" value="{{ $profile->nisn ?? optional($application)->nomor_induk }}">
+                                    </div>
+                                </div>
+                            @endif
                             <div class="row mb-2 align-items-center">
                                 <div class="col-sm-4 text-secondary">Jenis Kelamin</div>
                                 <div class="col-sm-8">
@@ -251,18 +260,6 @@
                         <div class="col-sm-5 text-secondary">Tahun Ajaran</div>
                         <div class="col-sm-7">
                             <input type="text" name="tahun_ajaran" class="form-control form-control-sm" value="{{ $profile->tahun_ajaran }}">
-                        </div>
-                    </div>
-                    <div class="row mb-2 align-items-center">
-                        <div class="col-sm-5 text-secondary">Wali Kelas</div>
-                        <div class="col-sm-7">
-                            <input type="text" name="nama_wali_kelas" class="form-control form-control-sm" value="{{ $profile->nama_wali_kelas }}">
-                        </div>
-                    </div>
-                    <div class="row mb-2 align-items-center">
-                        <div class="col-sm-5 text-secondary">HP Wali Kelas</div>
-                        <div class="col-sm-7">
-                            <input type="number" name="no_hp_wali_kelas" class="form-control form-control-sm" value="{{ $profile->no_hp_wali_kelas }}">
                         </div>
                     </div>
                 </div>

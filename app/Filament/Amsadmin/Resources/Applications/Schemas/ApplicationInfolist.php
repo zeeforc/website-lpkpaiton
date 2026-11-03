@@ -23,6 +23,8 @@ class ApplicationInfolist
                                 ->badge()
                                 ->color(fn ($state) => $state === 'Mahasiswa' ? 'primary' : 'warning')
                                 ->icon('heroicon-m-academic-cap'),
+                            \Filament\Infolists\Components\TextEntry::make('nomor_induk')->label('NISN / NIM')
+                                ->icon('heroicon-m-identification'),
                             \Filament\Infolists\Components\TextEntry::make('instansi')->label('Instansi / Perguruan Tinggi')
                                 ->icon('heroicon-m-building-office-2'),
                             \Filament\Infolists\Components\TextEntry::make('jurusan')->label('Jurusan / Bidang Studi')
