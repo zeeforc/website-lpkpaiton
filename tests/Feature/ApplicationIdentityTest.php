@@ -2,16 +2,19 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Amsadmin\Resources\Applications\Pages\ListApplications;
 use App\Models\Application;
 use App\Models\ApplicationDocument;
 use App\Models\StudentProfile;
 use App\Models\User;
+use Filament\Facades\Filament;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class ApplicationIdentityTest extends TestCase
@@ -196,6 +199,29 @@ class ApplicationIdentityTest extends TestCase
             [' Nama Sama ', 'nama sama'],
             Application::query()->withDuplicateNames()->orderBy('id')->pluck('nama_lengkap')->all(),
         );
+    }
+
+    public function test_filament_duplicate_name_filter_returns_only_duplicate_applications(): void
+    {
+        $admin = User::create([
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
+            'password' => 'password',
+            'role' => 'admin',
+        ]);
+        $duplicateOne = $this->buildTestApplication('pending');
+        $duplicateOne->update(['nama_lengkap' => 'Nama Sama']);
+        $duplicateTwo = $this->buildTestApplication('pending');
+        $duplicateTwo->update(['nama_lengkap' => ' nama sama ']);
+        $unique = $this->buildTestApplication('pending');
+
+        Filament::setCurrentPanel('amsadmin');
+        $this->actingAs($admin, 'admin');
+
+        Livewire::test(ListApplications::class)
+            ->filterTable('duplicate_names')
+            ->assertCanSeeTableRecords([$duplicateOne, $duplicateTwo])
+            ->assertCanNotSeeTableRecords([$unique]);
     }
 
     public function test_student_biodata_shows_nim_and_does_not_accept_removed_homeroom_fields(): void

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class Application extends Model
@@ -42,14 +41,15 @@ class Application extends Model
 
     public function scopeWithDuplicateNames(Builder $query): Builder
     {
-        $duplicateNames = static::query()
-            ->selectRaw('LOWER(TRIM(nama_lengkap))')
-            ->whereNotNull('nama_lengkap')
-            ->whereRaw("TRIM(nama_lengkap) <> ''")
-            ->groupByRaw('LOWER(TRIM(nama_lengkap))')
-            ->havingRaw('COUNT(*) > 1');
-
-        return $query->whereIn(DB::raw('LOWER(TRIM(nama_lengkap))'), $duplicateNames);
+        return $query->whereExists(function ($duplicates): void {
+            $duplicates
+                ->selectRaw('1')
+                ->from('applications as duplicate_applications')
+                ->whereColumn('duplicate_applications.id', '<>', 'applications.id')
+                ->whereNotNull('duplicate_applications.nama_lengkap')
+                ->whereRaw("TRIM(duplicate_applications.nama_lengkap) <> ''")
+                ->whereRaw('LOWER(TRIM(duplicate_applications.nama_lengkap)) = LOWER(TRIM(applications.nama_lengkap))');
+        });
     }
 
     public function documents()
