@@ -168,36 +168,150 @@ class ApplicationIdentityTest extends TestCase
         }
     }
 
-    public function test_duplicate_name_scope_ignores_case_and_outer_whitespace(): void
+    public function test_registration_rejects_an_existing_name_and_identity_pair(): void
     {
-        foreach ([' Nama Sama ', 'nama sama', 'Nama Lain'] as $index => $name) {
-            $user = User::create([
-                'name' => $name,
-                'email' => "user{$index}@example.com",
-                'password' => 'password',
-            ]);
+        Storage::fake('public');
+        $existing = $this->buildTestApplication('pending', [
+            'nama_lengkap' => 'Nama Pendaftar',
+            'nomor_induk' => '001234',
+        ]);
 
-            Application::create([
-                'user_id' => $user->id,
-                'nama_lengkap' => $name,
-                'instansi' => 'Instansi',
-                'tingkat_pendidikan' => 'Mahasiswa',
-                'nomor_induk' => '000123',
-                'jurusan' => 'Teknik',
-                'no_hp' => '08123456789',
-                'pengajuan' => 'PKL',
-                'periode_gelombang' => 'Januari',
-                'jumlah_peserta' => '1 ORANG',
-                'lama_durasi_bulan' => 3,
-                'fokus_studi' => 'Pembelajaran',
-                'email_balasan' => "user{$index}@example.com",
-                'status' => 'pending',
-            ]);
-        }
+        $this->from(route('application.create'))
+            ->followingRedirects()
+            ->post(route('application.store'), $this->registrationPayload([
+                'nama_lengkap' => ' nama pendaftar ',
+                'nomor_induk' => '001234',
+            ]))
+            ->assertOk()
+            ->assertSee('Data pendaftaran sudah ada')
+            ->assertSee('Admin perlu menghapus data lama terlebih dahulu.');
+
+        $this->assertDatabaseCount('applications', 1);
+        $this->assertDatabaseCount('users', 1);
+        $this->assertSame('Nama Pendaftar', $existing->fresh()->nama_lengkap);
+    }
+
+    public function test_registration_form_renders_grouped_fields_and_the_guide_dialog(): void
+    {
+        $this->get(route('application.create'))
+            ->assertOk()
+            ->assertSee('Informasi pribadi dan pendidikan')
+            ->assertSee('Rencana kegiatan')
+            ->assertSee('Kesiapan dan dokumen')
+            ->assertSee('role="dialog"', false)
+            ->assertSee('aria-modal="true"', false)
+            ->assertSee('Buka panduan pendaftaran');
+    }
+
+    public function test_registration_rejects_a_matching_identity_in_a_legacy_student_profile(): void
+    {
+        Storage::fake('public');
+        $user = User::create([
+            'name' => 'Mahasiswa Lama',
+            'email' => 'mahasiswa-lama@example.com',
+            'password' => 'password',
+        ]);
+        StudentProfile::create([
+            'user_id' => $user->id,
+            'nim' => '009876',
+        ]);
+
+        $this->post(route('application.store'), $this->registrationPayload([
+            'nama_lengkap' => 'Mahasiswa Lama',
+            'nomor_induk' => '009876',
+        ]))
+            ->assertRedirect()
+            ->assertSessionHas('duplicate_registration', true);
+
+        $this->assertDatabaseCount('applications', 0);
+        $this->assertDatabaseCount('users', 1);
+    }
+
+    public function test_registration_allows_a_name_or_identity_number_to_match_individually(): void
+    {
+        Storage::fake('public');
+        $this->buildTestApplication('pending', [
+            'nama_lengkap' => 'Nama Sama',
+            'nomor_induk' => '001111',
+        ]);
+
+        $this->post(route('application.store'), $this->registrationPayload([
+            'nama_lengkap' => 'Nama Sama',
+            'nomor_induk' => '002222',
+            'email_balasan' => 'nama-berbeda-id@example.com',
+        ]))->assertSessionHasNoErrors();
+
+        $this->post(route('application.store'), $this->registrationPayload([
+            'nama_lengkap' => 'Nama Berbeda',
+            'nomor_induk' => '001111',
+            'email_balasan' => 'id-berbeda-nama@example.com',
+        ]))->assertSessionHasNoErrors();
+
+        $this->assertDatabaseCount('applications', 3);
+        $this->assertDatabaseCount('users', 3);
+    }
+
+    public function test_registration_still_rejects_an_email_used_by_another_applicant(): void
+    {
+        Storage::fake('public');
+        User::create([
+            'name' => 'Pendaftar Lama',
+            'email' => 'dipakai@example.com',
+            'password' => 'password',
+        ]);
+
+        $this->from(route('application.create'))
+            ->post(route('application.store'), $this->registrationPayload([
+                'email_balasan' => 'dipakai@example.com',
+            ]))
+            ->assertRedirect(route('application.create'))
+            ->assertSessionHasErrors('email_balasan');
+
+        $this->assertDatabaseCount('applications', 0);
+        $this->assertDatabaseCount('users', 1);
+    }
+
+    public function test_duplicate_scope_matches_name_and_school_or_identity_number_only(): void
+    {
+        $sameNameAndSchool = $this->buildTestApplication('pending', [
+            'nama_lengkap' => 'Nama Sama',
+            'instansi' => 'SMK A',
+            'nomor_induk' => '000001',
+        ]);
+        $caseAndWhitespaceVariant = $this->buildTestApplication('pending', [
+            'nama_lengkap' => ' nama sama ',
+            'instansi' => ' smk a ',
+            'nomor_induk' => '000002',
+        ]);
+        $sameNameDifferentSchool = $this->buildTestApplication('pending', [
+            'nama_lengkap' => 'Nama Sama',
+            'instansi' => 'SMK B',
+            'nomor_induk' => '000003',
+        ]);
+        $sameIdentityOne = $this->buildTestApplication('pending', [
+            'nama_lengkap' => 'Nama Berbeda 1',
+            'instansi' => 'SMK C',
+            'nomor_induk' => '009999',
+        ]);
+        $sameIdentityTwo = $this->buildTestApplication('pending', [
+            'nama_lengkap' => 'Nama Berbeda 2',
+            'instansi' => 'SMK D',
+            'nomor_induk' => '009999',
+        ]);
+        $unique = $this->buildTestApplication('pending', [
+            'nama_lengkap' => 'Nama Unik',
+            'instansi' => 'SMK E',
+            'nomor_induk' => '000005',
+        ]);
 
         $this->assertSame(
-            [' Nama Sama ', 'nama sama'],
-            Application::query()->withDuplicateNames()->orderBy('id')->pluck('nama_lengkap')->all(),
+            [
+                $sameNameAndSchool->id,
+                $caseAndWhitespaceVariant->id,
+                $sameIdentityOne->id,
+                $sameIdentityTwo->id,
+            ],
+            Application::query()->withDuplicateApplicantData()->orderBy('id')->pluck('id')->all(),
         );
     }
 
@@ -209,11 +323,26 @@ class ApplicationIdentityTest extends TestCase
             'password' => 'password',
             'role' => 'admin',
         ]);
-        $duplicateOne = $this->buildTestApplication('pending');
-        $duplicateOne->update(['nama_lengkap' => 'Nama Sama']);
-        $duplicateTwo = $this->buildTestApplication('pending');
-        $duplicateTwo->update(['nama_lengkap' => ' nama sama ']);
-        $unique = $this->buildTestApplication('pending');
+        $duplicateOne = $this->buildTestApplication('pending', [
+            'nama_lengkap' => 'Nama Sama',
+            'instansi' => 'SMK A',
+            'nomor_induk' => '000001',
+        ]);
+        $duplicateTwo = $this->buildTestApplication('pending', [
+            'nama_lengkap' => ' nama sama ',
+            'instansi' => ' smk a ',
+            'nomor_induk' => '000002',
+        ]);
+        $sameNameDifferentSchool = $this->buildTestApplication('pending', [
+            'nama_lengkap' => 'Nama Sama',
+            'instansi' => 'SMK B',
+            'nomor_induk' => '000003',
+        ]);
+        $unique = $this->buildTestApplication('pending', [
+            'nama_lengkap' => 'Nama Unik',
+            'instansi' => 'SMK C',
+            'nomor_induk' => '000004',
+        ]);
 
         Filament::setCurrentPanel('amsadmin');
         $this->actingAs($admin, 'admin');
@@ -221,7 +350,38 @@ class ApplicationIdentityTest extends TestCase
         Livewire::test(ListApplications::class)
             ->filterTable('duplicate_names')
             ->assertCanSeeTableRecords([$duplicateOne, $duplicateTwo])
-            ->assertCanNotSeeTableRecords([$unique]);
+            ->assertCanNotSeeTableRecords([$sameNameDifferentSchool, $unique]);
+    }
+
+    public function test_filament_school_and_status_filters_can_be_combined(): void
+    {
+        $admin = User::create([
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
+            'password' => 'password',
+            'role' => 'admin',
+        ]);
+        $matching = $this->buildTestApplication('accepted', [
+            'nama_lengkap' => 'Pendaftar A',
+            'instansi' => ' SMK A ',
+        ]);
+        $sameSchoolDifferentStatus = $this->buildTestApplication('pending', [
+            'nama_lengkap' => 'Pendaftar B',
+            'instansi' => 'SMK A',
+        ]);
+        $sameStatusDifferentSchool = $this->buildTestApplication('accepted', [
+            'nama_lengkap' => 'Pendaftar C',
+            'instansi' => 'SMK B',
+        ]);
+
+        Filament::setCurrentPanel('amsadmin');
+        $this->actingAs($admin, 'admin');
+
+        Livewire::test(ListApplications::class)
+            ->filterTable('instansi', 'smk a')
+            ->filterTable('status', 'accepted')
+            ->assertCanSeeTableRecords([$matching])
+            ->assertCanNotSeeTableRecords([$sameSchoolDifferentStatus, $sameStatusDifferentSchool]);
     }
 
     public function test_student_biodata_shows_nim_and_does_not_accept_removed_homeroom_fields(): void
@@ -376,20 +536,22 @@ class ApplicationIdentityTest extends TestCase
         Storage::disk('public')->assertMissing('applications/documents/old.pdf');
     }
 
-    private function buildTestApplication(string $status): Application
+    private function buildTestApplication(string $status, array $overrides = []): Application
     {
+        static $identity = 100000;
+
         $user = User::create([
             'name' => 'Pendaftar',
             'email' => 'pendaftar-'.uniqid().'@example.com',
             'password' => 'password',
         ]);
 
-        return Application::create([
+        return Application::create(array_merge([
             'user_id' => $user->id,
             'nama_lengkap' => 'Pendaftar',
             'instansi' => 'Instansi',
             'tingkat_pendidikan' => 'Mahasiswa',
-            'nomor_induk' => '000123',
+            'nomor_induk' => (string) $identity++,
             'jurusan' => 'Teknik',
             'no_hp' => '08123456789',
             'pengajuan' => 'PKL',
@@ -399,6 +561,24 @@ class ApplicationIdentityTest extends TestCase
             'fokus_studi' => 'Pembelajaran',
             'email_balasan' => $user->email,
             'status' => $status,
-        ]);
+        ], $overrides));
+    }
+
+    private function registrationPayload(array $overrides = []): array
+    {
+        return array_merge([
+            'nama_lengkap' => 'Pendaftar Baru',
+            'instansi' => 'Instansi',
+            'tingkat_pendidikan' => 'Mahasiswa',
+            'nomor_induk' => '000123',
+            'jurusan' => 'Teknik',
+            'no_hp' => '08123456789',
+            'pengajuan' => 'Praktek Kerja Lapangan',
+            'periode_gelombang' => 'Januari',
+            'lama_durasi_bulan' => 3,
+            'fokus_studi' => 'Pembelajaran',
+            'email_balasan' => 'pendaftar-baru@example.com',
+            'documents' => [UploadedFile::fake()->create('surat.pdf', 2, 'application/pdf')],
+        ], $overrides);
     }
 }

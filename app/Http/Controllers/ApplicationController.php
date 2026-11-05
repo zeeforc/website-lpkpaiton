@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Application;
 use App\Models\ApplicationDocument;
+use App\Models\Setting;
 use App\Models\StudentProfile;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ApplicationController extends Controller
 {
@@ -40,15 +42,22 @@ class ApplicationController extends Controller
             'periode_gelombang' => 'required|string',
             'lama_durasi_bulan' => 'required|integer|min:2|max:6',
             'fokus_studi' => 'required|string',
-            'email_balasan' => 'required|email|max:255|unique:users,email',
+            'email_balasan' => 'required|email|max:255',
             'documents' => 'required|array',
             'documents.*' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ], [
-            'email_balasan.unique' => 'Email ini sudah pernah digunakan untuk mendaftar. Silakan gunakan email lain.',
             'documents.*.mimes' => 'Format file dokumen harus berupa PDF, JPG, atau PNG.',
             'documents.*.max' => 'Ukuran file dokumen maksimal adalah 5MB per file.',
             'nomor_induk.required' => 'NISN atau NIM wajib diisi.',
             'nomor_induk.regex' => 'NISN atau NIM hanya boleh berisi angka.',
+        ]);
+
+        if ($this->hasDuplicateApplicant($request->nama_lengkap, $request->nomor_induk)) {
+            return redirect()->back()->withInput()->with('duplicate_registration', true);
+        }
+
+        $request->validate(['email_balasan' => 'unique:users,email'], [
+            'email_balasan.unique' => 'Email ini sudah pernah digunakan untuk mendaftar. Silakan gunakan email lain.',
         ]);
 
         try {
@@ -99,11 +108,41 @@ class ApplicationController extends Controller
 
             DB::commit();
 
-            return redirect()->back()->with('success', 'Formulir pendaftaran berhasil dikirim. Kode referensi Anda: ' . $application->reference_code . '. Simpan kode ini untuk mengecek status pendaftaran.');
+            return redirect()->back()->with('success', 'Formulir pendaftaran berhasil dikirim. Kode referensi Anda: '.$application->reference_code.'. Simpan kode ini untuk mengecek status pendaftaran.');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan saat memproses formulir. Silakan coba lagi.'])->withInput();
         }
+    }
+
+    private function hasDuplicateApplicant(string $name, string $identityNumber): bool
+    {
+        $matchingApplication = Application::query()
+            ->whereRaw('HEX(LOWER(TRIM(nama_lengkap))) = HEX(LOWER(TRIM(?)))', [$name])
+            ->where(function (Builder $query) use ($identityNumber): void {
+                $query
+                    ->whereRaw('HEX(TRIM(nomor_induk)) = HEX(?)', [$identityNumber])
+                    ->orWhereHas('user.studentProfile', function (Builder $profile) use ($identityNumber): void {
+                        $profile
+                            ->whereRaw('HEX(TRIM(nisn)) = HEX(?)', [$identityNumber])
+                            ->orWhereRaw('HEX(TRIM(nim)) = HEX(?)', [$identityNumber]);
+                    });
+            })
+            ->exists();
+
+        if ($matchingApplication) {
+            return true;
+        }
+
+        return User::query()
+            ->whereRaw('HEX(LOWER(TRIM(name))) = HEX(LOWER(TRIM(?)))', [$name])
+            ->whereHas('studentProfile', function (Builder $profile) use ($identityNumber): void {
+                $profile
+                    ->whereRaw('HEX(TRIM(nisn)) = HEX(?)', [$identityNumber])
+                    ->orWhereRaw('HEX(TRIM(nim)) = HEX(?)', [$identityNumber]);
+            })
+            ->exists();
     }
 
     public function showUploadForm(Request $request, Application $application)
@@ -164,11 +203,11 @@ class ApplicationController extends Controller
                 if ($request->hasFile($inputName)) {
                     $file = $request->file($inputName);
                     $path = $file->store('documents', 'public');
-                    
+
                     ApplicationDocument::create([
                         'application_id' => $application->id,
                         'file_path' => $path,
-                        'original_name' => $documentType . ' - ' . $file->getClientOriginalName(),
+                        'original_name' => $documentType.' - '.$file->getClientOriginalName(),
                     ]);
                 }
             }
@@ -181,6 +220,7 @@ class ApplicationController extends Controller
             return redirect('/cek-status')->with('success', 'Dokumen berhasil diunggah. Silakan cek status pendaftaran secara berkala.');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan saat mengunggah dokumen. Silakan coba lagi.']);
         }
     }
@@ -196,17 +236,17 @@ class ApplicationController extends Controller
             'email' => 'required|email',
             'reference_code' => 'required|string|max:10',
         ]);
-        
+
         $application = Application::with('notes')
             ->where('email_balasan', $request->email)
             ->where('reference_code', $request->reference_code)
             ->latest()
             ->first();
-        
-        if (!$application) {
+
+        if (! $application) {
             return redirect()->back()->with('error', 'Data tidak ditemukan. Pastikan email dan kode referensi sudah benar.')->withInput();
         }
-        
+
         return view('cek-status', compact('application'));
     }
 
@@ -233,8 +273,8 @@ class ApplicationController extends Controller
             $path = $file->store('applications/documents', 'public');
 
             $originalNameParts = explode(' - ', $document->original_name);
-            $prefix = count($originalNameParts) > 1 ? $originalNameParts[0] . ' - ' : '';
-            $newOriginalName = $prefix . $file->getClientOriginalName();
+            $prefix = count($originalNameParts) > 1 ? $originalNameParts[0].' - ' : '';
+            $newOriginalName = $prefix.$file->getClientOriginalName();
 
             $document->update([
                 'file_path' => $path,
@@ -270,7 +310,7 @@ class ApplicationController extends Controller
             ApplicationDocument::create([
                 'application_id' => $application->id,
                 'file_path' => $path,
-                'original_name' => $documentType . ' - ' . $file->getClientOriginalName(),
+                'original_name' => $documentType.' - '.$file->getClientOriginalName(),
                 'status' => 'Menunggu Review',
             ]);
 
@@ -291,17 +331,17 @@ class ApplicationController extends Controller
 
     public function downloadContohPortofolio()
     {
-        $setting = \App\Models\Setting::where('key', 'contoh_portofolio')->first();
+        $setting = Setting::where('key', 'contoh_portofolio')->first();
         if ($setting && $setting->value && Storage::disk('public')->exists($setting->value)) {
             return response()->download(Storage::disk('public')->path($setting->value));
         }
-        
+
         // Fallback jika tidak ada di settings
         $defaultPath = public_path('contoh_portofolio.pdf');
         if (file_exists($defaultPath)) {
             return response()->download($defaultPath);
         }
-        
+
         abort(404, 'File contoh portofolio tidak ditemukan.');
     }
 }

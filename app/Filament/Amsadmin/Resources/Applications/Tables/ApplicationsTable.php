@@ -2,14 +2,16 @@
 
 namespace App\Filament\Amsadmin\Resources\Applications\Tables;
 
-use Filament\Tables\Filters\Filter;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\Application;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ApplicationsTable
 {
@@ -59,8 +61,42 @@ class ApplicationsTable
             ])
             ->filters([
                 Filter::make('duplicate_names')
-                    ->label('Nama ganda')
-                    ->query(fn (Builder $query): Builder => $query->withDuplicateNames()),
+                    ->label('Nama + sekolah / NIS-NIM ganda')
+                    ->query(fn (Builder $query): Builder => $query->withDuplicateApplicantData()),
+                SelectFilter::make('instansi')
+                    ->label('Sekolah / Instansi')
+                    ->options(fn (): array => Application::query()
+                        ->whereNotNull('instansi')
+                        ->orderBy('instansi')
+                        ->pluck('instansi')
+                        ->reduce(function (array $options, string $school): array {
+                            $normalized = mb_strtolower(trim($school));
+
+                            if ($normalized !== '') {
+                                $options[$normalized] ??= trim($school);
+                            }
+
+                            return $options;
+                        }, []))
+                    ->query(function (Builder $query, array $data): Builder {
+                        $school = $data['value'] ?? null;
+
+                        if (! is_string($school) || $school === '') {
+                            return $query;
+                        }
+
+                        return $query->whereRaw('HEX(LOWER(TRIM(applications.instansi))) = HEX(?)', [$school]);
+                    }),
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'pending' => 'Menunggu',
+                        'permohonan_diterima' => 'Permohonan Diterima',
+                        'document_review' => 'Review Dokumen',
+                        'revisi_dokumen' => 'Revisi Dokumen',
+                        'accepted' => 'Diterima',
+                        'rejected' => 'Ditolak',
+                    ]),
             ])
             ->recordActions([
                 ViewAction::make(),

@@ -13,7 +13,7 @@ class Application extends Model
         'pengajuan', 'periode_gelombang', 'jumlah_peserta', 'lama_durasi_bulan',
         'fokus_studi', 'email_balasan', 'status',
         'start_date', 'end_date', 'is_jalur_khusus',
-        'surat_balasan', 'surat_perjanjian'
+        'surat_balasan', 'surat_perjanjian',
     ];
 
     protected static function booted(): void
@@ -39,16 +39,31 @@ class Application extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function scopeWithDuplicateNames(Builder $query): Builder
+    public function scopeWithDuplicateApplicantData(Builder $query): Builder
     {
-        return $query->whereExists(function ($duplicates): void {
-            $duplicates
-                ->selectRaw('1')
-                ->from('applications as duplicate_applications')
-                ->whereColumn('duplicate_applications.id', '<>', 'applications.id')
-                ->whereNotNull('duplicate_applications.nama_lengkap')
-                ->whereRaw("TRIM(duplicate_applications.nama_lengkap) <> ''")
-                ->whereRaw('LOWER(TRIM(duplicate_applications.nama_lengkap)) = LOWER(TRIM(applications.nama_lengkap))');
+        return $query->where(function (Builder $query): void {
+            $query
+                ->whereExists(function ($duplicates): void {
+                    $duplicates
+                        ->selectRaw('1')
+                        ->from('applications as duplicate_applications')
+                        ->whereColumn('duplicate_applications.id', '<>', 'applications.id')
+                        ->whereNotNull('duplicate_applications.nama_lengkap')
+                        ->whereNotNull('duplicate_applications.instansi')
+                        ->whereRaw("TRIM(duplicate_applications.nama_lengkap) <> ''")
+                        ->whereRaw("TRIM(duplicate_applications.instansi) <> ''")
+                        ->whereRaw('HEX(LOWER(TRIM(duplicate_applications.nama_lengkap))) = HEX(LOWER(TRIM(applications.nama_lengkap)))')
+                        ->whereRaw('HEX(LOWER(TRIM(duplicate_applications.instansi))) = HEX(LOWER(TRIM(applications.instansi)))');
+                })
+                ->orWhereExists(function ($duplicates): void {
+                    $duplicates
+                        ->selectRaw('1')
+                        ->from('applications as duplicate_applications')
+                        ->whereColumn('duplicate_applications.id', '<>', 'applications.id')
+                        ->whereNotNull('duplicate_applications.nomor_induk')
+                        ->whereRaw("TRIM(duplicate_applications.nomor_induk) <> ''")
+                        ->whereRaw('HEX(TRIM(duplicate_applications.nomor_induk)) = HEX(TRIM(applications.nomor_induk))');
+                });
         });
     }
 
@@ -83,9 +98,10 @@ class Application extends Model
             $months = [
                 1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
                 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
-                9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+                9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
             ];
-            return $months[$nextDay->month] . ' ' . $nextDay->year;
+
+            return $months[$nextDay->month].' '.$nextDay->year;
         }
 
         return 'Segera';
