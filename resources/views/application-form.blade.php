@@ -189,7 +189,7 @@
                 <p class="mb-0 fw-bold">Pendaftaran diperkirakan akan dibuka kembali pada bulan: <span class="text-primary">{{ $predictedOpenMonth }}</span>.</p>
                 <p class="mt-3 mb-0 small text-muted">Silakan kunjungi halaman ini lagi pada bulan tersebut.</p>
             </div>
-            
+
             <div class="text-center mt-4">
                 <a href="/" class="btn btn-outline-secondary px-4 py-2">Kembali ke Beranda</a>
             </div>
@@ -263,10 +263,10 @@
                         <input class="form-check-input" type="radio" name="pengajuan" id="pengajuan2" value="Penelitian/Tugas Akhir" {{ old('pengajuan') == 'Penelitian/Tugas Akhir' ? 'checked' : '' }}>
                         <label class="form-check-label" for="pengajuan2">Penelitian atau tugas akhir</label>
                     </div>
-                    <div class="form-check">
+                    {{-- <div class="form-check">
                         <input class="form-check-input" type="radio" name="pengajuan" id="pengajuan3" value="Industrial Visit" {{ old('pengajuan') == 'Industrial Visit' ? 'checked' : '' }}>
                         <label class="form-check-label" for="pengajuan3">Kunjungan industri</label>
-                    </div>
+                    </div> --}}
                     </fieldset>
                 </div>
 
@@ -291,8 +291,8 @@
                     </div>
                     <div class="col-12 col-md-6">
                         <label for="lama_durasi_bulan" class="form-label">Lama kegiatan (bulan) <span class="text-danger">*</span></label>
-                        <div class="form-text mb-2">Minimal 2 bulan, maksimal 6 bulan.</div>
                         <input type="number" class="form-control" id="lama_durasi_bulan" name="lama_durasi_bulan" placeholder="Contoh: 3" required min="2" max="6" value="{{ old('lama_durasi_bulan') }}">
+                        <div class="form-text mb-2">Minimal 2 bulan, maksimal 6 bulan.</div>
                     </div>
                 </div>
 
