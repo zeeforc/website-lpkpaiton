@@ -97,11 +97,9 @@ class ApplicationController extends Controller
 
             if ($request->hasFile('documents')) {
                 foreach ($request->file('documents') as $file) {
-                    $path = $file->store('applications/documents', 'public');
                     ApplicationDocument::create([
                         'application_id' => $application->id,
-                        'file_path' => $path,
-                        'original_name' => $file->getClientOriginalName(),
+                        ...ApplicationDocument::storeApplicantUpload($file, $application, 'Surat Pengantar Sekolah/Kampus', 'applications/documents'),
                     ]);
                 }
             }
@@ -202,12 +200,10 @@ class ApplicationController extends Controller
             foreach ($filesToUpload as $inputName => $documentType) {
                 if ($request->hasFile($inputName)) {
                     $file = $request->file($inputName);
-                    $path = $file->store('documents', 'public');
 
                     ApplicationDocument::create([
                         'application_id' => $application->id,
-                        'file_path' => $path,
-                        'original_name' => $documentType.' - '.$file->getClientOriginalName(),
+                        ...ApplicationDocument::storeApplicantUpload($file, $application, $documentType, 'documents'),
                     ]);
                 }
             }
@@ -265,23 +261,18 @@ class ApplicationController extends Controller
         ]);
 
         try {
-            if (Storage::disk('public')->exists($document->file_path)) {
-                Storage::disk('public')->delete($document->file_path);
-            }
-
+            $previousPath = $document->file_path;
             $file = $request->file('dokumen_baru');
-            $path = $file->store('applications/documents', 'public');
-
-            $originalNameParts = explode(' - ', $document->original_name);
-            $prefix = count($originalNameParts) > 1 ? $originalNameParts[0].' - ' : '';
-            $newOriginalName = $prefix.$file->getClientOriginalName();
-
+            $documentType = ApplicationDocument::typeFromOriginalName($document->original_name);
             $document->update([
-                'file_path' => $path,
-                'original_name' => $newOriginalName,
+                ...ApplicationDocument::storeApplicantUpload($file, $application, $documentType, dirname($document->file_path)),
                 'status' => 'Menunggu Review',
                 'keterangan' => null,
             ]);
+
+            if (Storage::disk('public')->exists($previousPath)) {
+                Storage::disk('public')->delete($previousPath);
+            }
 
             $this->moveApplicationToDocumentReview($application);
 
@@ -304,13 +295,11 @@ class ApplicationController extends Controller
 
         try {
             $file = $request->file('dokumen_baru');
-            $path = $file->store('applications/documents', 'public');
             $documentType = $request->document_type;
 
             ApplicationDocument::create([
                 'application_id' => $application->id,
-                'file_path' => $path,
-                'original_name' => $documentType.' - '.$file->getClientOriginalName(),
+                ...ApplicationDocument::storeApplicantUpload($file, $application, $documentType, 'applications/documents'),
                 'status' => 'Menunggu Review',
             ]);
 

@@ -165,6 +165,17 @@ class ApplicationIdentityTest extends TestCase
 
             $this->assertSame($identityNumber, $application->nomor_induk);
             $this->assertSame($identityNumber, $application->user->studentProfile->{$profileField});
+            $document = $application->documents()->firstOrFail();
+            $this->assertSame(
+                1,
+                preg_match(
+                    '/^Surat Pengantar Sekolah\/Kampus - surat_pengantar_sekolah_atau_kampus_pendaftar_[a-z0-9_]+\.pdf$/',
+                    $document->original_name,
+                ),
+            );
+            $this->assertSame('Surat pengantar sekolah atau kampus', $document->document_title);
+            $this->assertSame('applications/documents/'.basename($document->file_path), $document->file_path);
+            Storage::disk('public')->assertExists($document->file_path);
         }
     }
 
@@ -499,11 +510,64 @@ class ApplicationIdentityTest extends TestCase
         ])->assertRedirect();
 
         $this->assertSame('document_review', $application->fresh()->status);
-        $this->assertDatabaseHas('application_documents', [
+        $document = $application->documents()->where('status', 'Menunggu Review')->firstOrFail();
+        $this->assertSame(
+            'applications/documents/fotokopi_ktp_kartu_pelajar_pendaftar.pdf',
+            $document->file_path,
+        );
+        $this->assertSame('KTP/Kartu Pelajar - fotokopi_ktp_kartu_pelajar_pendaftar.pdf', $document->original_name);
+        $this->assertSame('Fotokopi KTP / Kartu Pelajar', $document->document_title);
+        Storage::disk('public')->assertExists($document->file_path);
+    }
+
+    public function test_existing_documents_can_be_renamed_without_overwriting_and_command_is_repeatable(): void
+    {
+        Storage::fake('public');
+        $application = $this->buildTestApplication('permohonan_diterima');
+
+        $firstDocument = ApplicationDocument::create([
             'application_id' => $application->id,
-            'original_name' => 'KTP/Kartu Pelajar - ktp.pdf',
-            'status' => 'Menunggu Review',
+            'file_path' => 'applications/documents/original-one.pdf',
+            'original_name' => 'Surat Pengantar - surat-asli.pdf',
+            'status' => 'Valid',
         ]);
+        $secondDocument = ApplicationDocument::create([
+            'application_id' => $application->id,
+            'file_path' => 'applications/documents/original-two.pdf',
+            'original_name' => 'surat-kampus.pdf',
+            'status' => 'Valid',
+        ]);
+        Storage::disk('public')->put($firstDocument->file_path, 'first document');
+        Storage::disk('public')->put($secondDocument->file_path, 'second document');
+
+        $this->artisan('app:rename-application-documents')
+            ->assertExitCode(0);
+
+        $this->assertSame('applications/documents/original-one.pdf', $firstDocument->fresh()->file_path);
+        Storage::disk('public')->assertExists($firstDocument->file_path);
+
+        $this->artisan('app:rename-application-documents', ['--force' => true])
+            ->assertExitCode(0);
+
+        $firstPath = 'applications/documents/surat_pengantar_sekolah_atau_kampus_pendaftar.pdf';
+        $secondPath = 'applications/documents/surat_pengantar_sekolah_atau_kampus_pendaftar_2.pdf';
+
+        $this->assertSame($firstPath, $firstDocument->fresh()->file_path);
+        $this->assertSame(dirname('applications/documents/original-one.pdf'), dirname($firstDocument->fresh()->file_path));
+        $this->assertSame('Surat Pengantar Sekolah/Kampus - '.basename($firstPath), $firstDocument->fresh()->original_name);
+        $this->assertSame($secondPath, $secondDocument->fresh()->file_path);
+        $this->assertSame(dirname('applications/documents/original-two.pdf'), dirname($secondDocument->fresh()->file_path));
+        $this->assertSame('Surat Pengantar Sekolah/Kampus - '.basename($secondPath), $secondDocument->fresh()->original_name);
+        $this->assertSame('first document', Storage::disk('public')->get($firstPath));
+        $this->assertSame('second document', Storage::disk('public')->get($secondPath));
+        Storage::disk('public')->assertMissing('applications/documents/original-one.pdf');
+        Storage::disk('public')->assertMissing('applications/documents/original-two.pdf');
+
+        $this->artisan('app:rename-application-documents', ['--force' => true])
+            ->assertExitCode(0);
+
+        $this->assertSame($firstPath, $firstDocument->fresh()->file_path);
+        $this->assertSame($secondPath, $secondDocument->fresh()->file_path);
     }
 
     public function test_external_document_reupload_returns_revision_application_to_document_review(): void
@@ -533,6 +597,12 @@ class ApplicationIdentityTest extends TestCase
         $this->assertSame('document_review', $application->fresh()->status);
         $this->assertSame('Menunggu Review', $document->fresh()->status);
         $this->assertNull($document->fresh()->keterangan);
+        $this->assertSame(
+            'applications/documents/fotokopi_ktp_kartu_pelajar_pendaftar.pdf',
+            $document->fresh()->file_path,
+        );
+        $this->assertSame('KTP/Kartu Pelajar - fotokopi_ktp_kartu_pelajar_pendaftar.pdf', $document->fresh()->original_name);
+        Storage::disk('public')->assertExists($document->fresh()->file_path);
         Storage::disk('public')->assertMissing('applications/documents/old.pdf');
     }
 

@@ -56,16 +56,20 @@ class ApplicationInfolist
                     ])->collapsible(),
                 
                 \Filament\Schemas\Components\Section::make('Dokumen Persyaratan')
-                    ->description('Surat pengantar resmi dan proposal PKL yang dilampirkan.')
+                    ->description('Dokumen yang diunggah oleh pendaftar.')
                     ->schema([
                         \Filament\Infolists\Components\RepeatableEntry::make('documents')
                             ->label('')
                             ->schema([
-                                \Filament\Infolists\Components\TextEntry::make('original_name')
+                                \Filament\Infolists\Components\TextEntry::make('document_title')
+                                    ->label('Jenis Dokumen')
+                                    ->icon('heroicon-m-document-text'),
+                                \Filament\Infolists\Components\TextEntry::make('file_path')
                                     ->label('Nama File')
+                                    ->formatStateUsing(fn ($state) => basename($state))
                                     ->url(fn ($record) => asset('storage/' . $record->file_path))
                                     ->openUrlInNewTab()
-                                    ->icon('heroicon-m-document-text'),
+                                    ->icon('heroicon-m-arrow-top-right-on-square'),
                                 \Filament\Infolists\Components\TextEntry::make('status')
                                     ->label('Status Validasi')
                                     ->badge()
