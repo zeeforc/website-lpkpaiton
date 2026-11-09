@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class Application extends Model
 {
@@ -15,18 +14,6 @@ class Application extends Model
         'start_date', 'end_date', 'is_jalur_khusus',
         'surat_balasan', 'surat_perjanjian',
     ];
-
-    protected static function booted(): void
-    {
-        static::creating(function (Application $application) {
-            if (empty($application->reference_code)) {
-                do {
-                    $code = strtoupper(Str::random(8));
-                } while (static::where('reference_code', $code)->exists());
-                $application->reference_code = $code;
-            }
-        });
-    }
 
     protected $casts = [
         'start_date' => 'date',

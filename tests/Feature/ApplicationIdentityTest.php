@@ -24,6 +24,7 @@ class ApplicationIdentityTest extends TestCase
         parent::setUp();
 
         Schema::dropIfExists('application_documents');
+        Schema::dropIfExists('application_notes');
         Schema::dropIfExists('student_profiles');
         Schema::dropIfExists('applications');
         Schema::dropIfExists('settings');
@@ -97,6 +98,14 @@ class ApplicationIdentityTest extends TestCase
             $table->timestamps();
         });
 
+        Schema::create('application_notes', function (Blueprint $table): void {
+            $table->id();
+            $table->foreignId('application_id');
+            $table->foreignId('user_id')->nullable();
+            $table->text('note');
+            $table->timestamps();
+        });
+
         Schema::create('settings', function (Blueprint $table): void {
             $table->id();
             $table->string('key')->unique();
@@ -109,6 +118,7 @@ class ApplicationIdentityTest extends TestCase
     protected function tearDown(): void
     {
         Schema::dropIfExists('application_documents');
+        Schema::dropIfExists('application_notes');
         Schema::dropIfExists('student_profiles');
         Schema::dropIfExists('applications');
         Schema::dropIfExists('settings');
@@ -159,12 +169,15 @@ class ApplicationIdentityTest extends TestCase
                 'fokus_studi' => 'Pembelajaran',
                 'email_balasan' => strtolower(str_replace([' ', '/'], '', $education)).'@example.com',
                 'documents' => [UploadedFile::fake()->create('surat.pdf', 2, 'application/pdf')],
-            ])->assertSessionHasNoErrors();
+            ])
+                ->assertSessionHasNoErrors()
+                ->assertSessionHas('success', 'Formulir pendaftaran berhasil dikirim. Gunakan alamat email pendaftaran untuk mengecek status.');
 
             $application = Application::latest('id')->first();
 
             $this->assertSame($identityNumber, $application->nomor_induk);
             $this->assertSame($identityNumber, $application->user->studentProfile->{$profileField});
+            $this->assertNull($application->reference_code);
             $document = $application->documents()->firstOrFail();
             $this->assertSame(
                 1,
@@ -177,6 +190,23 @@ class ApplicationIdentityTest extends TestCase
             $this->assertSame('applications/documents/'.basename($document->file_path), $document->file_path);
             Storage::disk('public')->assertExists($document->file_path);
         }
+    }
+
+    public function test_registration_status_can_be_checked_by_email_without_a_reference_code(): void
+    {
+        $application = $this->buildTestApplication('document_review');
+
+        $this->post(route('application.check'), [
+            'email' => $application->email_balasan,
+        ])
+            ->assertOk()
+            ->assertViewHas('application', fn (Application $result): bool => $result->is($application))
+            ->assertDontSee('Kode Referensi');
+
+        $this->from(route('application.cekStatus'))
+            ->post(route('application.check'), ['email' => 'unknown@example.com'])
+            ->assertRedirect(route('application.cekStatus'))
+            ->assertSessionHas('error', 'Data pendaftaran dengan alamat email tersebut tidak ditemukan.');
     }
 
     public function test_registration_rejects_an_existing_name_and_identity_pair(): void

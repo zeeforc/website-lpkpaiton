@@ -106,7 +106,7 @@ class ApplicationController extends Controller
 
             DB::commit();
 
-            return redirect()->back()->with('success', 'Formulir pendaftaran berhasil dikirim. Kode referensi Anda: '.$application->reference_code.'. Simpan kode ini untuk mengecek status pendaftaran.');
+            return redirect()->back()->with('success', 'Formulir pendaftaran berhasil dikirim. Gunakan alamat email pendaftaran untuk mengecek status.');
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -230,17 +230,15 @@ class ApplicationController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'reference_code' => 'required|string|max:10',
         ]);
 
         $application = Application::with('notes')
             ->where('email_balasan', $request->email)
-            ->where('reference_code', $request->reference_code)
             ->latest()
             ->first();
 
         if (! $application) {
-            return redirect()->back()->with('error', 'Data tidak ditemukan. Pastikan email dan kode referensi sudah benar.')->withInput();
+            return redirect()->back()->with('error', 'Data pendaftaran dengan alamat email tersebut tidak ditemukan.')->withInput();
         }
 
         return view('cek-status', compact('application'));
