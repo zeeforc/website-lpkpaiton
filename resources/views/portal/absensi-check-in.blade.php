@@ -172,8 +172,8 @@
                     @if(in_array(Auth::user()->role, ['karyawan_paving', 'instruktur_lpk']))
                     <div class="mt-3">
                         <label class="fw-bold mb-2">Upload Dokumentasi Pekerjaan <span class="text-danger">*</span></label>
-                        <p class="small text-muted mb-2">Pilih 2 foto kegiatan. Setiap foto harus di bawah 1 MB.</p>
-                        <input type="file" id="checkout-photos" class="form-control" multiple accept="image/*" />
+                        <p class="small text-muted mb-2">Pilih 2 foto kegiatan dengan total ukuran maksimal 5 MB.</p>
+                        <input type="file" id="checkout-photos" class="form-control" multiple accept="image/jpeg,image/png,image/webp" />
                     </div>
                     @endif
                     <div class="mt-3">
@@ -199,7 +199,7 @@
     <input type="hidden" name="latitude" id="input-lat">
     <input type="hidden" name="longitude" id="input-lng">
     <input type="hidden" name="work_description" id="input-work-description">
-    <input type="file" name="checkout_photos[]" id="input-checkout-photos" multiple accept="image/*">
+    <input type="file" name="checkout_photos[]" id="input-checkout-photos" multiple accept="image/jpeg,image/png,image/webp">
     <input type="hidden" name="photo" id="input-photo">
     <input type="hidden" name="type" value="{{ ($attendance && $attendance->check_in) ? 'out' : 'in' }}">
 </form>
@@ -448,8 +448,9 @@
                 return;
             }
 
-            if (Array.from(files).some(file => file.size >= 1024 * 1024)) {
-                alert('Ukuran setiap foto harus di bawah 1 MB. Silakan pilih foto yang lebih kecil.');
+            const totalPhotoSize = Array.from(files).reduce((total, file) => total + file.size, 0);
+            if (totalPhotoSize > 5 * 1024 * 1024) {
+                alert('Total ukuran 2 foto dokumentasi maksimal 5 MB.');
                 photosInput.focus();
                 return;
             }

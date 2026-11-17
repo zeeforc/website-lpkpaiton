@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\ImageOptimizer;
+use App\Rules\MaxTotalFileSize;
 use App\Models\StudentProfile;
 use App\Models\Attendance;
 use App\Models\ReportSubmission;
@@ -641,22 +642,32 @@ class PortalController extends Controller
             'longitude' => 'required|numeric',
             'type' => 'required|in:in,out',
             'photo' => 'nullable|string',
-            'checkout_photos' => 'sometimes|array|max:2',
-            'checkout_photos.*' => 'file|mimes:jpeg,jpg,png,webp|max:1023',
+            'checkout_photos' => ['sometimes', 'array', 'max:2'],
+            'checkout_photos.*' => 'file|mimes:jpeg,jpg,png,webp|max:5120',
         ];
+
+        $validationRules['checkout_photos'][] = new MaxTotalFileSize(
+            5 * 1024 * 1024,
+            'Total ukuran 2 foto dokumentasi maksimal 5 MB.',
+        );
 
         if (
             $request->input('type') === 'out'
             && in_array($user->role, ['karyawan_paving', 'instruktur_lpk'], true)
         ) {
-            $validationRules['checkout_photos'] = 'required|array|size:2';
+            $validationRules['checkout_photos'] = [
+                'required',
+                'array',
+                'size:2',
+                new MaxTotalFileSize(5 * 1024 * 1024, 'Total ukuran 2 foto dokumentasi maksimal 5 MB.'),
+            ];
         }
 
         $request->validate($validationRules, [
             'checkout_photos.max' => 'Maksimal 2 foto dokumentasi yang dapat diunggah.',
             'checkout_photos.required' => 'Silakan unggah 2 foto dokumentasi pekerjaan.',
             'checkout_photos.size' => 'Silakan unggah tepat 2 foto dokumentasi pekerjaan.',
-            'checkout_photos.*.max' => 'Ukuran setiap foto harus di bawah 1 MB. Silakan pilih foto yang lebih kecil.',
+            'checkout_photos.*.max' => 'Ukuran setiap foto maksimal 5 MB.',
         ]);
 
         $optimizedPhoto = null;
