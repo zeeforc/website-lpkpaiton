@@ -68,7 +68,7 @@
                             <div class="step-content">
                                 <p class="step-text-title">Registrasi</p>
                                 <p class="step-text-body">
-                                    Registrasi untuk mengajukan permohonan Praktik Kerja Lapangan (PKL) melalui link https://lpkpaiton.site/pendaftaran atau tekan tombol daftar sekarang di samping.
+                                    Registrasi untuk mengajukan permohonan Praktik Kerja Lapangan (PKL) melalui link https://lpkpaiton.com/pendaftaran atau tekan tombol daftar sekarang di samping.
                                 </p>
                             </div>
                         </div>
