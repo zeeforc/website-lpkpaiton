@@ -13,7 +13,6 @@ class CreateKurikulum extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        // Ambil semua state form termasuk file upload
         $state = $this->form->getState();
 
         if (! empty($state['matrix_excel'])) {
@@ -24,10 +23,8 @@ class CreateKurikulum extends CreateRecord
                 $file = $file[0];
             }
 
-            // Path fisik file di storage
             $fullPath = storage_path('app/public/' . $file);
 
-            // Konversi ke HTML
             $data['matrix_html'] = ExcelToHtml::convert($fullPath);
         }
 

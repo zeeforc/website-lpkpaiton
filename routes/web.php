@@ -114,7 +114,6 @@ Route::post('/pendaftaran/{application}/upload-missing', [\App\Http\Controllers\
 Route::post('/pendaftaran/{application}/dokumen/{document}/reupload', [\App\Http\Controllers\ApplicationController::class, 'reuploadDocumentExternal'])->name('application.dokumen.reupload')->middleware('signed');
 Route::get('/download-contoh-portofolio', [\App\Http\Controllers\ApplicationController::class, 'downloadContohPortofolio'])->name('application.download-contoh-portofolio');
 
-// Portal Siswa PKL Routes
 Route::prefix('portal')->name('portal.')->group(function () {
     Route::get('/login', [\App\Http\Controllers\PortalController::class, 'showLogin'])->name('login');
     Route::post('/login', [\App\Http\Controllers\PortalController::class, 'login'])->name('login.post')->middleware('throttle:5,1');
@@ -200,7 +199,6 @@ Route::middleware(['auth:admin,web'])->group(function () {
                 return (int) \Carbon\Carbon::parse($item->date)->format('j');
             });
             
-        // Header info
         $sheet->mergeCells('A1:F1');
         $sheet->getRowDimension(1)->setRowHeight(60);
         if (file_exists(public_path('images/paving_header.png'))) {
@@ -231,7 +229,6 @@ Route::middleware(['auth:admin,web'])->group(function () {
         $sheet->mergeCells('D3:F3');
         $sheet->setCellValue('D3', ucwords(str_replace('_', ' ', $user->role)));
         
-        // Table Headers
         $sheet->mergeCells('A4:A5');
         $sheet->setCellValue('A4', 'DATE');
         
@@ -247,7 +244,6 @@ Route::middleware(['auth:admin,web'])->group(function () {
         $sheet->mergeCells('F4:F5');
         $sheet->setCellValue('F4', 'ACQUISITION');
         
-        // Styling headers
         $headerStyle = [
             'font' => ['bold' => true],
             'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
@@ -255,7 +251,6 @@ Route::middleware(['auth:admin,web'])->group(function () {
         ];
         $sheet->getStyle('A2:F5')->applyFromArray($headerStyle);
         
-        // Data Rows
         $row = 6;
         for ($day = 1; $day <= $daysInMonth; $day++) {
             $currentDateStr = "{$currentYear}-{$currentMonth}-" . str_pad($day, 2, '0', STR_PAD_LEFT);
@@ -268,13 +263,11 @@ Route::middleware(['auth:admin,web'])->group(function () {
             $attendance = $attendances->get($day);
             
             if ($holiday) {
-                // Red background for holiday
                 $sheet->getStyle("A{$row}:F{$row}")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                       ->getStartColor()->setARGB('FFFFCCCC'); // Light red
                 $sheet->setCellValue('E' . $row, 'Libur Nasional: ' . $holiday->name);
                 $sheet->getStyle("E{$row}")->getFont()->setItalic(true)->getColor()->setARGB('FFCC0000'); // Red text
             } elseif ($isWeekend) {
-                // Blue background for weekend
                 $sheet->getStyle("A{$row}:F{$row}")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                       ->getStartColor()->setARGB('FFB4C6E7'); // Light blue
             } else {
@@ -294,7 +287,6 @@ Route::middleware(['auth:admin,web'])->group(function () {
                         $sheet->setCellValue('D' . $row, '-');
                     }
                     
-                    // Center align B, C, D
                     $sheet->getStyle("B{$row}:D{$row}")->getAlignment()->setHorizontal('center');
                 }
                 
@@ -303,13 +295,11 @@ Route::middleware(['auth:admin,web'])->group(function () {
                 }
             }
             
-            // Borders
             $sheet->getStyle("A{$row}:F{$row}")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             
             $row++;
         }
         
-        // Signatures
         $signRowStart = $row;
         $sheet->setCellValue('A' . $row, 'Prepared by,');
         $sheet->setCellValue('B' . $row, 'Approved by,');
@@ -335,7 +325,6 @@ Route::middleware(['auth:admin,web'])->group(function () {
         $sheet->getStyle("B{$signRowStart}:B{$signRowEnd}")->getBorders()->getOutline()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
         $sheet->getStyle("C{$signRowStart}:F{$signRowEnd}")->getBorders()->getOutline()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
         
-        // Column widths
         $sheet->getColumnDimension('A')->setWidth(10);
         $sheet->getColumnDimension('B')->setWidth(15);
         $sheet->getColumnDimension('C')->setWidth(15);
@@ -344,7 +333,6 @@ Route::middleware(['auth:admin,web'])->group(function () {
         $sheet->getColumnDimension('F')->setWidth(20);
     }
     
-    // Fallback if no users match
     if ($spreadsheet->getSheetCount() == 0) {
         $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, 'Empty');
         $spreadsheet->addSheet($sheet, 0);
@@ -413,7 +401,6 @@ Route::middleware(['auth:admin,web'])->group(function () {
                 return (int) \Carbon\Carbon::parse($item->date)->format('j');
             });
             
-        // Header info
         $sheet->mergeCells('A1:F1');
         $sheet->getRowDimension(1)->setRowHeight(60);
         if (file_exists(public_path('images/paving_header.png'))) {
@@ -445,7 +432,6 @@ Route::middleware(['auth:admin,web'])->group(function () {
         $jobTitle = $user->role === 'instruktur_lpk' ? 'Instruktur LPK' : 'Karyawan Paving';
         $sheet->setCellValue('D3', $jobTitle);
         
-        // Table Headers
         $sheet->mergeCells('A4:A5');
         $sheet->setCellValue('A4', 'DATE');
         
@@ -461,7 +447,6 @@ Route::middleware(['auth:admin,web'])->group(function () {
         $sheet->mergeCells('F4:F5');
         $sheet->setCellValue('F4', 'ACQUISITION');
         
-        // Styling headers
         $headerStyle = [
             'font' => ['bold' => true],
             'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
@@ -469,7 +454,6 @@ Route::middleware(['auth:admin,web'])->group(function () {
         ];
         $sheet->getStyle('A2:F5')->applyFromArray($headerStyle);
         
-        // Data Rows
         $row = 6;
         for ($day = 1; $day <= $daysInMonth; $day++) {
             $currentDateStr = "{$currentYear}-{$currentMonth}-" . str_pad($day, 2, '0', STR_PAD_LEFT);
@@ -482,13 +466,11 @@ Route::middleware(['auth:admin,web'])->group(function () {
             $attendance = $attendances->get($day);
             
             if ($holiday) {
-                // Red background for holiday
                 $sheet->getStyle("A{$row}:F{$row}")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                       ->getStartColor()->setARGB('FFFFCCCC'); // Light red
                 $sheet->setCellValue('E' . $row, 'Libur Nasional: ' . $holiday->name);
                 $sheet->getStyle("E{$row}")->getFont()->setItalic(true)->getColor()->setARGB('FFCC0000'); // Red text
             } elseif ($isWeekend) {
-                // Blue background for weekend
                 $sheet->getStyle("A{$row}:F{$row}")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                       ->getStartColor()->setARGB('FFB4C6E7'); // Light blue
             } else {
@@ -508,7 +490,6 @@ Route::middleware(['auth:admin,web'])->group(function () {
                         $sheet->setCellValue('D' . $row, '-');
                     }
                     
-                    // Center align B, C, D
                     $sheet->getStyle("B{$row}:D{$row}")->getAlignment()->setHorizontal('center');
                 }
                 
@@ -517,13 +498,11 @@ Route::middleware(['auth:admin,web'])->group(function () {
                 }
             }
             
-            // Borders
             $sheet->getStyle("A{$row}:F{$row}")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             
             $row++;
         }
         
-        // Signatures
         $signRowStart = $row;
         $sheet->setCellValue('A' . $row, 'Prepared by,');
         $sheet->setCellValue('B' . $row, 'Approved by,');
@@ -549,7 +528,6 @@ Route::middleware(['auth:admin,web'])->group(function () {
         $sheet->getStyle("B{$signRowStart}:B{$signRowEnd}")->getBorders()->getOutline()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
         $sheet->getStyle("C{$signRowStart}:F{$signRowEnd}")->getBorders()->getOutline()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
         
-        // Auto size columns
         $sheet->getColumnDimension('A')->setWidth(10);
         $sheet->getColumnDimension('B')->setWidth(15);
         $sheet->getColumnDimension('C')->setWidth(15);
@@ -558,7 +536,6 @@ Route::middleware(['auth:admin,web'])->group(function () {
         $sheet->getColumnDimension('F')->setWidth(20);
     }
     
-    // If no users
     if ($users->isEmpty()) {
         $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, 'No Data');
         $spreadsheet->addSheet($sheet, 0);

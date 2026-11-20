@@ -87,7 +87,6 @@
     <p class="page-subtitle">Panduan, ketentuan, dan informasi penting selama pelaksanaan PKL.</p>
 </div>
 
-<!-- Header Info -->
 <div class="info-header-card d-flex flex-column flex-md-row align-items-center text-center text-md-start">
     <div class="info-badge">
         <i class="fa-regular fa-clipboard"></i>
@@ -115,9 +114,7 @@
 </div>
 
 <div class="row">
-    <!-- Kolom Kiri -->
     <div class="col-lg-6">
-        <!-- Tata Tertib -->
         <div class="doc-card">
             <div class="doc-header flex-column flex-md-row align-items-center align-items-md-start text-center text-md-start gap-3">
                 <div>
@@ -159,7 +156,6 @@
             @endif
         </div>
 
-        <!-- Status Tanggungan -->
         <div class="status-tanggungan-card">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-file-invoice text-primary me-2"></i> STATUS TANGGUNGAN ANDA</h6>
@@ -178,7 +174,6 @@
             </div>
             <p class="text-secondary mb-4" style="font-size: 0.85rem">Berikut adalah tanggungan yang perlu Anda selesaikan selama PKL.</p>
 
-            <!-- Administrasi -->
             <div class="tanggungan-item">
                 <div class="d-flex align-items-start">
                     <div class="status-dot {{ $adminComplete ? 'bg-success' : 'bg-primary opacity-50' }} mt-1"></div>
@@ -199,7 +194,6 @@
                 <a href="{{ route('portal.biodata') }}" class="btn btn-outline-custom">Lihat Detail</a>
             </div>
 
-            <!-- Kelengkapan Dokumen -->
             <div class="tanggungan-item">
                 <div class="d-flex align-items-start">
                     <div class="status-dot {{ $docComplete ? 'bg-success' : 'bg-primary opacity-50' }} mt-1"></div>
@@ -220,7 +214,6 @@
                 <a href="{{ route('portal.biodata') }}#dokumen-section" class="btn btn-outline-custom">Lihat Detail</a>
             </div>
 
-            <!-- Laporan -->
             <div class="tanggungan-item">
                 <div class="d-flex align-items-start">
                     <div class="status-dot {{ ($laporan && $laporan->status == 'approved') ? 'bg-success' : 'bg-primary opacity-50' }} mt-1"></div>
@@ -242,7 +235,6 @@
             </div>
 
             @if($laporan && $laporan->status == 'rejected' && $laporan->tanggungan_type)
-            <!-- Custom Tanggungan dari Admin -->
             <div class="tanggungan-item">
                 <div class="d-flex align-items-start">
                     <div class="status-dot mt-1" style="background-color: #ef4444;"></div>
@@ -269,9 +261,7 @@
         </div>
     </div>
 
-    <!-- Kolom Kanan -->
     <div class="col-lg-6">
-        <!-- SOP PKL -->
         <div class="doc-card">
             <div class="doc-header flex-column flex-md-row align-items-center align-items-md-start text-center text-md-start gap-3">
                 <div>
@@ -312,7 +302,6 @@
             @endif
         </div>
 
-        <!-- Informasi Penting -->
         <div class="card-custom mb-3">
             <div class="card-body-custom">
                 <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-bullhorn text-primary me-2"></i> INFORMASI PENTING</h6>
@@ -325,7 +314,6 @@
             </div>
         </div>
 
-        <!-- Butuh Bantuan -->
         <div class="card-custom">
             <div class="card-body-custom d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start gap-3">
                 <div>

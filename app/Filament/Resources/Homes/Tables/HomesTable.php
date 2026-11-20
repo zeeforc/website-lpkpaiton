@@ -20,7 +20,6 @@ class HomesTable
                 ImageColumn::make('bg_image')
                 ->label('Background Image')
                 ->disk('public')
-                // ->directory('homes')
                 ->alignCenter()->width('2rem')
                 ->height('5rem'),
 
@@ -29,7 +28,6 @@ class HomesTable
                 ->alignCenter(),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 ViewAction::make(),

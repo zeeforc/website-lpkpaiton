@@ -10,7 +10,6 @@ class PavingLeaveRequestInfolist
     {
         return $schema
             ->components([
-                //
             ]);
     }
 }

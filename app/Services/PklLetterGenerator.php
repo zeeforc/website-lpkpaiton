@@ -12,7 +12,6 @@ class PklLetterGenerator
 {
     public function generateForApplication(Application $application)
     {
-        // Temukan template aktif
         $templateBalasan = PklLetterTemplate::where('type', 'surat_balasan')->where('is_active', true)->first();
         $templatePerjanjian = PklLetterTemplate::where('type', 'surat_perjanjian')->where('is_active', true)->first();
 
@@ -34,7 +33,6 @@ class PklLetterGenerator
         $fullTemplatePath = Storage::disk('public')->path($templatePath);
         $templateProcessor = new TemplateProcessor($fullTemplatePath);
 
-        // Siapkan variabel yang akan direplace
         $templateProcessor->setValue('NAMA', $application->nama_lengkap ?? '-');
         $templateProcessor->setValue('ASAL_SEKOLAH', $application->instansi ?? '-');
         $templateProcessor->setValue('NISN', '-'); // Belum ada di form
@@ -46,7 +44,6 @@ class PklLetterGenerator
         $templateProcessor->setValue('TANGGAL_MASUK', $tanggalMulai);
         $templateProcessor->setValue('TANGGAL_KELUAR', $tanggalSelesai);
 
-        // Tambahan variabel untuk perjanjian
         $templateProcessor->setValue('DURASI', $application->lama_durasi_bulan ? $application->lama_durasi_bulan . ' bulan' : '3 bulan');
 
         $persetujuanWali = ' dan dengan persetujuan orang tua/wali'; // default
@@ -58,17 +55,14 @@ class PklLetterGenerator
         }
         $templateProcessor->setValue('PERSETUJUAN_WALI', $persetujuanWali);
 
-        // Buat folder jika belum ada
         $directory = 'application_documents/generated/' . $application->id;
         if (!Storage::disk('public')->exists($directory)) {
             Storage::disk('public')->makeDirectory($directory);
         }
 
-        // Nama file output
         $filename = $directory . '/' . $prefix . '_' . Str::slug($application->nama_lengkap) . '_' . time() . '.docx';
         $fullOutputPath = Storage::disk('public')->path($filename);
 
-        // Simpan file docx hasil generate
         $templateProcessor->saveAs($fullOutputPath);
 
         return $filename;

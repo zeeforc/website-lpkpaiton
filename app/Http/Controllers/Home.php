@@ -8,7 +8,6 @@ class Home extends Controller
 {
     public function index()
     {
-        // Cache 5 menit sebagai contoh, bisa kamu sesuaikan
         $homes = cache()->remember('homes', now()->addMinutes(5), function () {
             return ModelsHome::published()
                 ->orderByDesc('published_at')

@@ -47,7 +47,6 @@ class PortalController extends Controller
             $user->last_login_at = now();
             $user->save();
 
-            // Ensure student profile exists
             if (!$user->studentProfile) {
                 StudentProfile::create(['user_id' => $user->id]);
             }
@@ -237,7 +236,6 @@ class PortalController extends Controller
         }
         $application = Application::where('user_id', $user->id)->first();
         
-        // Status Tanggungan calculation
         $adminComplete = $user->studentProfile && $user->studentProfile->nis ? true : false;
         $docComplete = $application && $application->documents()->count() >= 4 ? true : false;
         $laporan = ReportSubmission::where('user_id', $user->id)->latest()->first();
@@ -260,7 +258,6 @@ class PortalController extends Controller
         $startDate = Carbon::createFromDate($year, $month, 1);
         $endDate = $startDate->copy()->endOfMonth();
         
-        // Fetch all attendances for the month
         $attendancesData = Attendance::where('user_id', $user->id)
             ->whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
             ->get()
@@ -276,7 +273,6 @@ class PortalController extends Controller
             ->get()
             ->keyBy(fn($item) => Carbon::parse($item->date)->format('Y-m-d'));
 
-        // Generate all days in the month up to today (or end of month if it's a past month)
         $limitDate = ($month == now()->format('m') && $year == now()->format('Y')) ? now() : $endDate;
         
         $attendances = collect();
@@ -384,7 +380,6 @@ class PortalController extends Controller
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         
-        // Set Header
         $sheet->setCellValue('A1', 'Tanggal');
         $sheet->setCellValue('B1', 'Hari');
         $sheet->setCellValue('C1', 'Jam Masuk');
@@ -392,7 +387,6 @@ class PortalController extends Controller
         $sheet->setCellValue('E1', 'Status');
         $sheet->setCellValue('F1', 'Keterangan');
 
-        // Make Header Bold
         $sheet->getStyle('A1:F1')->getFont()->setBold(true);
         $sheet->getStyle('A1:F1')->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
@@ -437,7 +431,6 @@ class PortalController extends Controller
             $row++;
         }
 
-        // Auto size columns
         foreach (range('A', 'F') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
@@ -555,7 +548,6 @@ class PortalController extends Controller
             $existingDescriptor = json_decode($profile->face_descriptor, true);
             if (!is_array($existingDescriptor) || count($existingDescriptor) !== 128) continue;
             
-            // Calculate euclidean distance
             $sum = 0;
             for ($i = 0; $i < 128; $i++) {
                 $diff = $newDescriptorArray[$i] - $existingDescriptor[$i];
@@ -625,7 +617,6 @@ class PortalController extends Controller
 
         $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
 
-        // Cek absensi hari ini
         $attendance = \App\Models\Attendance::where('user_id', $user->id)
             ->whereDate('date', today())
             ->first();
@@ -683,7 +674,6 @@ class PortalController extends Controller
         $checkoutPhotoPaths = [];
         $previousCheckoutPhotos = [];
         
-        // Cek Libur / Akhir Pekan
         if ($today->isWeekend()) {
             return redirect()->route('portal.absensi.check-in')->with('error', 'Hari ini adalah akhir pekan (Sabtu/Minggu). Absensi tidak diperlukan.');
         }
@@ -693,7 +683,6 @@ class PortalController extends Controller
             return redirect()->route('portal.absensi.check-in')->with('error', 'Hari ini adalah hari libur ('.$holiday->name.'). Absensi tidak diperlukan.');
         }
         
-        // Cek Izin / Sakit
         $leave = LeaveRequest::where('user_id', $user->id)->whereDate('date', $today)->where('status', 'approved')->first();
         if ($leave) {
             return redirect()->route('portal.absensi.check-in')->with('error', 'Anda telah terdaftar '.ucfirst($leave->type).' hari ini. Absensi tidak diperlukan.');
@@ -907,7 +896,6 @@ class PortalController extends Controller
             return back()->with('error', 'Hanya perizinan dengan status menunggu (pending) yang dapat dibatalkan.');
         }
 
-        // Delete attachment if exists
         if ($leaveRequest->attachment_path) {
             \Illuminate\Support\Facades\Storage::disk('public')->delete($leaveRequest->attachment_path);
         }
@@ -924,7 +912,6 @@ class PortalController extends Controller
             abort(403, 'Akses ditolak.');
         }
 
-        // Ambil semua siswa pondok yang diasuh oleh guru ini, dan hanya yang sudah punya descriptor wajah
         $students = StudentProfile::where('guru_id', $user->id)
                     ->whereNotNull('face_descriptor')
                     ->with('user')

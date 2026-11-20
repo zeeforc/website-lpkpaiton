@@ -32,7 +32,6 @@ class KurikulumsTable
                     ->limit(50),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 EditAction::make(),

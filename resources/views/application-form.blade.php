@@ -263,10 +263,6 @@
                         <input class="form-check-input" type="radio" name="pengajuan" id="pengajuan2" value="Penelitian/Tugas Akhir" {{ old('pengajuan') == 'Penelitian/Tugas Akhir' ? 'checked' : '' }}>
                         <label class="form-check-label" for="pengajuan2">Penelitian atau tugas akhir</label>
                     </div>
-                    {{-- <div class="form-check">
-                        <input class="form-check-input" type="radio" name="pengajuan" id="pengajuan3" value="Industrial Visit" {{ old('pengajuan') == 'Industrial Visit' ? 'checked' : '' }}>
-                        <label class="form-check-label" for="pengajuan3">Kunjungan industri</label>
-                    </div> --}}
                     </fieldset>
                 </div>
 

@@ -30,9 +30,6 @@ class ContactMessageMail extends Mailable
             ->markdown('emails.contact.message');
     }
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -40,9 +37,6 @@ class ContactMessageMail extends Mailable
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(

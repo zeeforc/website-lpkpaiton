@@ -22,7 +22,6 @@ class SettingsTable
                     ->searchable(),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 EditAction::make(),

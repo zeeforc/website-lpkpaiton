@@ -53,7 +53,6 @@ class LeaveRequestResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 

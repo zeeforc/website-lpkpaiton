@@ -7,13 +7,11 @@
 
 <main class="news-wrapper">
     <div class="container mt-5">
-        {{-- Tombol Kembali --}}
         <a href="{{ route('berita.index') }}" class="back-link">
             <i data-feather="arrow-left" class="back-icon"></i>
             <span>Kembali ke Berita</span>
         </a>
 
-        {{-- Hero Section --}}
         <div class="row news-hero-row align-items-center">
             <div class="col-lg-6 mb-4 mb-lg-0">
                 <div class="news-media-wrap">
@@ -40,19 +38,16 @@
             </div>
         </div>
 
-        {{-- Konten Berita (Dibatasi lebarnya agar enak dibaca) --}}
         <div class="news-content-container">
 
             <div class="news-body">
                 {!! $berita->berita_utama_desk !!}
             </div>
 
-            {{-- Navigasi Berita (Pagination) --}}
             <div class="news-pagination mt-5 pt-4 border-top">
                 <div class="news-pagination-label">Navigasi Berita</div>
                 <div class="pagination-dots">
 
-                    {{-- Sebelumnya --}}
                     @if($prevBerita)
                     <a href="{{ route('berita.show', ['beritaUtama' => $prevBerita->slug]) }}" class="page-nav-btn"
                         title="Berita Sebelumnya">
@@ -64,12 +59,10 @@
                     </button>
                     @endif
 
-                    {{-- Daftar Berita --}}
                     <a href="{{ route('berita.index') }}" class="page-nav-btn active" title="Daftar Berita">
                         <i data-feather="grid"></i>
                     </a>
 
-                    {{-- Berikutnya --}}
                     @if($nextBerita)
                     <a href="{{ route('berita.show', ['beritaUtama' => $nextBerita->slug]) }}" class="page-nav-btn"
                         title="Berita Selanjutnya">

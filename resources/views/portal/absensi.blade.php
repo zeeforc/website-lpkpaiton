@@ -114,7 +114,6 @@
     </div>
 </div>
 
-<!-- Stats Row -->
 <div class="row mb-4 g-3">
     <div class="col-md-3">
         <div class="stat-card">
@@ -158,7 +157,6 @@
     </div>
 </div>
 
-<!-- Filter & Toolbar -->
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3">
     <form class="d-flex align-items-center gap-2" method="GET" action="{{ route('portal.absensi') }}">
         <span class="text-secondary fw-medium" style="font-size: 0.9rem">Periode</span>
@@ -180,7 +178,6 @@
     </div>
 </div>
 
-<!-- Table -->
 <div class="table-custom mb-4">
     <div class="p-3 d-flex justify-content-between align-items-center border-bottom">
         <h6 class="fw-bold text-dark m-0">Riwayat Absensi</h6>

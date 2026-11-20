@@ -13,7 +13,6 @@ class ExcelToHtml
 
         $highestRow = $sheet->getHighestDataRow();
 
-        // kolom yg ditampilin
         $columns = [
             'A' => 'NO',
             'B' => 'KODE UNIT',
@@ -21,7 +20,6 @@ class ExcelToHtml
             'F' => 'BOBOT (JAM)',
         ];
 
-        // header
         $html  = '<table class="matrix-table"><thead><tr>';
         foreach ($columns as $label) {
             $html .= '<th>' . htmlspecialchars($label, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</th>';
@@ -57,7 +55,6 @@ class ExcelToHtml
             $html .= '</tr>';
         }
 
-        // Tambahin baris total di bawah data terakhir
         $html .= '<tr class="matrix-total-row">';
         $html .= '<td></td>';
         $html .= '<td></td>';

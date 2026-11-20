@@ -41,7 +41,6 @@ class BeritaUtamasTable
                     ->sortable(),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 EditAction::make(),

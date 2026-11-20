@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') - LPK Paiton Selaras</title>
-    <!-- Framework & Fonts sesuai dengan antislop-ui -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
@@ -118,7 +117,6 @@
 <body>
     <div class="container py-5">
         <div class="row align-items-center justify-content-between g-5">
-            <!-- Konten Kiri -->
             <div class="col-lg-5 order-2 order-lg-1">
                 <div class="error-code">@yield('code')</div>
                 <div class="error-badge">
@@ -146,41 +144,31 @@
                 </div>
             </div>
             
-            <!-- Vektor Kanan -->
             <div class="col-lg-6 order-1 order-lg-2">
                 <div class="vector-wrapper text-center">
-                    <!-- Inline SVG representing Error/Disconnected -->
                     <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Latar belakang lingkaran aksen -->
                         <circle cx="250" cy="200" r="160" fill="#fef2f2" />
                         <circle cx="100" cy="90" r="30" fill="#ef4444" opacity="0.1" />
                         <circle cx="380" cy="320" r="45" fill="#ef4444" opacity="0.1" />
                         
-                        <!-- Panel Kesalahan Utama -->
                         <rect x="100" y="100" width="300" height="200" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" />
                         
-                        <!-- Header Panel (Menyerupai browser) -->
                         <path d="M 100 112 Q 100 100 112 100 L 388 100 Q 400 100 400 112 L 400 130 L 100 130 Z" fill="#f8fafc" />
                         <circle cx="120" cy="115" r="5" fill="#ef4444" />
                         <circle cx="140" cy="115" r="5" fill="#eab308" />
                         <circle cx="160" cy="115" r="5" fill="#22c55e" />
                         
-                        <!-- Kabel terputus kiri -->
                         <path d="M 30 200 C 60 200, 70 180, 100 180" fill="none" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
                         <path d="M 120 180 C 140 180, 150 200, 200 200" fill="none" stroke="#64748b" stroke-width="8" stroke-linecap="round" />
                         
-                        <!-- Kabel terputus kanan -->
                         <path d="M 470 240 C 440 240, 430 260, 400 260" fill="none" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
                         <path d="M 380 260 C 350 260, 340 240, 290 240" fill="none" stroke="#64748b" stroke-width="8" stroke-linecap="round" />
                         
-                        <!-- Ikon Tanda Seru di tengah -->
                         <circle cx="250" cy="200" r="40" fill="#fef2f2" />
                         <path d="M 245 175 L 255 175 L 253 205 L 247 205 Z" fill="#ef4444" />
                         <circle cx="250" cy="218" r="4" fill="#ef4444" />
                         
-                        <!-- Sparkles/Korslet kiri -->
                         <path d="M 100 160 L 110 170 M 110 160 L 100 170" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" />
-                        <!-- Sparkles/Korslet kanan -->
                         <path d="M 390 270 L 400 280 M 400 270 L 390 280" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" />
                     </svg>
                 </div>

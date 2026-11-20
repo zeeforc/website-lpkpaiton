@@ -19,13 +19,11 @@
             </div>
         </a>
 
-        <!-- Toggler: buka offcanvas di mobile -->
         <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav"
             aria-controls="mobileNav">
             <span class="navbar-toggler-icon text"></span>
         </button>
 
-        <!-- Menu desktop (horizontal biasa) -->
         <div class="collapse navbar-collapse justify-content-end d-none d-lg-flex" id="mainNavbar">
             <ul class="navbar-nav gap-lg-3">
                 <li class="nav-item">
@@ -54,7 +52,6 @@
             </ul>
         </div>
 
-        <!-- Menu mobile: offcanvas glass dari kanan -->
         <div class="offcanvas offcanvas-end offcanvas-glass d-lg-none" tabindex="-1" id="mobileNav">
             <div class="offcanvas-header border-0">
                 <h6 class="mb-0">Menu</h6>

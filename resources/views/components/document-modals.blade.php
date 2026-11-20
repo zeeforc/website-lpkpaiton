@@ -20,7 +20,6 @@
             });
         @endphp
         @if($doc)
-            <!-- Modal Reupload -->
             <div class="modal fade" id="reuploadModal{{ $doc->id }}" tabindex="-1" aria-labelledby="reuploadModalLabel{{ $doc->id }}" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -49,7 +48,6 @@
                 </div>
             </div>
         @else
-            <!-- Modal Upload New -->
             <div class="modal fade" id="uploadNewModal_{{ Str::slug($docType) }}" tabindex="-1" aria-labelledby="uploadNewLabel_{{ Str::slug($docType) }}" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">

@@ -26,7 +26,6 @@ class Laporan extends Page
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Laporan PKL');
 
-        // Header
         $sheet->setCellValue('A1', 'No');
         $sheet->setCellValue('B1', 'Nama Lengkap');
         $sheet->setCellValue('C1', 'Jumlah');
@@ -34,7 +33,6 @@ class Laporan extends Page
         $sheet->setCellValue('E1', 'Asal Sekolah/Kampus');
         $sheet->setCellValue('F1', 'Periode Masa PKL');
 
-        // Style Header
         $headerStyle = [
             'font' => ['bold' => true, 'color' => ['argb' => 'FFFFFFFF']],
             'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
@@ -83,10 +81,8 @@ class Laporan extends Page
             $sheet->setCellValue('E' . $row, $app->instansi);
             $sheet->setCellValue('F' . $row, $periode);
             
-            // Borders
             $sheet->getStyle("A{$row}:F{$row}")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             
-            // Center align column A and C
             $sheet->getStyle("A{$row}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle("C{$row}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
@@ -96,7 +92,6 @@ class Laporan extends Page
         $uniqueSchools = $applications->pluck('instansi')->map(function ($item) { return strtolower(trim($item)); })->unique()->count();
         $uniqueMajors = $applications->pluck('jurusan')->map(function ($item) { return strtolower(trim($item)); })->unique()->count();
 
-        // Summary row
         $sheet->setCellValue('A' . $row, 'TOTAL KESELURUHAN PESERTA PKL');
         $sheet->mergeCells("A{$row}:B{$row}");
         $sheet->setCellValue('C' . $row, $totalPeserta);
@@ -110,10 +105,8 @@ class Laporan extends Page
             'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER]
         ];
         $sheet->getStyle("A{$row}:F{$row}")->applyFromArray($summaryStyle);
-        // Right align text for "TOTAL KESELURUHAN"
         $sheet->getStyle("A{$row}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
 
-        // Auto size columns
         foreach (range('A', 'F') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }

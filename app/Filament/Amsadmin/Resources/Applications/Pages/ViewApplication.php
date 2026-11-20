@@ -64,7 +64,6 @@ class ViewApplication extends ViewRecord
                 ])
                 ->modalSubmitActionLabel('Ya, Setujui Permohonan')
                 ->action(function (array $data) {
-                    // Generate dokumen dari template
                     $generator = new \App\Services\PklLetterGenerator();
                     $generatedFiles = $generator->generateForApplication($this->record);
                     

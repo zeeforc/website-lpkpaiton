@@ -10,7 +10,6 @@ class ContactForm
     {
         return $schema
             ->components([
-                //
             ]);
     }
 }

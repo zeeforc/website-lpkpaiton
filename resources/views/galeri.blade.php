@@ -49,9 +49,7 @@
                 <div class="col-lg-7" data-aos="fade-left" data-aos-delay="150">
                     <div class="glass-card">
                         <div class="gallery-stack" id="galleryStack">
-                            {{-- View menjadi sangat bersih, tidak ada lagi proses ekstraksi (flatMap) PHP di sini --}}
                             @forelse ($images as $index => $path)
-                            {{-- Memastikan variable $path bukan null/string kosong sebelum merender img --}}
                             @if(!empty($path))
                             <img src="{{ asset('storage/' . $path) }}" alt="Kegiatan LPK Paiton" class="gallery-item"
                                 data-index="{{ $index }}" loading="lazy" />
@@ -63,7 +61,6 @@
                             @endforelse
                         </div>
 
-                        {{-- Tampilkan tombol navigasi hanya jika gambar lebih dari 1 --}}
                         @if(count($images) > 1)
                         <button type="button" class="gallery-nav gallery-prev" id="galleryPrev" aria-label="Sebelumnya">
                             ‹

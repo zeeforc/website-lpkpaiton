@@ -42,7 +42,6 @@ class ClearanceSubmissionsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 Action::make('konfirmasi')

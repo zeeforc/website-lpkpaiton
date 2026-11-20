@@ -52,7 +52,6 @@ class ContactResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 

@@ -31,7 +31,6 @@ class TeamsTable
                     ->alignCenter(),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 EditAction::make(),

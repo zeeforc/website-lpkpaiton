@@ -45,7 +45,6 @@ class LeaveRequestsTable
                     }),
             ])
             ->filters([
-                //
             ])
             ->actions([
                 Action::make('approve')

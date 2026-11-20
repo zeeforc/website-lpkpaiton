@@ -53,7 +53,6 @@ class AttendanceResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 

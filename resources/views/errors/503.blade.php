@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Sedang Dalam Pemeliharaan</title>
-    <!-- Framework & Fonts sesuai dengan antislop-ui (konsisten dengan brand) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
@@ -109,7 +108,6 @@
 <body>
     <div class="container py-5">
         <div class="row align-items-center justify-content-between g-5">
-            <!-- Konten Kiri (Hierarchy sesuai antislop-ui) -->
             <div class="col-lg-5 order-2 order-lg-1">
                 <div class="maintenance-badge">
                     <i data-feather="tool" width="16" height="16"></i>
@@ -138,7 +136,6 @@
                 </div>
             </div>
             
-            <!-- Vektor Kanan -->
             <div class="col-lg-6 order-1 order-lg-2">
                 <div class="vector-wrapper text-center">
                     <!-- Inline SVG merepresentasikan sistem sedang dibangun/diperbaiki.
@@ -149,26 +146,21 @@
                         <circle cx="360" cy="90" r="30" fill="#fd7a2a" opacity="0.1" />
                         <circle cx="100" cy="320" r="45" fill="#fd7a2a" opacity="0.1" />
                         
-                        <!-- Panel Website Utama -->
                         <rect x="60" y="110" width="380" height="230" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" />
                         
-                        <!-- Header Panel (Menyerupai browser) -->
                         <path d="M 60 122 Q 60 110 72 110 L 428 110 Q 440 110 440 122 L 440 140 L 60 140 Z" fill="#f8fafc" />
                         <circle cx="85" cy="125" r="5" fill="#cbd5e1" />
                         <circle cx="105" cy="125" r="5" fill="#cbd5e1" />
                         <circle cx="125" cy="125" r="5" fill="#cbd5e1" />
                         
-                        <!-- Struktur Skeleton Dalam Web (Clean, flat) -->
                         <rect x="90" y="165" width="140" height="14" rx="4" fill="#e2e8f0" />
                         <rect x="90" y="195" width="220" height="8" rx="4" fill="#f1f5f9" />
                         <rect x="90" y="215" width="200" height="8" rx="4" fill="#f1f5f9" />
                         <rect x="90" y="235" width="240" height="8" rx="4" fill="#f1f5f9" />
                         
-                        <!-- Block Image Placeholder -->
                         <rect x="90" y="260" width="100" height="50" rx="6" fill="#f1f5f9" />
                         <rect x="200" y="260" width="100" height="50" rx="6" fill="#f1f5f9" />
                         
-                        <!-- Ikon Gear Utama (Fokus) -->
                         <g transform="translate(320, 220)">
                             <circle cx="0" cy="0" r="45" fill="#fd7a2a" opacity="0.1" />
                             <path d="M -8 -30 L 8 -30 L 10 -20 L -10 -20 Z" fill="#fd7a2a" />
@@ -189,7 +181,6 @@
                             <circle cx="0" cy="0" r="8" fill="#fd7a2a" />
                         </g>
                         
-                        <!-- Kunci Inggris (Wrench) - Ilustrasi sedang diperbaiki -->
                         <g transform="translate(250, 250) rotate(-45)">
                             <rect x="-10" y="-15" width="70" height="16" rx="8" fill="#94a3b8" />
                             <circle cx="-10" cy="-7" r="22" fill="#64748b" />

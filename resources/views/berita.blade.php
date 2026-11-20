@@ -26,16 +26,12 @@
                             <div class="hero-slide active">
                                 <img src="{{ asset('assets/slider/slide1.webp') }}" alt="">
                             </div>
-                            <!-- <div class="hero-slide">
-                                <img src="{{ asset('assets/slider/slide2.webp') }}" alt="">
-                            </div> -->
                         </div>
                     </div>
                 </div>
             </div>
             <div class="marquee-wrapper">
                 <div class="marquee-content">
-                    {{-- Set 1 --}}
                     <div class="marquee-text">
                         <span class="runningDate"></span>
                         <span class="marquee-dot">•</span>
@@ -56,7 +52,6 @@
                 </div>
             </div>
 
-            {{-- HIGHLIGHT POPUP (CAROUSEL DINAMIS) --}}
             @php
             // Gabungkan $latest dan $others untuk mendapatkan koleksi berita (maksimal 5 untuk dirotasi)
             $popupList = collect([$latest])->merge($others->items())->filter(function($item) {
@@ -89,12 +84,10 @@
         </div>
     </section>
 
-    {{-- RINGKASAN DATA PESERTA PKL --}}
     <section class="section-pkl-stats">
         <div class="container">
             <div class="row align-items-center gy-5">
 
-                {{-- LEFT: Text --}}
                 <div class="col-lg-5" data-aos="fade-right">
                     <div class="mb-4">
                         <p class="text-uppercase fw-bold text-muted mb-3" style="letter-spacing: 2px; font-size: 0.75rem;">Data Peserta</p>
@@ -109,12 +102,10 @@
                     </a>
                 </div>
 
-                {{-- RIGHT: Stats Card --}}
                 <div class="col-lg-7" data-aos="fade-left" data-aos-delay="150">
                     <div class="pkl-stats-card">
                         <h6 class="pkl-stats-card-title">Ringkasan Data Peserta PKL</h6>
 
-                        {{-- Row 1: 2 big cards --}}
                         <div class="row g-3 mb-3">
                             <div class="col-sm-6">
                                 <div class="pkl-stat-item pkl-stat-orange">
@@ -142,7 +133,6 @@
                             </div>
                         </div>
 
-                        {{-- Row 2: 3 small cards --}}
                         <div class="row g-3 mb-3">
                             <div class="col-sm-4">
                                 <div class="pkl-stat-item pkl-stat-sm pkl-stat-green">
@@ -182,7 +172,6 @@
                             </div>
                         </div>
 
-                        {{-- Info Box --}}
                         <div class="pkl-stats-info-box">
                             <div class="pkl-stats-info-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -195,7 +184,6 @@
                 </div>
             </div>
 
-            {{-- CHART SECTION --}}
             <style>
                 .pkl-chart-outer { background: #f0f4ff; border-radius: 20px; padding: 0; }
                 .pkl-chart-outer-header { padding: 0 4px 16px 4px; }
@@ -246,7 +234,6 @@
         </div>
     </section>
 
-    {{-- BERITA TERBARU --}}
 
     <section class="section-news-latest" id="news">
         <div class="container">
@@ -300,7 +287,6 @@
         </div>
     </section>
 
-    {{-- BERITA LAINNYA --}}
     <section class="section-news-list">
         <div class="container position-relative">
             <div class="row align-items-center gy-4">

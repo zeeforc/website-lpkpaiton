@@ -55,7 +55,6 @@ class PavingLeaveRequestResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 

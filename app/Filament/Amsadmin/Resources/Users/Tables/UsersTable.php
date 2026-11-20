@@ -48,7 +48,6 @@ class UsersTable
                     ->sortable(),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 EditAction::make(),

@@ -42,7 +42,6 @@ class CertificateResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 

@@ -85,7 +85,6 @@
             </div>
         </section>
 
-        {{-- navigasi kurikulum sebelumnya / berikutnya --}}
         <div class="news-pagination">
             <div class="news-pagination-label">Kurikulum lain</div>
             <div class="pagination-dots">

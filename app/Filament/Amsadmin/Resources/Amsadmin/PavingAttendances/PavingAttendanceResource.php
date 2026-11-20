@@ -54,7 +54,6 @@ class PavingAttendanceResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 

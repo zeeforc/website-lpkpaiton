@@ -82,7 +82,6 @@
 </div>
 
 <div class="row">
-    <!-- Form Pengajuan -->
     <div class="col-lg-7 mb-4">
         <div class="card-custom h-100">
             <div class="card-header-custom d-flex align-items-center gap-2 py-3">
@@ -146,7 +145,6 @@
         </div>
     </div>
 
-    <!-- Status & Timeline -->
     <div class="col-lg-5">
         <div class="card-custom mb-4">
             <div class="card-header-custom d-flex align-items-center gap-2 py-3">

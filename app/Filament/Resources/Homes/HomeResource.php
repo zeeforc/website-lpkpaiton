@@ -50,7 +50,6 @@ class HomeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 

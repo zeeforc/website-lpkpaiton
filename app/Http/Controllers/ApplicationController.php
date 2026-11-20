@@ -208,7 +208,6 @@ class ApplicationController extends Controller
                 }
             }
 
-            // Update status
             $application->update(['status' => 'document_review']);
 
             DB::commit();

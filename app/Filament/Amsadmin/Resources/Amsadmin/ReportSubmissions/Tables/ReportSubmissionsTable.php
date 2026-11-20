@@ -34,7 +34,6 @@ class ReportSubmissionsTable
                     ->sortable(),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 ViewAction::make(),

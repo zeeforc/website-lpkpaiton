@@ -28,7 +28,6 @@ class GaleriesTable
                     ->sortable(),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 ViewAction::make(),

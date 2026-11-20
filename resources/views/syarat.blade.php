@@ -36,16 +36,13 @@
 <section class="steps-section" id="steps">
     <div class="container">
         <div class="steps-card">
-            {{-- Decorative accent bars top-left --}}
             <div class="accent-bars">
                 <span class="accent-bar accent-bar-1"></span>
                 <span class="accent-bar accent-bar-2"></span>
             </div>
 
             <div class="row">
-                {{-- LEFT: Content --}}
                 <div class="col-lg-6 steps-left" data-aos="fade-right">
-                    {{-- Subtitle pill --}}
                     <span class="steps-pill">Tahapan</span>
 
                     <h2 class="steps-title">Pendaftaran</h2>
@@ -53,10 +50,8 @@
                         Berikut adalah tahapan pendaftaran magang di<br>Lembaga Pelatihan Kerja Paiton Selaras.
                     </p>
 
-                    {{-- Step List --}}
                     <div class="step-list">
 
-                        {{-- Step 01 --}}
                         <div class="step-item step-active" data-aos="fade-up" data-aos-delay="100">
                             <div class="step-left-col">
                                 <div class="step-badge">01</div>
@@ -73,7 +68,6 @@
                             </div>
                         </div>
 
-                        {{-- Step 02 --}}
                         <div class="step-item" data-aos="fade-up" data-aos-delay="200">
                             <div class="step-left-col">
                                 <div class="step-badge">02</div>
@@ -90,7 +84,6 @@
                             </div>
                         </div>
 
-                        {{-- Step 03 --}}
                         <div class="step-item" data-aos="fade-up" data-aos-delay="300">
                             <div class="step-left-col">
                                 <div class="step-badge">03</div>
@@ -108,7 +101,6 @@
 
                     </div>
 
-                    {{-- Info Box --}}
                     <div class="step-info-box">
                         <div class="step-info-icon">
                             <i data-feather="alert-circle"></i>
@@ -120,9 +112,7 @@
 
                 </div>
 
-                {{-- RIGHT: Illustration --}}
                 <div class="col-lg-6 steps-right" data-aos="fade-left" data-aos-delay="150">
-                    {{-- Dot pattern --}}
                     <div class="dot-pattern"></div>
 
                     <div class="steps-illustration-wrap">

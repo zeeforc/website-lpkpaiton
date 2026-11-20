@@ -39,8 +39,6 @@ class AmsadminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Amsadmin/Widgets'), for: 'App\Filament\Amsadmin\Widgets')
             ->widgets([
-                // AccountWidget::class,
-                // FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

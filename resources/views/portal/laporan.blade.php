@@ -142,7 +142,6 @@
     <p class="page-subtitle">Ajukan permohonan laporan PKL dan pantau status pengajuan Anda.</p>
 </div>
 
-<!-- Timeline Header -->
 <div class="timeline-container">
     <div class="d-flex align-items-center gap-3">
         @if(!$laporan)
@@ -203,7 +202,6 @@
 </div>
 
 <div class="row">
-    <!-- Form Pengajuan -->
     <div class="col-lg-7">
         <div class="card-custom">
             <div class="card-header-custom d-flex align-items-center gap-2">
@@ -323,9 +321,7 @@
         </div>
     </div>
 
-    <!-- Info & Catatan -->
     <div class="col-lg-5">
-        <!-- Template Laporan -->
         <div class="card-custom mb-3">
             <div class="card-header-custom d-flex align-items-center gap-2 py-3">
                 <i class="fa-solid fa-lock text-primary"></i>

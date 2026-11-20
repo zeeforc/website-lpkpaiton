@@ -45,7 +45,6 @@ class PavingLeaveRequestsTable
                     }),
             ])
             ->filters([
-                //
             ])
             ->actions([
                 Action::make('approve')

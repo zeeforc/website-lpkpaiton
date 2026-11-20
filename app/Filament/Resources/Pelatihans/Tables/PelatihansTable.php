@@ -34,7 +34,6 @@ class PelatihansTable
                 ->sortable(),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 EditAction::make(),

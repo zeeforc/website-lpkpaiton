@@ -79,9 +79,7 @@
 <form action="{{ route('portal.biodata.update') }}" method="POST">
     @csrf
     <div class="row">
-        <!-- Kolom Kiri -->
         <div class="col-lg-7">
-            <!-- Data Pribadi -->
             <div class="card-custom">
                 <div class="card-header-custom">
                     <h5 class="card-title-custom"><i class="fa-regular fa-id-card"></i> DATA PRIBADI</h5>
@@ -170,7 +168,6 @@
                 </div>
             </div>
 
-            <!-- Data Penempatan PKL -->
             <div class="card-custom">
                 <div class="card-header-custom">
                     <h5 class="card-title-custom"><i class="fa-solid fa-location-dot text-warning"></i> DATA PENEMPATAN PKL</h5>
@@ -228,9 +225,7 @@
             </div>
         </div>
 
-        <!-- Kolom Kanan -->
         <div class="col-lg-5">
-            <!-- Data Sekolah -->
             <div class="card-custom">
                 <div class="card-header-custom">
                     <h5 class="card-title-custom"><i class="fa-solid fa-school text-primary"></i> DATA SEKOLAH/KAMPUS</h5>
@@ -265,7 +260,6 @@
                 </div>
             </div>
 
-            <!-- Kontak Darurat -->
             <div class="card-custom">
                 <div class="card-header-custom">
                     <h5 class="card-title-custom"><i class="fa-solid fa-phone-volume text-purple" style="color: #8b5cf6"></i> KONTAK DARURAT</h5>
@@ -298,7 +292,6 @@
                 </div>
             </div>
 
-            <!-- Info Akun -->
             <div class="card-custom">
                 <div class="card-header-custom">
                     <h5 class="card-title-custom"><i class="fa-solid fa-shield-halved text-info"></i> INFORMASI AKUN</h5>

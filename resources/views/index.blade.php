@@ -126,7 +126,6 @@
 @endpush
 @section('content')
 
-<!-- Hero -->
 <section id="hero" class="hero-section">
     <div class="container p-2">
         <div class="row align-items-center gy-4">
@@ -170,7 +169,6 @@
     </div>
 </section>
 
-<!-- Visi dan Foto Kantor -->
 <section class="section-padding">
     <div class="container">
         <div class="row g-4 align-items-stretch">
@@ -205,7 +203,6 @@
     </div>
 </section>
 
-<!-- Tentang -->
 <section id="tentang" class="section-padding">
     <div class="container">
         <div class="row g-4 align-items-start">
@@ -236,7 +233,6 @@
     </div>
 </section>
 
-<!-- Struktur Team -->
 <section id="struktur" class="section-padding">
     @php
     use Illuminate\Support\Facades\Storage;
@@ -296,7 +292,6 @@
     </div>
 </section>
 
-<!-- Program Pelatihan -->
 <section id="program" class="section-padding" style="background: rgba(255,255,255,0.3);">
     <div class="container">
         <div class="text-center mb-5">
@@ -307,7 +302,6 @@
             </p>
         </div>
         <div class="row g-4 justify-content-center">
-            <!-- Welding -->
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
                 <div class="glass-card h-100 text-center py-4">
                     <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-auto mb-3" style="width: 64px; height: 64px; color: #fd7a2a;">
@@ -319,7 +313,6 @@
                     </p>
                 </div>
             </div>
-            <!-- Mesin -->
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
                 <div class="glass-card h-100 text-center py-4">
                     <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-auto mb-3" style="width: 64px; height: 64px; color: #fd7a2a;">
@@ -331,7 +324,6 @@
                     </p>
                 </div>
             </div>
-            <!-- Listrik -->
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
                 <div class="glass-card h-100 text-center py-4">
                     <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-auto mb-3" style="width: 64px; height: 64px; color: #fd7a2a;">
@@ -347,7 +339,6 @@
     </div>
 </section>
 
-<!-- Berita Terbaru -->
 <section id="berita" class="section-padding">
     <div class="container">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5">
@@ -393,7 +384,6 @@
     </div>
 </section>
 
-<!-- Testimoni Alumni -->
 <section id="testimoni" class="section-padding" style="background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);">
     <div class="container">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5">
@@ -404,7 +394,6 @@
                 </div>
                 <h2 class="display-6 fw-bold mb-0 text-dark" style="letter-spacing: -1px;">Apa Kata <span style="color: #fd7a2a;">Alumni</span> Kami</h2>
             </div>
-            <!-- Slider Controls -->
             <div class="d-flex gap-2">
                 <button class="btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center" id="prevTesti" style="width: 48px; height: 48px; border-color: #e2e8f0; color: #1e293b; background: white; transition: all 0.2s;" aria-label="Previous">
                     <i data-feather="arrow-left"></i>
@@ -489,7 +478,6 @@
 </section>
 
 
-<!-- Alamat Kantor -->
 <section id="alamat" class="section-padding">
     <div class="container">
         <div class="row g-4 align-items-center">
@@ -516,14 +504,12 @@
 
             <div class="col-lg-7 align-self-center">
                 <div class="proper-map-container">
-                    <!-- Google Maps Iframe -->
                     <iframe
                         src="https://maps.google.com/maps?q=LPK%20Paiton%20Selaras,%20Probolinggo&t=&z=15&ie=UTF8&iwloc=&output=embed"
                         width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade">
                     </iframe>
 
-                    <!-- Overlay Button (Floating) -->
                     <div class="map-overlay-action">
                         <a href="https://www.google.com/maps/search/?api=1&query=LPK+Paiton+Selaras" target="_blank"
                             rel="noopener noreferrer" class="btn btn-gradient d-inline-flex align-items-center gap-2">
@@ -536,7 +522,6 @@
     </div>
 </section>
 
-<!-- Kontak -->
 <section id="kontak" class="section-padding">
     <div class="container">
         <div class="row g-4">
@@ -637,7 +622,6 @@
                                 Social
                             </div>
                             <div class="d-flex gap-3 mt-1">
-                                <!-- <a href="#" class="text-dark text-decoration-none fw-medium hover-primary d-flex align-items-center"><i data-feather="facebook" class="me-1" style="width: 16px; height: 16px;"></i> Facebook</a> -->
                                 <a href="https://www.instagram.com/lpk_paiton_selaras?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==" class="text-dark text-decoration-none fw-medium hover-primary d-flex align-items-center"><i data-feather="instagram" class="me-1" style="width: 16px; height: 16px;"></i> Instagram</a>
                             </div>
                         </div>

@@ -32,7 +32,6 @@ class VimisTable
                     ->alignCenter(),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 ViewAction::make(),

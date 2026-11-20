@@ -20,9 +20,6 @@ class SyncQuotaCommand extends Command
      */
     protected $description = 'Sinkronisasi tanggal mulai, selesai, dan jalur khusus untuk data lama agar kuota otomatis berjalan.';
 
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
         $this->info('Memulai sinkronisasi data kuota...');

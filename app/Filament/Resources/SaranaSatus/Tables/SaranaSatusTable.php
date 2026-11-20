@@ -21,7 +21,6 @@ class SaranaSatusTable
                     ->limit(30),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 EditAction::make(),

@@ -8,9 +8,6 @@ use Carbon\Carbon;
 
 class LeaveRequestObserver
 {
-    /**
-     * Handle the LeaveRequest "updated" event.
-     */
     public function updated(LeaveRequest $leaveRequest): void
     {
         if ($leaveRequest->wasChanged('status') && $leaveRequest->status === 'approved') {

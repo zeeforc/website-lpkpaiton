@@ -4,14 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Portal Siswa PKL') - LPK Paiton Selaras</title>
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#2563eb">
     <link rel="icon" type="image/webp" href="{{ asset('assets/logo/lpk.webp?v=2') }}">
@@ -288,7 +284,6 @@
 
     <div class="portal-layout-wrapper">
         @if(Auth::check())
-            <!-- Sidebar (Desktop/Tablet) -->
             <aside class="portal-sidebar d-none d-md-flex">
                 <a href="{{ Auth::user()->role === 'guru_pondok' ? route('portal.guru.absensi-rombongan') : (in_array(Auth::user()->role, ['karyawan_paving', 'instruktur_lpk']) ? route('portal.absensi.check-in') : route('portal.biodata')) }}" class="sidebar-brand mb-3" style="text-decoration: none;">
                     <i class="fa-solid fa-users" style="color: #3b82f6; font-size: 1.8rem; filter: drop-shadow(0 4px 6px rgba(59, 130, 246, 0.4));"></i>
@@ -314,7 +309,6 @@
                 </form>
             </aside>
             
-            <!-- Bottom Bar (Mobile) -->
             <nav class="portal-bottombar d-flex d-md-none">
                 @if(Auth::user()->role === 'guru_pondok')
                     <a href="{{ route('portal.guru.absensi-rombongan') }}" class="bottombar-link {{ request()->routeIs('portal.guru.absensi-rombongan') ? 'active' : '' }}"><i class="fa-solid fa-users"></i></a>
@@ -372,7 +366,6 @@
             </div>
         @endif
 
-        <!-- PWA Install Banner (static, sits above content) -->
         <div class="w-100 d-flex justify-content-center" style="z-index: 50; padding: 15px 0 20px 0;">
             <div id="pwa-install-banner" class="alert alert-primary d-none flex-row justify-content-between align-items-center shadow-sm mb-0" style="border-radius: 12px; width: 90%; max-width: 400px; padding: 15px;">
                 <div class="d-flex align-items-center gap-3">
@@ -394,7 +387,6 @@
         </main>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
@@ -513,7 +505,6 @@
     </script>
     
     @stack('scripts')
-    <!-- Migration Popup -->
     @include('components.popup-migration')
 
 </body>

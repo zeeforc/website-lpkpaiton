@@ -104,7 +104,6 @@
 @endsection
 
 @push('scripts')
-<!-- Load Face API JS -->
 <script src="{{ asset('js/face-api.min.js') }}"></script>
 <script>
     const video = document.getElementById('video');

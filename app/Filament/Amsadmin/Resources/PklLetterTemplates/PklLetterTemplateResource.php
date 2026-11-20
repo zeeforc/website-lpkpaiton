@@ -36,7 +36,6 @@ class PklLetterTemplateResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 

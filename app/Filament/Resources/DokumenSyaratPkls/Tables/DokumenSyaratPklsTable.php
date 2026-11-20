@@ -25,7 +25,6 @@ class DokumenSyaratPklsTable
                     ->sortable(),
             ])
             ->filters([
-                //
             ])
             ->recordActions([
                 EditAction::make(),
